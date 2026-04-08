@@ -142,6 +142,16 @@ export default function DashboardLayout({ children }) {
                                     </Link>
 
 
+
+                                    <Link
+                                        href="/dashboard/criteriosClinicos"
+                                        className="group/link flex items-center gap-2.5 rounded-md px-2 py-[6px] text-[12.5px] font-light text-white/50 hover:text-white/90 hover:bg-white/[0.05] transition-all duration-200"
+                                    >
+                                        <span className="h-[3px] w-[3px] rounded-full bg-white/15 group-hover/link:bg-violet-400 group-hover/link:shadow-[0_0_6px_rgba(139,92,246,0.6)] transition-all duration-200" />
+                                        Criterios Clinicos
+                                    </Link>
+
+
                                     <Link
                                         href="/dashboard/categoriasProductos"
                                         className="group/link flex items-center gap-2.5 rounded-md px-2 py-[6px] text-[12.5px] font-light text-white/50 hover:text-white/90 hover:bg-white/[0.05] transition-all duration-200"
