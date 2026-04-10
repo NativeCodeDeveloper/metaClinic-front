@@ -1,24 +1,12 @@
 import "./globals.css";
 import { AnimatedLayout } from "@/Componentes/AnimatedLayout";
 import AgendaProvider from "@/ContextosGlobales/AgendaContext";
-import { Cormorant_Garamond, Manrope, Michroma } from "next/font/google";
+import { Inter } from "next/font/google";
 
-const manrope = Manrope({
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-manrope",
-  weight: ["400", "500", "600", "700", "800"],
-});
-
-const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  variable: "--font-cormorant",
-  weight: ["400", "500", "600", "700"],
-});
-
-const michroma = Michroma({
-  subsets: ["latin"],
-  variable: "--font-michroma",
-  weight: ["400"],
+  variable: "--font-inter",
+  display: "swap",
 });
 
 export const metadataBase = new URL(
@@ -80,8 +68,8 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="es" className={`${manrope.variable} ${cormorant.variable} ${michroma.variable}`}>
-      <body className="min-h-screen bg-white">
+    <html lang="es" className={`${inter.variable}`}>
+      <body className="min-h-screen bg-slate-50 text-slate-900 font-sans antialiased selection:bg-indigo-200">
         <AnimatedLayout>
           <AgendaProvider>{children}</AgendaProvider>
         </AnimatedLayout>

@@ -1,76 +1,100 @@
 import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight, Stethoscope, Pill, CalendarClock } from "lucide-react";
 import RevealOnScroll from "@/Componentes/RevealOnScroll";
 
-const pillars = [
+const services = [
   {
-    title: "Enfoque realmente integral",
-    text: "Unificamos medicina, psicologia y estetica para abordar cada proceso desde la raiz y no solo los sintomas.",
-    logoSrc: "/logo1.png",
+    id: "consulta",
+    title: "Consulta inicial metabólica",
+    desc: "Evaluación médica completa con anamnesis estructurada y determinación de elegibilidad para el tratamiento.",
+    icon: <Stethoscope className="h-6 w-6" />,
+    img: "/fondo2.png",
   },
   {
-    title: "Atencion profesional cercana",
-    text: "Nuestro equipo acompana cada etapa con escucha activa, criterio clinico y seguimiento continuo.",
-    logoSrc: "/logo1.png",
+    id: "tratamiento",
+    title: "Tratamiento con GLP-1",
+    desc: "Indicación y seguimiento de terapias, con titulación progresiva y control de efectos adversos.",
+    icon: <Pill className="h-6 w-6" />,
+    img: "/fondo1.png",
   },
   {
-    title: "Bienestar emocional y mental",
-    text: "La salud psicologica forma parte del tratamiento para lograr avances sostenibles y equilibrio real.",
-    logoSrc: "/logo1.png",
-  },
-  {
-    title: "Resultados visibles y conscientes",
-    text: "Disenamos experiencias de transformacion personalizadas para potenciar tu mejor version.",
-    logoSrc: "/logo1.png",
+    id: "seguimiento",
+    title: "Seguimiento semanal",
+    desc: "Monitoreo digital con médico tratante para evaluar evolución clínica, adherencia y tolerancia.",
+    icon: <CalendarClock className="h-6 w-6" />,
+    img: "/fondo2.png",
   },
 ];
 
 export default function Seccion1() {
   return (
-    <section id="porque-elegirnos" className="scroll-mt-24 bg-transparent py-22 text-[#5d462d] sm:py-28">
-      <div className="mx-auto grid w-full max-w-7xl gap-8 px-5 md:px-8 lg:grid-cols-12 lg:gap-10 lg:px-10">
-        <RevealOnScroll className="lg:col-span-4">
-          <div className="sticky top-28 rounded-[2rem] bg-[linear-gradient(165deg,rgba(74,46,39,0.48)_0%,rgba(26,16,13,0.9)_100%)] p-7 shadow-[0_30px_80px_-56px_rgba(228,175,110,0.55)]">
-            <p className="text-xs uppercase tracking-[0.24em] text-[#f4dbcd]/68">Por que elegir ESSENZA</p>
-            <h2 className="mt-4 text-balance text-4xl leading-[1] text-[#fff3ea] sm:text-5xl">
-              Te atendemos de forma completa, no fragmentada.
-            </h2>
-            <p className="mt-5 text-sm leading-7 text-[#f6dfd4]/82 sm:text-base">
-              En Centro Integral ESSENZA no ofrecemos servicios aislados. Construimos planes
-              personalizados para que avances con claridad, seguimiento y resultados sostenibles.
-            </p>
+    <section id="servicios" className="scroll-mt-24 bg-slate-50 py-20 sm:py-28 text-slate-800">
+      <div className="mx-auto w-full max-w-7xl px-5 md:px-8 lg:px-10">
+
+        {/* Header */}
+        <RevealOnScroll className="max-w-3xl mb-16">
+          <div className="flex items-center gap-4 mb-4">
+            <div className="h-px w-10 bg-indigo-600"></div>
+            <span className="text-sm font-semibold tracking-widest text-indigo-600 uppercase">
+              Profesional y Especializado
+            </span>
           </div>
+          <h2 className="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl mb-6">
+            Nuestros Servicios
+          </h2>
+          <p className="text-lg text-slate-600">
+            Transforma tu peso y salud con nuestro programa integral. Desde la evaluación inicial hasta el control semanal, nuestro equipo médico asegura un tratamiento seguro y efectivo adaptado a ti.
+          </p>
         </RevealOnScroll>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:col-span-8">
-          {pillars.map((item, index) => {
-            const shifted = index % 2 === 0 ? "sm:-translate-y-3" : "sm:translate-y-3";
+        {/* Cards Grid */}
+        <div className="grid gap-8 md:grid-cols-3">
+          {services.map((item) => (
+            <RevealOnScroll key={item.id} className="h-full">
+              <article className="relative flex h-full flex-col overflow-hidden rounded-[2.5rem] bg-white transition duration-300 hover:shadow-xl hover:shadow-slate-200">
 
-            return (
-              <RevealOnScroll key={item.title} className="h-full">
-                <article
-                  className={[
-                    "h-full rounded-3xl border border-[#d9bea0]/35 bg-[linear-gradient(180deg,rgba(253,246,236,0.92)_0%,rgba(244,232,214,0.9)_100%)] p-6 text-[#5d452c] shadow-[0_16px_36px_-24px_rgba(126,94,58,0.32)] transition duration-300 ease-out hover:-translate-y-1",
-                    shifted,
-                  ].join(" ")}
-                >
-                  <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#edd4b1]/45">
-                    {item.logoSrc ? (
-                      <Image
-                        src={item.logoSrc}
-                        alt="Logo Essenza"
-                        width={24}
-                        height={24}
-                        className="h-6 w-6 rounded-full object-cover"
-                      />
-                    ) : null}
+                {/* The "notch" image effect */}
+                <div className="absolute top-0 left-0 h-28 w-[65%]">
+                  <div className="relative h-full w-full rounded-br-[2.5rem] overflow-hidden">
+                    <Image
+                      src={item.img}
+                      alt={item.title}
+                      layout="fill"
+                      objectFit="cover"
+                      className="opacity-90"
+                    />
                   </div>
-                  <h3 className="mt-5 text-2xl font-medium tracking-[0.01em] text-[#5a4127]">{item.title}</h3>
-                  <p className="mt-3 text-sm leading-7 tracking-[0.02em] text-[#705739]/86">{item.text}</p>
-                </article>
-              </RevealOnScroll>
-            );
-          })}
+                </div>
+
+                {/* Card Content Area. Add top padding to clear the image notch */}
+                <div className="relative z-10 flex flex-1 flex-col p-8 pt-[8.5rem]">
+                  {/* Purple Circle Icon */}
+                  <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-indigo-600 text-white shadow-md shadow-indigo-200">
+                    {item.icon}
+                  </div>
+
+                  <h3 className="mb-4 text-2xl font-bold text-slate-900 leading-tight">
+                    {item.title}
+                  </h3>
+
+                  <p className="mb-8 text-slate-600 leading-relaxed flex-1">
+                    {item.desc}
+                  </p>
+
+                  <Link
+                    href="/agendaProfesionales"
+                    className="group inline-flex items-center font-semibold text-slate-900 hover:text-indigo-600 transition-colors"
+                  >
+                    Saber más
+                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </Link>
+                </div>
+              </article>
+            </RevealOnScroll>
+          ))}
         </div>
+
       </div>
     </section>
   );

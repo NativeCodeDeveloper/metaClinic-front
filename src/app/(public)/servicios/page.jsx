@@ -1,82 +1,135 @@
 "use client";
 
 import Link from "next/link";
+import { Fingerprint, Hexagon, Component } from "lucide-react";
+import RevealOnScroll from "@/Componentes/RevealOnScroll";
 
-const servicios = [
-  "Atencion medica general",
-  "Medicina familiar",
-  "Atencion psicologica para ninos y adultos",
-  "Atencion nutricional completa",
-  "Fonoaudiologia y apoyo en problemas del habla infantil",
-  "Lavado de oidos y otoscopia",
-  "Cosmetologia y limpiezas faciales",
-  "Tratamientos faciales antiedad, acne e hiperpigmentacion",
-  "Tratamientos esteticos corporales reductivos y reafirmantes",
-  "Masajes relajacion, descontracturante, terapeutico y drenaje linfatico",
-  "Auriculoterapia",
-  "Terapias holisticas",
+const tratamientos = [
+  {
+    title: "Terapia GLP-1",
+    subtitle: "Regulación Metabólica Dúo",
+    description: "Mediante análogos de GLP-1 (Semaglutida/Tirzepatida) regulamos directamente los centros de saciedad anatómicos, controlando el hambre fisiológico y optimizando el vaciado gástrico para una adherencia perfecta al programa.",
+    icon: Component,
+    colorClass: "bg-indigo-50 text-indigo-600",
+    linkInfo: "/programa"
+  },
+  {
+    title: "Manejo de Obesidad",
+    subtitle: "Reset Estructural",
+    description: "Abordamos la obesidad no como una falta de voluntad, sino como una condición biológica. Intervenimos con prescripción de última generación para revertir el almacenamiento crónico y recuperar tu peso base sano.",
+    icon: Fingerprint,
+    colorClass: "bg-slate-100 text-slate-700",
+    linkInfo: "/programa"
+  },
+  {
+    title: "SOP & Insulinorresistencia",
+    subtitle: "Equilibrio Hormonal",
+    description: "Estabilizamos el eje hormonal femenino metabólico. Controlando la sensibilidad cruzada a la insulina abordamos desde adentro la niebla mental, la fatiga y los descontroles de peso asociados al Síndrome de Ovario Poliquístico.",
+    icon: Hexagon,
+    colorClass: "bg-indigo-50 text-indigo-600",
+    linkInfo: "/programa"
+  }
 ];
 
 export default function ServicioPage() {
   return (
-    <main className="bg-transparent text-[#5d462d]">
-      <section className="mx-auto w-full max-w-7xl px-6 pb-20 pt-24 md:px-10 md:pb-24 md:pt-28 xl:px-12">
-        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#9a7750]/74">
-          Servicios
-        </p>
-        <h1 className="mt-5 max-w-4xl text-4xl leading-tight text-[#4f361d] sm:text-5xl">
-          Especialidades integrales para tu salud, bienestar y equilibrio.
-        </h1>
-        <p className="mt-7 max-w-3xl text-base leading-relaxed text-[#6b5233]/86">
-          En Centro Integral ESSENZA integramos psicologia, medicina y estetica para ofrecer atencion personalizada con resultados visibles y sostenibles.
-        </p>
-      </section>
+    <main className="bg-[#f8f9fa] text-slate-900 pt-32 pb-32 min-h-screen font-sans">
 
-      <section className="mx-auto grid w-full max-w-7xl gap-7 px-6 pb-28 md:grid-cols-2 md:px-10 md:pb-32 xl:grid-cols-3 xl:px-12">
-        {servicios.map((servicio, index) => (
-          <article
-            key={servicio}
-            className="group rounded-3xl border border-[#d8bc9d]/36 bg-[linear-gradient(170deg,rgba(253,246,236,0.94)_0%,rgba(243,230,211,0.9)_100%)] p-7 shadow-[0_16px_36px_-24px_rgba(122,91,55,0.26)] transition hover:-translate-y-0.5 hover:border-[#cfa780]/42"
+      {/* Header Section */}
+      <section className="mx-auto w-full max-w-7xl px-5 md:px-8 lg:px-10 mb-20 lg:mb-32 flex flex-col md:flex-row md:items-end justify-between gap-8">
+        <RevealOnScroll>
+          <div className="max-w-3xl">
+            <h1 className="text-5xl md:text-6xl lg:text-[5.5rem] font-medium tracking-tight text-slate-900 leading-[1.05] mb-6">
+              Nuestros<br />
+              Tratamientos
+            </h1>
+            <p className="text-lg lg:text-xl text-slate-500 font-light max-w-lg">
+              Ciencia y precisión clínica para un manejo metabólico inteligente y sostenible.
+            </p>
+          </div>
+        </RevealOnScroll>
+
+        <RevealOnScroll delayClass="delay-200">
+          <Link
+            href="/agendaProfesionales"
+            className="inline-flex rounded-full border border-slate-900 px-8 py-3.5 text-sm md:text-base font-medium text-slate-900 transition hover:bg-slate-900 hover:text-white whitespace-nowrap"
           >
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#8e6e47]/70">
-              Servicio {String(index + 1).padStart(2, "0")}
-            </p>
-            <h2 className="mt-4 text-xl leading-snug text-[#553b20]">{servicio}</h2>
-            <p className="mt-5 text-sm leading-relaxed text-[#6b5233]/84">
-              Atencion profesional con enfoque humano, planificacion individual y acompanamiento continuo.
-            </p>
-          </article>
-        ))}
+            Agendar Evaluación
+          </Link>
+        </RevealOnScroll>
       </section>
 
-      <section className="border-t border-[#d8bc9d]/34 bg-transparent">
-        <div className="mx-auto flex w-full max-w-7xl flex-col items-start justify-between gap-8 px-6 py-16 md:flex-row md:items-center md:px-10 md:py-20 xl:px-12">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#9a7750]/72">
-              Siguiente paso
-            </p>
-            <h3 className="mt-4 text-3xl leading-tight text-[#4f361d]">
-              Agenda una evaluacion y recibe orientacion personalizada.
-            </h3>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <Link
-              href="/contacto"
-              className="rounded-full border border-[#f8dcc5]/45 bg-[linear-gradient(135deg,#f7dfcc_0%,#e7b27c_100%)] px-7 py-3 text-sm font-semibold text-[#2f1a12] transition hover:brightness-105"
-            >
-              Solicitar cita
-            </Link>
-            <a
-              href="https://wa.me/56987728500"
-              target="_blank"
-              rel="noreferrer"
-              className="rounded-full border border-[#d8bc9d]/42 bg-[#f6e9d8]/72 px-7 py-3 text-sm font-medium text-[#5b4228] transition hover:border-[#cfa780]/56"
-            >
-              WhatsApp
-            </a>
-          </div>
-        </div>
+      {/* Treatments Grid - Staggered layout */}
+      <section className="mx-auto grid w-full max-w-7xl gap-10 px-5 md:px-8 lg:grid-cols-3 lg:gap-14 lg:px-10 mb-32 items-start">
+        {tratamientos.map((tratamiento, index) => {
+          const Icon = tratamiento.icon;
+          // Apply a staggered offset for middle items
+          const staggerClass = index === 1 ? "lg:mt-[100px]" : index === 2 ? "lg:mt-[50px]" : "";
+
+          return (
+            <RevealOnScroll key={index} delayClass={`delay-${index * 100}`}>
+              <article className={`group relative flex flex-col h-full bg-transparent ${staggerClass}`}>
+                {/* Number indicator above the card mimicking the reference */}
+                <span className="text-slate-500 font-medium text-lg mb-4 block">
+                  0{index + 1}
+                </span>
+
+                {/* Visual Area - Clean soft background instead of aggressive borders */}
+                <div className={`
+                  w-full rounded-[2rem] bg-white p-16 flex items-center justify-center mb-8
+                  transition-transform duration-700 ease-out group-hover:-translate-y-3
+                `}>
+                  <div className={`inline-flex h-24 w-24 items-center justify-center rounded-3xl ${tratamiento.colorClass}`}>
+                    <Icon strokeWidth={1} className={`h-14 w-14 ${index === 1 ? 'animate-icon-beat' : 'animate-icon-bounce-slow'}`} />
+                  </div>
+                </div>
+
+                {/* Minimal Typography below */}
+                <h2 className="text-xl md:text-2xl font-medium text-slate-900 mb-2">
+                  {tratamiento.title}
+                </h2>
+                <h3 className="text-[13px] md:text-sm font-medium text-slate-400 uppercase tracking-widest mb-6">
+                  {tratamiento.subtitle}
+                </h3>
+
+                <p className="text-slate-500 font-light leading-relaxed text-[15px] mb-8">
+                  {tratamiento.description}
+                </p>
+
+                <div className="flex items-center text-slate-900 font-medium text-sm transition-all group-hover:text-indigo-600 cursor-pointer w-fit border-b border-transparent group-hover:border-indigo-600 pb-1">
+                  Ver detalles
+                </div>
+              </article>
+            </RevealOnScroll>
+          );
+        })}
       </section>
+
+      {/* Bottom Conversion Block - Redesigned cleanly */}
+      <section className="mx-auto w-full max-w-7xl px-5 md:px-8 lg:px-10 mt-20">
+        <RevealOnScroll>
+          <div className="flex flex-col md:flex-row gap-12 items-center justify-between rounded-[2rem] bg-white p-12 md:p-20">
+            <div className="max-w-xl">
+              <h3 className="text-4xl md:text-5xl font-medium tracking-tight text-slate-900 mb-4">
+                Transforma tu Vida Hoy.
+              </h3>
+              <p className="text-slate-500 text-lg font-light">
+                Conoce tu elegibilidad clínica resolviendo nuestro breve test metabólico.
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4 shrink-0">
+              <Link
+                href="/programa"
+                className="rounded-full border border-slate-900 px-8 py-3.5 text-sm md:text-base font-medium text-slate-900 transition hover:bg-slate-900 hover:text-white text-center"
+              >
+                Hacer Test Metabólico
+              </Link>
+            </div>
+          </div>
+        </RevealOnScroll>
+      </section>
+
     </main>
   );
 }

@@ -4,6 +4,8 @@ import Link from "next/link";
 import RevealOnScroll from "@/Componentes/RevealOnScroll";
 import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
+import Image from "next/image";
+import { ArrowUpRight } from "lucide-react";
 
 export default function Seccion2() {
   const API = process.env.NEXT_PUBLIC_API_URL;
@@ -12,20 +14,20 @@ export default function Seccion2() {
   const fallbackServices = [
     {
       id: "srv-1",
-      name: "Atencion medica general y familiar",
-      description: "Evaluacion integral de salud, orientacion profesional y acompanamiento continuo.",
+      name: "Atención médica general",
+      description: "Evaluación integral de salud, orientación profesional y seguimiento.",
       image: "/fondo2.png",
     },
     {
       id: "srv-2",
-      name: "Atencion psicologica para ninos y adultos",
-      description: "Apoyo emocional para ansiedad, estres y procesos personales en todas las etapas.",
+      name: "Tratamientos Metabólicos",
+      description: "Planes personalizados para la salud a largo plazo.",
       image: "/fondo3.png",
     },
     {
       id: "srv-3",
-      name: "Nutricion y bienestar metabolico",
-      description: "Planes personalizados para mejorar habitos, energia y salud a largo plazo.",
+      name: "Nutrición Clínica",
+      description: "Orientación alimentaria para mejorar tu calidad de vida.",
       image: "/fondo1.png",
     },
   ];
@@ -45,14 +47,12 @@ export default function Seccion2() {
         mode: "cors",
       });
 
-      if (!res.ok) {
-        return toast.error(`No ha sido posible cargar las imagenes del sistema contacte a soporte de NativeCode`);
-      }
+      if (!res.ok) return;
 
       const data = await res.json();
       setInfoData(data);
     } catch {
-      return toast.error(`No ha sido posible cargar las imagenes del sistema contacte a soporte de NativeCode`);
+      console.warn("Could not load original seccion2 data, using fallbacks");
     }
   }
 
@@ -63,65 +63,75 @@ export default function Seccion2() {
   const content = services.length > 0 ? services : fallbackServices;
 
   return (
-    <section id="servicios" className="scroll-mt-24 bg-transparent py-22 text-[#5d462d] sm:py-28">
+    <section id="servicios-clinicos" className="scroll-mt-24 bg-slate-50 py-20 text-slate-800 sm:py-28">
       <div className="mx-auto w-full max-w-7xl px-5 md:px-8 lg:px-10">
+
+        {/* Header centered */}
         <RevealOnScroll>
-          <div className="grid items-end gap-6 lg:grid-cols-[1fr_auto]">
-            <div>
-              <p className="text-xs uppercase tracking-[0.24em] text-[#9a7750]/72">Especialidades integrales</p>
-              <h2 className="mt-4 max-w-4xl text-balance text-4xl leading-[1] text-[#4f361d] sm:text-5xl">
-                Medicina, psicologia, estetica y terapias en un mismo ecosistema de bienestar.
-              </h2>
+          <div className="flex flex-col items-center text-center">
+            <div className="flex items-center justify-center gap-4 mb-4">
+              <div className="h-px w-8 bg-indigo-600"></div>
+              <span className="text-sm font-semibold tracking-widest text-indigo-600 uppercase">
+                Servicios Médicos
+              </span>
+              <div className="h-px w-8 bg-indigo-600"></div>
             </div>
-            <Link
-              href="/servicios"
-              className="inline-flex justify-center rounded-full border border-[#d7b792]/48 bg-[#f2ddc2]/36 px-6 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-[#5b4228] transition hover:bg-[#e8cfac]/44"
-            >
-              Ver detalle completo
-            </Link>
+            <h2 className="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl mb-6">
+              Nuestras Especialidades
+            </h2>
+            <p className="max-w-2xl text-lg text-slate-600">
+              Explora todos los tratamientos y servicios dinámicos que ofrecemos en nuestra clínica para abordar tu salud metabólica de forma completa.
+            </p>
           </div>
         </RevealOnScroll>
 
-        <div className="mt-12 grid gap-4 lg:grid-cols-6">
-          {content.map((service, index) => {
-            const large = index === 0;
-            const medium = index === 1 || index === 2;
+        {/* Dynamic Services Cards */}
+        <div className="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {content.map((service, index) => (
+            <RevealOnScroll
+              key={service.id ?? index}
+              delayClass={index % 3 === 1 ? "delay-100" : index % 3 === 2 ? "delay-200" : ""}
+            >
+              <article className="relative h-[480px] overflow-hidden rounded-[2.5rem] bg-slate-200 shadow-md group">
+                {/* Background Full Image */}
+                <Image
+                  src={service.image}
+                  alt={service.name}
+                  layout="fill"
+                  objectFit="cover"
+                  className="transition duration-500 ease-out group-hover:scale-105"
+                />
 
-            return (
-              <RevealOnScroll
-                key={service.id ?? service.name}
-                delayClass={index % 2 === 0 ? "delay-100" : "delay-150"}
-                className={[
-                  "h-full",
-                  large ? "lg:col-span-3 lg:row-span-2" : medium ? "lg:col-span-3" : "lg:col-span-2",
-                ].join(" ")}
-              >
-                <Link
-                  href="/reserva-hora"
-                  aria-label={`Agendar para ${service.name}`}
-                  className="group flex h-full flex-col overflow-hidden rounded-3xl border border-[#d8bc9c]/35 bg-[linear-gradient(180deg,rgba(252,245,234,0.95)_0%,rgba(243,230,211,0.9)_100%)] shadow-[0_16px_36px_-22px_rgba(122,91,55,0.28)] transition duration-300 ease-out hover:-translate-y-1"
-                >
-                  <div className={large ? "relative min-h-[20rem] flex-1 overflow-hidden" : "relative aspect-[16/10] overflow-hidden"}>
-                    <img
-                      src={service.image}
-                      alt={service.name}
-                      className="h-full w-full object-cover transition duration-500 ease-out group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(42,28,20,0.03)_0%,rgba(42,28,20,0.34)_100%)]" />
-                  </div>
-                  <div className={large ? "p-7" : "p-5"}>
-                    <h3 className={large ? "text-3xl font-medium tracking-[0.02em] text-[#573e24]" : "text-xl font-medium tracking-[0.02em] text-[#573e24]"}>
-                      {service.name}
-                    </h3>
-                    <p className={large ? "mt-3 text-base leading-8 tracking-[0.02em] text-[#6b5233]/86" : "mt-2 text-sm leading-7 tracking-[0.02em] text-[#6b5233]/82"}>
-                      {service.description || "Atencion personalizada con acompanamiento profesional y seguimiento continuo para resultados sostenibles."}
-                    </p>
-                  </div>
-                </Link>
-              </RevealOnScroll>
-            );
-          })}
+                {/* Gradient overlay for readability and premium look */}
+                <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-slate-900/80 to-transparent pointer-events-none" />
+
+                {/* Top Right Label for Service Name (if short enough) */}
+                <div className="absolute top-6 right-6 rounded-full bg-indigo-600/90 backdrop-blur-md px-5 py-2 text-sm font-semibold text-white shadow-lg max-w-[80%] text-center truncate">
+                  {service.name}
+                </div>
+
+                {/* Bottom Descriptions since it's a service, they need to see description */}
+                <div className="absolute bottom-6 left-[6.5rem] right-6 p-2 pointer-events-none">
+                  <h3 className="text-white font-bold text-lg leading-tight mb-1 drop-shadow-md">{service.name}</h3>
+                  <p className="text-white/80 text-sm line-clamp-2">{service.description}</p>
+                </div>
+
+                {/* Bottom Left Cutout Illusion Wrapper */}
+                <div className="absolute bottom-0 left-0 h-[5.5rem] w-[5.5rem] rounded-tr-[2rem] bg-slate-50 transition-colors">
+                  <div className="absolute bottom-0 left-0 bg-slate-50 h-full w-full" />
+                  {/* The interactive circular button resting in the cutout */}
+                  <Link
+                    href={`/contacto`}
+                    className="absolute bottom-4 left-4 flex h-14 w-14 items-center justify-center rounded-full bg-indigo-600 text-white shadow hover:bg-indigo-700 transition-all hover:scale-105"
+                  >
+                    <ArrowUpRight className="h-5 w-5" />
+                  </Link>
+                </div>
+              </article>
+            </RevealOnScroll>
+          ))}
         </div>
+
       </div>
     </section>
   );
