@@ -263,25 +263,57 @@ export default function Paciente() {
         return "SIN DEFINIR";
     }
 
+
+    function irAReceta(id_paciente) {
+        router.push(`/dashboard/recetaPacientes/${id_paciente}`);
+    }
+
+    const pacienteActual = detallePaciente[0];
+    const totalFichas = listaFichas.length;
+
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-sky-50/30">
+        <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(99,102,241,0.10),_transparent_28%),radial-gradient(circle_at_right,_rgba(6,182,212,0.10),_transparent_24%),linear-gradient(180deg,_#f8fafc_0%,_#ffffff_55%,_#f8fafc_100%)]">
             <ToasterClient/>
 
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
 
                 {/* Header */}
-                <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                    <div>
-                        <p className="text-xs font-semibold uppercase tracking-widest text-sky-600 mb-1">Historial del paciente</p>
-                        <h1 className="text-2xl md:text-3xl font-bold text-slate-800 tracking-tight">
-                            Carpeta Clinica de :
-                        </h1>
+                <div className="mb-8 rounded-[28px] border border-slate-200/80 bg-white/85 p-5 shadow-[0_20px_60px_rgba(15,23,42,0.08)] backdrop-blur-sm">
+                    <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+                        <div>
+                            <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.22em] text-violet-600">Historial del paciente</p>
+                            <h1 className="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">
+                                Carpeta clínica de {pacienteActual ? `${pacienteActual.nombre} ${pacienteActual.apellido}` : "paciente"}
+                            </h1>
+                            <p className="mt-2 max-w-2xl text-sm text-slate-600">
+                                Visualiza fichas, evaluaciones y accesos clínicos desde una misma vista con la misma línea visual del dashboard.
+                            </p>
+                        </div>
+                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                            <div className="rounded-2xl border border-violet-200 bg-violet-50/80 px-4 py-3">
+                                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-violet-500">Paciente</p>
+                                <p className="mt-1 text-sm font-semibold text-slate-900">
+                                    {pacienteActual ? `${pacienteActual.nombre} ${pacienteActual.apellido}` : "Cargando..."}
+                                </p>
+                            </div>
+                            <div className="rounded-2xl border border-cyan-200 bg-cyan-50/80 px-4 py-3">
+                                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-cyan-600">Rut</p>
+                                <p className="mt-1 text-sm font-semibold text-slate-900">{pacienteActual?.rut || "-"}</p>
+                            </div>
+                            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Fichas</p>
+                                <p className="mt-1 text-sm font-semibold text-slate-900">{totalFichas}</p>
+                            </div>
+                        </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <InfoButton informacion={'En este apartado se mostrarán las fichas clínicas del paciente, ordenadas desde la más reciente a la más antigua, incluyendo tanto las fichas como sus anotaciones asociadas.\n\nPara editar una ficha clínica, debe seleccionarse el botón Editar, lo que lo llevará al formulario correspondiente donde podrá modificar la información de la ficha seleccionada.\n\nEn caso de eliminar una ficha clínica, deberá presionar el botón Eliminar. Esta acción removerá la ficha seleccionada del sistema.\n\nSi desea crear una nueva ficha clínica, debe seleccionar el botón Nueva Ficha, el cual lo dirigirá al formulario de ingreso para registrar una nueva ficha clínica.'}/>
+                    <div className="mt-5 flex flex-col gap-3 border-t border-slate-100 pt-4 sm:flex-row sm:items-center sm:justify-between">
+                        <div className="flex items-center gap-2">
+                            <InfoButton informacion={'En este apartado se mostrarán las fichas clínicas del paciente, ordenadas desde la más reciente a la más antigua, incluyendo tanto las fichas como sus anotaciones asociadas.\n\nPara editar una ficha clínica, debe seleccionarse el botón Editar, lo que lo llevará al formulario correspondiente donde podrá modificar la información de la ficha seleccionada.\n\nEn caso de eliminar una ficha clínica, deberá presionar el botón Eliminar. Esta acción removerá la ficha seleccionada del sistema.\n\nSi desea crear una nueva ficha clínica, debe seleccionar el botón Nueva Ficha, el cual lo dirigirá al formulario de ingreso para registrar una nueva ficha clínica.'}/>
+                            <span className="text-sm text-slate-500">Panel clínico del paciente seleccionado</span>
+                        </div>
                         <button
                             onClick={() => volverAFichas()}
-                            className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 hover:border-slate-300 transition-all duration-150 shadow-sm">
+                            className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-semibold text-slate-700 transition-all duration-150 hover:border-slate-300 hover:bg-slate-100">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                             </svg>
@@ -297,11 +329,11 @@ export default function Paciente() {
                     </div>
                 ) : (
                     detallePaciente.map(paciente => (
-                        <div key={paciente.id_paciente} className="mb-8 bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-                            <div className="bg-gradient-to-r from-sky-600 to-cyan-500 px-5 md:px-6 py-3.5 flex items-center justify-between">
+                        <div key={paciente.id_paciente} className="mb-8 overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_18px_50px_rgba(15,23,42,0.08)]">
+                            <div className="bg-[linear-gradient(135deg,#0f172a_0%,#312e81_58%,#0891b2_100%)] px-5 md:px-6 py-4 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                                 <div className="flex items-center gap-3">
-                                    <div className="h-9 w-9 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                                        <span className="text-sm font-bold text-white">
+                                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/15 bg-white/10 backdrop-blur-sm">
+                                        <span className="text-sm font-bold tracking-wide text-white">
                                             {paciente.nombre?.charAt(0)}{paciente.apellido?.charAt(0)}
                                         </span>
                                     </div>
@@ -309,38 +341,39 @@ export default function Paciente() {
                                         <h2 className="text-2xl font-bold text-white tracking-tight">
                                             {paciente.nombre} {paciente.apellido}
                                         </h2>
-                                        <p className="text-base text-sky-100">RUT: {paciente.rut}</p>
+                                        <p className="text-sm text-slate-200">RUT: {paciente.rut}</p>
                                     </div>
                                 </div>
-                                <span className="hidden sm:inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-white/20 text-white backdrop-blur-sm">
-                                   Prevision : {previsionDeterminacion(paciente.prevision_id)}
-                                </span>
+                                <div className="flex flex-wrap items-center gap-2">
+                                    <span className="inline-flex items-center rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-white/90 backdrop-blur-sm">
+                                        Previsión: {previsionDeterminacion(paciente.prevision_id)}
+                                    </span>
+                                    <span className="inline-flex items-center rounded-full border border-cyan-300/20 bg-cyan-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-cyan-100">
+                                        Edad: {calcularEdad(paciente.nacimiento)} años
+                                    </span>
+                                </div>
                             </div>
 
-                            <div className="p-5 md:p-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-                                <div className="bg-slate-50 rounded-lg px-4 py-3">
-                                    <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Nacimiento</p>
-                                    <p className="text-sm font-medium text-slate-700 mt-1">{formatearFecha(paciente.nacimiento)}</p>
+                            <div className="grid grid-cols-1 gap-3 p-5 md:grid-cols-2 md:p-6 xl:grid-cols-3">
+                                <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Nacimiento</p>
+                                    <p className="mt-1 text-sm font-semibold text-slate-900">{formatearFecha(paciente.nacimiento)}</p>
                                 </div>
-                                <div className="bg-sky-50 rounded-lg px-4 py-3 border border-sky-100">
-                                    <p className="text-[11px] font-medium text-sky-400 uppercase tracking-wider">Edad</p>
-                                    <p className="text-sm font-bold text-sky-700 mt-1">{calcularEdad(paciente.nacimiento)} años</p>
+                                <div className="rounded-2xl border border-violet-200 bg-violet-50 px-4 py-3">
+                                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-violet-500">Sexo</p>
+                                    <p className="mt-1 text-sm font-semibold text-slate-900">{paciente.sexo || "-"}</p>
                                 </div>
-                                <div className="bg-slate-50 rounded-lg px-4 py-3">
-                                    <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Sexo</p>
-                                    <p className="text-sm font-medium text-slate-700 mt-1">{paciente.sexo}</p>
+                                <div className="rounded-2xl border border-cyan-200 bg-cyan-50 px-4 py-3">
+                                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-cyan-600">Teléfono</p>
+                                    <p className="mt-1 text-sm font-semibold text-slate-900">{paciente.telefono || "-"}</p>
                                 </div>
-                                <div className="bg-slate-50 rounded-lg px-4 py-3">
-                                    <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Teléfono</p>
-                                    <p className="text-sm font-medium text-slate-700 mt-1">{paciente.telefono || '-'}</p>
+                                <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Correo</p>
+                                    <p className="mt-1 break-all text-sm font-semibold text-slate-900">{paciente.correo || "-"}</p>
                                 </div>
-                                <div className="bg-slate-50 rounded-lg px-4 py-3">
-                                    <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Correo</p>
-                                    <p className="text-sm font-medium text-slate-700 mt-1 truncate">{paciente.correo || '-'}</p>
-                                </div>
-                                <div className="bg-slate-50 rounded-lg px-4 py-3 col-span-2 sm:col-span-1">
-                                    <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Dirección</p>
-                                    <p className="text-sm font-medium text-slate-700 mt-1">{paciente.direccion || '-'}</p>
+                                <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 md:col-span-2 xl:col-span-2">
+                                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Dirección</p>
+                                    <p className="mt-1 text-sm font-semibold text-slate-900">{paciente.direccion || "-"}</p>
                                 </div>
                             </div>
                         </div>
@@ -348,38 +381,68 @@ export default function Paciente() {
                 )}
 
                 {/* Barra de acciones */}
-                <div className="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-white border border-slate-200 rounded-xl px-5 py-3.5 shadow-sm">
-                    <div className="flex items-center gap-3">
-                        <span className="text-2xl text-green-800 font-bold">Fichas registradas</span>
-                        <span className="inline-flex items-center justify-center h-8 min-w-[24px] px-2 rounded-full text-base font-bold bg-green-100 text-green-700">
-                            {listaFichas.length}
-                        </span>
+                <div className="mb-6 overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_18px_50px_rgba(15,23,42,0.08)]">
+                    <div className="border-b border-slate-100 bg-[linear-gradient(135deg,rgba(15,23,42,0.98)_0%,rgba(49,46,129,0.95)_100%)] px-5 py-4">
+                        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                            <div className="flex items-center gap-3">
+                                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10 text-white">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-violet-200">Registro clínico</p>
+                                    <h2 className="text-xl font-bold text-white">Fichas registradas</h2>
+                                </div>
+                            </div>
+                            <span className="inline-flex w-fit items-center justify-center rounded-full border border-violet-300/20 bg-white/10 px-3 py-1.5 text-sm font-bold text-white">
+                                {totalFichas} fichas
+                            </span>
+                        </div>
                     </div>
-                    <div className="flex items-center gap-2 flex-wrap">
+                    <div className="flex flex-wrap items-center gap-2 px-5 py-4">
                         <button
                             onClick={agendarPaciente}
-                            className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-white bg-gradient-to-r from-violet-600 to-purple-500 rounded-lg hover:from-violet-700 hover:to-purple-600 transition-all duration-150 shadow-sm">
+                            className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_10px_30px_rgba(79,70,229,0.28)] transition-all duration-150 hover:from-violet-700 hover:to-indigo-700">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                             </svg>
                             Agendar ahora
                         </button>
 
+
+                        <button
+                            onClick={()=> irAReceta(id_paciente)}
+                            className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-cyan-500 to-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_10px_30px_rgba(14,165,233,0.24)] transition-all duration-150 hover:from-cyan-600 hover:to-sky-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6M7 4h10a2 2 0 012 2v12a2 2 0 01-2 2H7a2 2 0 01-2-2V6a2 2 0 012-2z"/>
+                            </svg>
+                            Generar Receta Medica
+                        </button>
+                        <button
+                            className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-slate-800 to-slate-700 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_10px_30px_rgba(15,23,42,0.20)] transition-all duration-150 hover:from-slate-900 hover:to-slate-800">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14m-6 4h4a2 2 0 002-2V8a2 2 0 00-2-2H9a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                            </svg>
+                            Telemedicina
+                        </button>
+
+
+
+
+
                         <button
                             onClick={() => listarFichasClinicasPaciente(id_paciente)}
-                            className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-slate-600 bg-slate-50 border border-slate-200 rounded-lg hover:bg-slate-100 transition-all duration-150">
+                            className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-semibold text-slate-700 transition-all duration-150 hover:border-slate-300 hover:bg-slate-100">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
                             </svg>
                             Cargar Fichas
                         </button>
 
-
-
-
                         <button
                             onClick={() =>  verEvaluaciones()}
-                            className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-slate-600 bg-slate-50 border border-slate-200 rounded-lg hover:bg-slate-100 transition-all duration-150">
+                            className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-semibold text-slate-700 transition-all duration-150 hover:border-slate-300 hover:bg-slate-100">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
                             </svg>
@@ -387,7 +450,7 @@ export default function Paciente() {
                         </button>
                         <button
                             onClick={() => nuevaFichaClinica(id_paciente)}
-                            className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-white bg-gradient-to-r from-sky-600 to-cyan-500 rounded-lg hover:from-sky-700 hover:to-cyan-600 transition-all duration-150 shadow-sm">
+                            className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-cyan-500 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_10px_30px_rgba(59,130,246,0.24)] transition-all duration-150 hover:from-indigo-700 hover:to-cyan-600">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4"/>
                             </svg>
@@ -408,32 +471,32 @@ export default function Paciente() {
                         </div>
                     ) : (
                         listaFichas.map((ficha) => (
-                            <div key={ficha.id_ficha} className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200">
+                            <div key={ficha.id_ficha} className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_14px_40px_rgba(15,23,42,0.07)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_20px_48px_rgba(15,23,42,0.10)]">
 
                                 {/* Cabecera ficha */}
-                                <div className="flex flex-col gap-2 px-5 md:px-6 py-3.5 border-b border-slate-100 bg-slate-50/60">
+                                <div className="flex flex-col gap-3 border-b border-slate-100 bg-[linear-gradient(180deg,rgba(248,250,252,0.98)_0%,rgba(241,245,249,0.8)_100%)] px-5 py-4 md:px-6">
                                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                                         <div className="flex items-center gap-3">
-                                            <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-sky-100 text-sky-600">
+                                            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-violet-100 text-violet-700">
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                                                 </svg>
                                             </div>
-                                            <div className="flex items-center gap-2.5">
-                                                <span className="text-base font-semibold text-green-800">Ficha Clinica № {ficha.id_ficha}</span>
-                                                <span className="text-slate-200">|</span>
-                                                <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-sky-50 border border-sky-100">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-sky-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-2.5">
+                                                <span className="text-base font-bold text-slate-900">Ficha Clínica № {ficha.id_ficha}</span>
+                                                <span className="hidden text-slate-300 sm:inline">|</span>
+                                                <span className="inline-flex items-center gap-2 rounded-xl border border-cyan-100 bg-cyan-50 px-3 py-1.5">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-cyan-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                                         <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                                     </svg>
-                                                    <span className="text-sm font-semibold text-sky-700">{formatearFecha(ficha.fechaConsulta)}</span>
+                                                    <span className="text-sm font-semibold text-cyan-800">{formatearFecha(ficha.fechaConsulta)}</span>
                                                 </span>
                                             </div>
                                         </div>
-                                        <div className="flex items-center gap-2 ml-11 sm:ml-0">
+                                        <div className="ml-[52px] flex items-center gap-2 sm:ml-0">
                                         <button
                                             onClick={() => editarFichaClinica(ficha.id_ficha)}
-                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-sky-700 bg-sky-50 border border-sky-200 rounded-lg hover:bg-sky-100 transition-colors duration-150">
+                                            className="inline-flex items-center gap-1.5 rounded-xl border border-violet-200 bg-violet-50 px-3 py-1.5 text-xs font-semibold text-violet-700 transition-colors duration-150 hover:bg-violet-100">
                                             <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                             </svg>
@@ -441,7 +504,7 @@ export default function Paciente() {
                                         </button>
                                         <button
                                             onClick={() => eliminarFicha(ficha.id_ficha)}
-                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 transition-colors duration-150">
+                                            className="inline-flex items-center gap-1.5 rounded-xl border border-rose-200 bg-rose-50 px-3 py-1.5 text-xs font-semibold text-rose-700 transition-colors duration-150 hover:bg-rose-100">
                                             <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                             </svg>
@@ -450,12 +513,12 @@ export default function Paciente() {
                                         </div>
                                     </div>
                                     {/* Chips: Motivo + Profesional */}
-                                    <div className="flex flex-wrap items-center gap-2 ml-11 sm:ml-0">
-                                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-sky-50 border border-sky-100 text-xs font-medium text-sky-700">
-                                            <span className="text-sky-400">Motivo Consulta:</span> {ficha.tipoAtencion || '-'}
+                                    <div className="ml-[52px] flex flex-wrap items-center gap-2 sm:ml-0">
+                                        <span className="inline-flex items-center gap-1 rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700">
+                                            <span className="text-violet-400">Motivo:</span> {ficha.tipoAtencion || '-'}
                                         </span>
-                                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-cyan-50 border border-cyan-100 text-xs font-medium text-cyan-700">
-                                            <span className="text-cyan-400">Profesional:</span> {ficha.observaciones || '-'}
+                                        <span className="inline-flex items-center gap-1 rounded-full border border-cyan-200 bg-cyan-50 px-3 py-1 text-xs font-semibold text-cyan-700">
+                                            <span className="text-cyan-500">Profesional:</span> {ficha.observaciones || '-'}
                                         </span>
                                     </div>
                                 </div>
@@ -465,20 +528,20 @@ export default function Paciente() {
 
                                     {/* Diagnóstico e Indicaciones */}
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-                                        <div className="flex flex-col gap-0.5 px-3 py-2.5 bg-slate-50 rounded-lg border border-slate-100">
-                                            <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Diagnóstico</span>
-                                            <span className="text-sm font-medium text-slate-700">{ficha.diagnostico || '-'}</span>
+                                        <div className="flex flex-col gap-1 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                                            <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Diagnóstico</span>
+                                            <span className="text-sm font-medium text-slate-800">{ficha.diagnostico || '-'}</span>
                                         </div>
-                                        <div className="flex flex-col gap-0.5 px-3 py-2.5 bg-slate-50 rounded-lg border border-slate-100">
-                                            <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Indicaciones</span>
-                                            <span className="text-sm font-medium text-slate-700">{ficha.indicaciones || '-'}</span>
+                                        <div className="flex flex-col gap-1 rounded-2xl border border-cyan-200 bg-cyan-50/70 px-4 py-3">
+                                            <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-cyan-600">Indicaciones</span>
+                                            <span className="text-sm font-medium text-slate-800">{ficha.indicaciones || '-'}</span>
                                         </div>
                                     </div>
 
                                     {/* Anotación clínica */}
                                     <div className="border-t border-slate-100 pt-4">
-                                        <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wider mb-2">Anotación Clínica</p>
-                                        <p className="text-sm text-slate-600 leading-relaxed whitespace-pre-line bg-slate-50/50 rounded-lg px-4 py-3 border border-slate-100">
+                                        <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Anotación clínica</p>
+                                        <p className="whitespace-pre-line rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm leading-relaxed text-slate-700">
                                             {ficha.anotacionConsulta || 'Sin anotaciones registradas.'}
                                         </p>
                                     </div>
