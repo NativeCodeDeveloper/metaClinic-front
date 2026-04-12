@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 const contactCards = [
   {
     title: "Ubicación",
-    value: "12 de Febrero 926, Pitrufquén",
+    value: "12 de Febrero 926, Pitrufquén, Santiago, Chile",
     href: null,
     icon: MapPin,
   },

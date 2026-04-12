@@ -9,21 +9,21 @@ const services = [
     title: "Consulta inicial metabólica",
     desc: "Evaluación médica completa con anamnesis estructurada y determinación de elegibilidad para el tratamiento.",
     icon: <Stethoscope className="h-6 w-6" />,
-    img: "/fondo2.png",
+    img: "/logosolo.png",
   },
   {
     id: "tratamiento",
     title: "Tratamiento con GLP-1",
     desc: "Indicación y seguimiento de terapias, con titulación progresiva y control de efectos adversos.",
     icon: <Pill className="h-6 w-6" />,
-    img: "/fondo1.png",
+    img: "/logosolo.png",
   },
   {
     id: "seguimiento",
     title: "Seguimiento semanal",
     desc: "Monitoreo digital con médico tratante para evaluar evolución clínica, adherencia y tolerancia.",
     icon: <CalendarClock className="h-6 w-6" />,
-    img: "/fondo2.png",
+    img: "/logosolo.png",
   },
 ];
 

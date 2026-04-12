@@ -42,12 +42,12 @@ export default function Navbar() {
         <Link href="/" aria-label="Ir al inicio" className="group flex shrink-0 items-center gap-3">
           <div className="relative shrink-0 transition-transform duration-300 group-hover:scale-105">
             <Image
-              src="/logofull.png"
+              src="/logosolosf.png"
               alt="Logo Metaclinic"
               width={160}
               height={50}
               priority
-              className="h-9 w-auto object-contain sm:h-10"
+              className="h-10 w-auto object-contain sm:h-12"
             />
           </div>
         </Link>

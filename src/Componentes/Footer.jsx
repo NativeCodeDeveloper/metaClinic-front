@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Facebook, Instagram, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 
 const footerLinks = [
@@ -39,8 +40,8 @@ export default function FooterPremiumMedico() {
 
       {/* Background Watermark */}
       <div className="absolute inset-x-0 bottom-0 flex justify-center pointer-events-none select-none overflow-hidden opacity-5 z-0">
-        <span className="text-[18vw] font-black leading-none text-white whitespace-nowrap translate-y-1/4">
-          METACLINIC
+        <span className="text-[16vw] font-black leading-none text-white whitespace-nowrap translate-y-1/4">
+          METABOCARE
         </span>
       </div>
 
@@ -49,14 +50,19 @@ export default function FooterPremiumMedico() {
 
           {/* Brand Info */}
           <div className="lg:col-span-4">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="h-10 w-10 bg-indigo-600 rounded-lg flex items-center justify-center font-bold text-white text-xl">
-                M
+            {/* Brand / Logo */}
+            <Link href="/" aria-label="Ir al inicio" className="group flex shrink-0 items-center gap-3 mb-6">
+              <div className="relative shrink-0 transition-transform duration-300 group-hover:scale-105">
+                <Image
+                  src="/logonombre.png"
+                  alt="Logo Metaclinic"
+                  width={165}
+                  height={65}
+                  priority
+                  className="h-12 w-auto object-contain sm:h-18"
+                />
               </div>
-              <span className="text-2xl font-bold tracking-tight text-white">
-                Metaclinic
-              </span>
-            </div>
+            </Link>
 
             <p className="text-slate-400 leading-relaxed max-w-sm mb-8">
               Transformando la salud metabólica a través de la ciencia, la empatía y la innovación clínica para resultados sostenibles.
@@ -72,13 +78,13 @@ export default function FooterPremiumMedico() {
                 contacto@metaclinic.cl
               </a>
               <a
-                href="https://maps.google.com/?q=12+de+Febrero+926,+Pitrufquen,+Chile"
+                href="https://maps.google.com/?q=Santiago,+Chile"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-start gap-3 transition hover:text-indigo-400"
               >
                 <MapPin className="h-5 w-5 shrink-0 text-indigo-500" />
-                12 de Febrero 926, Pitrufquén, Novena Región
+                Santiago, Chile
               </a>
             </div>
           </div>
@@ -144,7 +150,7 @@ export default function FooterPremiumMedico() {
               <div className="rounded-2xl overflow-hidden h-32 w-full mt-4">
                 <iframe
                   title="Mapa ubicacion Metaclinic"
-                  src="https://www.google.com/maps?q=12%20de%20Febrero%20926%2C%20Pitrufquen%2C%20Chile&output=embed"
+                  src="https://www.google.com/maps?q=Santiago,+Chile&output=embed"
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
                   className="h-full w-full grayscale opacity-70"

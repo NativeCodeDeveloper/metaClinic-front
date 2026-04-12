@@ -41,7 +41,7 @@ export default function Portada() {
           {/* Left Content */}
           <div className="max-w-2xl">
             <div className="flex items-center gap-4 mb-6">
-              <div className="h-px w-10 bg-indigo-600"></div>
+              
               <span className="text-sm font-semibold tracking-widest text-indigo-600 uppercase">
                 Tratamiento Médico Metabólico
               </span>
@@ -79,7 +79,7 @@ export default function Portada() {
               <div className="absolute right-0 top-0 h-[85%] w-[75%] overflow-hidden rounded-[2rem] bg-slate-200">
                 {/* Fallback image if design hasn't got distinct metamedical photos. Using placeholder from existing or standard */}
                 <Image
-                  src="/fondo1.png"
+                  src="/corazon.webp"
                   alt="Tratamiento Médico"
                   layout="fill"
                   objectFit="cover"
@@ -88,12 +88,13 @@ export default function Portada() {
               </div>
 
               {/* Top left horizontal rectangle image */}
-              <div className="absolute left-0 top-0 h-[25%] w-[45%] overflow-hidden rounded-3xl border-4 border-slate-50 bg-slate-300">
+              <div className="absolute left-0 top-0 h-[25%] w-[55%] overflow-hidden rounded-3xl border-4 border-slate-50 bg-slate-300">
                 <Image
-                  src="/fondo2.png"
+                  src="/metabologo.png"
                   alt="Consulta"
-                  layout="fill"
-                  objectFit="cover"
+                  width={400}
+                  height={200}
+                  className="w-full h-full object-cover"
                 />
               </div>
 
