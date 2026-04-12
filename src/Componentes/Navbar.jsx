@@ -34,8 +34,8 @@ export default function Navbar() {
         className={[
           "pointer-events-auto flex w-full max-w-6xl items-center justify-between rounded-full border transition-all duration-500",
           scrolled
-            ? "bg-white/85 backdrop-blur-2xl border-slate-200/60 shadow-xl shadow-slate-200/20 py-2.5 px-4 sm:px-6"
-            : "bg-white/40 backdrop-blur-md border-transparent shadow-none py-3.5 px-4 sm:px-6"
+            ? "bg-white/70 backdrop-blur-xl border-slate-200/40 shadow-md shadow-slate-200/10 py-2.5 px-4 sm:px-6"
+            : "bg-transparent backdrop-blur-sm border-transparent shadow-none py-3.5 px-4 sm:px-6"
         ].join(" ")}
       >
         {/* Brand / Logo */}

@@ -10,30 +10,30 @@ const inter = Inter({
 });
 
 export const metadataBase = new URL(
-  process.env.NEXT_PUBLIC_SITE_URL || "https://www.centrointegralessenza.cl"
+  process.env.NEXT_PUBLIC_SITE_URL || "https://www.metaclinic.cl"
 );
 
 export const metadata = {
   title: {
-    default: "Centro Integral ESSENZA | Salud, Bienestar y Estética",
-    template: "%s | Centro Integral ESSENZA",
+    default: "Metaclinic | Tratamiento Médico Metabólico en Santiago",
+    template: "%s | Metaclinic",
   },
   description:
-    "Centro Integral ESSENZA en Pitrufquén. Salud integral con medicina, psicología, nutrición, fonoaudiología, estética y terapias complementarias.",
+    "Metaclinic: Transformando la salud metabólica a través de la ciencia, empatía e innovación clínica. Evaluación médica, terapias GLP-1 y acompañamiento continuo en Santiago, Chile.",
   keywords: [
-    "Centro Integral ESSENZA",
-    "salud integral",
-    "bienestar",
-    "psicologia",
-    "medicina general",
-    "nutricion",
-    "fonoaudiologia",
-    "cosmetologia",
-    "masoterapia",
-    "Pitrufquen",
+    "Metaclinic",
+    "tratamiento metabólico",
+    "GLP-1",
+    "salud metabólica",
+    "medicina clínica",
+    "control de peso",
+    "Santiago",
+    "Chile",
+    "tratamiento a medida",
+    "consulta médica",
   ],
-  authors: [{ name: "Centro Integral ESSENZA", url: metadataBase.href }],
-  publisher: "Centro Integral ESSENZA",
+  authors: [{ name: "Metaclinic", url: metadataBase.href }],
+  publisher: "Metaclinic",
   robots: {
     index: true,
     follow: true,
@@ -45,24 +45,33 @@ export const metadata = {
     canonical: metadataBase.href,
   },
   icons: {
-    icon: "/logo1.png",
-    shortcut: "/logo1.png",
-    apple: "/logo1.png",
+    icon: "/logosolo.png",
+    shortcut: "/logosolo.png",
+    apple: "/logosolo.png",
   },
   openGraph: {
-    title: "Centro Integral ESSENZA | Salud, Bienestar y Estética",
+    title: "Metaclinic | Tratamiento Médico Metabólico en Santiago",
     description:
-      "Un espacio diseñado para el bienestar completo, con atención profesional, cercana y personalizada.",
+      "Transformando la salud metabólica a través de la ciencia, la empatía y la innovación clínica para resultados sostenibles.",
     url: metadataBase.href,
-    siteName: "Centro Integral ESSENZA",
+    siteName: "Metaclinic",
     locale: "es_CL",
     type: "website",
+    images: [
+      {
+        url: "/logonombre.png",
+        width: 1200,
+        height: 630,
+        alt: "Metaclinic",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Centro Integral ESSENZA",
+    title: "Metaclinic",
     description:
-      "Psicología, medicina, estética y bienestar integral en Pitrufquén.",
+      "Evaluación médica, terapias farmacológicas avanzadas (GLP-1) y acompañamiento continuo para control metabólico real.",
+    image: "/logonombre.png",
   },
 };
 
