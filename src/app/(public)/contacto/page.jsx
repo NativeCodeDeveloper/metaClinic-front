@@ -90,7 +90,7 @@ export default function ContactoPage() {
               Contáctanos
             </p>
             <h1 className="mt-4 text-4xl font-bold leading-tight sm:text-5xl">
-              Inicia tu evaluación en Metaclinic.
+              Inicia tu evaluación en MetaboCare.
             </h1>
             <p className="mt-6 max-w-xl text-indigo-100 text-lg">
               Nuestro equipo clínico está listo para guiarte. Indica tus datos para agendar o realizar consultas.
