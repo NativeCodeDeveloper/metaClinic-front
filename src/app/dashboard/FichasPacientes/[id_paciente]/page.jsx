@@ -23,6 +23,8 @@ export default function Paciente() {
     const API = process.env.NEXT_PUBLIC_API_URL;
     const router = useRouter();
     const [mostrarFormulario, setMostrarFormulario] = useState(false);
+    const [mostrarTelemedicina, setMostrarTelemedicina] = useState(false);
+    const [linkTelemedicina, setLinkTelemedicina] = useState("");
 
     function nuevaFichaClinica() {
         router.push(`/dashboard/NuevaFicha/${id_paciente}`);
@@ -268,6 +270,71 @@ export default function Paciente() {
         router.push(`/dashboard/recetaPacientes/${id_paciente}`);
     }
 
+    async function enviarLinkTelemedicina() {
+        const paciente = detallePaciente[0];
+
+        if (!paciente) {
+            return toast.error("No hay datos del paciente para enviar el enlace.");
+        }
+
+        if (!linkTelemedicina.trim()) {
+            return toast.error("Debe ingresar un link de videollamada.");
+        }
+
+        if (!paciente.correo) {
+            return toast.error("El paciente no tiene correo registrado.");
+        }
+
+        const linkNormalizado = linkTelemedicina.trim();
+
+        if (!/^https?:\/\//i.test(linkNormalizado)) {
+            return toast.error("El link debe comenzar con http:// o https://");
+        }
+
+        const asunto = "Acceso a telemedicina";
+        const mensaje = [
+            `Hola ${paciente.nombre || "paciente"} ${paciente.apellido || ""},`,
+            "",
+            "Te compartimos el enlace para tu atención por telemedicina:",
+            linkNormalizado,
+            "",
+            "Por favor ingresa a la sala unos minutos antes de la hora acordada.",
+            "",
+            "Si tienes algún inconveniente para acceder, responde este correo."
+        ].join("\n");
+
+        try {
+            const res = await fetch(`${API}/correo/seguimiento`, {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    asunto,
+                    email: paciente.correo,
+                    mensaje
+                }),
+                mode: "cors"
+            });
+
+            if (!res.ok) {
+                return toast.error("No fue posible enviar el correo de telemedicina.");
+            }
+
+            const respuestaBackend = await res.json();
+
+            if (respuestaBackend.message === true) {
+                return toast.success("Link de telemedicina enviado al paciente.");
+            }
+
+            return toast.error("El servidor no pudo enviar el enlace al paciente.");
+        } catch (error) {
+            console.log(error);
+            return toast.error("Ocurrió un problema al enviar el enlace de telemedicina.");
+        }
+    }
+
     const pacienteActual = detallePaciente[0];
     const totalFichas = listaFichas.length;
 
@@ -420,6 +487,7 @@ export default function Paciente() {
                             Generar Receta Medica
                         </button>
                         <button
+                            onClick={() => setMostrarTelemedicina((estadoActual) => !estadoActual)}
                             className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-slate-800 to-slate-700 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_10px_30px_rgba(15,23,42,0.20)] transition-all duration-150 hover:from-slate-900 hover:to-slate-800">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14m-6 4h4a2 2 0 002-2V8a2 2 0 00-2-2H9a2 2 0 00-2 2v8a2 2 0 002 2z"/>
@@ -458,6 +526,60 @@ export default function Paciente() {
                         </button>
                     </div>
                 </div>
+
+                {mostrarTelemedicina ? (
+                    <div className="mb-6 overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_14px_40px_rgba(15,23,42,0.07)]">
+                        <div className="border-b border-slate-100 bg-slate-50/70 px-5 py-4">
+                            <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-700">Enlace de telemedicina</h3>
+                            <p className="mt-1 text-sm text-slate-500">Pega aquí un link de Google Meet, Zoom o cualquier plataforma de consulta remota y envíalo por correo al paciente.</p>
+                        </div>
+                        <div className="space-y-4 p-5">
+                            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                                <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Paciente</p>
+                                    <p className="mt-1 text-sm font-semibold text-slate-900">
+                                        {pacienteActual ? `${pacienteActual.nombre} ${pacienteActual.apellido}` : "-"}
+                                    </p>
+                                </div>
+                                <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Correo destino</p>
+                                    <p className="mt-1 break-all text-sm font-semibold text-slate-900">{pacienteActual?.correo || "-"}</p>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="mb-1.5 block text-sm font-medium text-slate-700">Link de videollamada</label>
+                                <input
+                                    type="url"
+                                    value={linkTelemedicina}
+                                    onChange={(e) => setLinkTelemedicina(e.target.value)}
+                                    placeholder="Ej: https://meet.google.com/abc-defg-hij"
+                                    className="flex h-11 w-full rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm text-slate-900 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-100"
+                                />
+                            </div>
+
+                            <div className="flex flex-wrap gap-2">
+                                <button
+                                    type="button"
+                                    onClick={enviarLinkTelemedicina}
+                                    className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-sky-600 to-cyan-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-150 hover:from-sky-700 hover:to-cyan-600"
+                                >
+                                    Enviar al paciente
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setLinkTelemedicina("");
+                                        setMostrarTelemedicina(false);
+                                    }}
+                                    className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition-all duration-150 hover:bg-slate-50"
+                                >
+                                    Cancelar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                ) : null}
 
                 {/* Listado de fichas */}
                 <div className="space-y-4">
