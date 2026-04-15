@@ -142,186 +142,211 @@ export default function NuevaFicha() {
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-sky-50/30">
             <ToasterClient/>
 
-            <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
-
-                {/* Header */}
-                <div className="mb-8">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8 md:py-10">
+                <div className="mb-8 rounded-[28px] border border-slate-200/80 bg-white/90 p-5 shadow-[0_20px_60px_rgba(15,23,42,0.08)] backdrop-blur-sm">
+                    <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
                         <div>
-                            <h1 className="text-2xl md:text-3xl font-bold text-slate-800 tracking-tight">
+                            <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.22em] text-sky-600">Ficha clínica</p>
+                            <h1 className="text-2xl font-bold tracking-tight text-slate-900 md:text-3xl">
                                 Nueva Ficha Clínica
                             </h1>
-                            <p className="text-sm text-slate-500 mt-1">
-                                Complete los campos para registrar la atención del paciente
+                            <p className="mt-2 max-w-2xl text-sm text-slate-600">
+                                Registra la atención del paciente con una presentación más clara, ordenada y consistente con el dashboard.
                             </p>
                         </div>
 
-                        <div className="flex items-center gap-2">
-                            <Link href={"/dashboard/FichaClinica"}>
-                                <button className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 hover:border-slate-300 transition-all duration-150 shadow-sm">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-                                    </svg>
-                                    <span className="hidden sm:inline">Volver</span>
-                                </button>
-                            </Link>
-
-                            {dataPaciente.map((ficha, index) => (
-                                <ShadcnButton
-                                    key={index}
-                                    funcion={() => retroceder(ficha.id_paciente)}
-                                    nombre={"Fichas"}
-                                />
-                            ))}
+                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                            <div className="rounded-2xl border border-sky-200 bg-sky-50/80 px-4 py-3">
+                                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-sky-600">Paciente</p>
+                                <p className="mt-1 text-sm font-semibold text-slate-900">
+                                    {dataPaciente[0] ? `${dataPaciente[0].nombre} ${dataPaciente[0].apellido}` : "Cargando..."}
+                                </p>
+                            </div>
+                            <div className="rounded-2xl border border-cyan-200 bg-cyan-50/80 px-4 py-3">
+                                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-cyan-600">Consulta</p>
+                                <p className="mt-1 text-sm font-semibold text-slate-900">{fechaConsulta || "Sin fecha"}</p>
+                            </div>
+                            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Estado</p>
+                                <p className="mt-1 text-sm font-semibold text-slate-900">Borrador</p>
+                            </div>
                         </div>
+                    </div>
+
+                    <div className="mt-5 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+                        <Link href={"/dashboard/FichaClinica"}>
+                            <button className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition-all duration-150 hover:bg-slate-50">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                                </svg>
+                                Volver
+                            </button>
+                        </Link>
+
+                        {dataPaciente.map((ficha, index) => (
+                            <ShadcnButton
+                                key={index}
+                                funcion={() => retroceder(ficha.id_paciente)}
+                                nombre={"Fichas"}
+                            />
+                        ))}
                     </div>
                 </div>
 
-                {/* Tarjeta datos paciente */}
                 {dataPaciente.map((paciente) => (
                     <div
                         key={paciente.id_paciente}
-                        className="mb-8 bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden"
+                        className="mb-6 overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-sm"
                     >
-                        <div className="border-b border-slate-100 bg-gradient-to-r from-sky-600 to-cyan-500 px-5 py-3">
-                            <h2 className="text-sm font-semibold text-white tracking-wide uppercase">
-                                Datos del Paciente
-                            </h2>
+                        <div className="border-b border-slate-100 bg-[linear-gradient(135deg,rgba(15,23,42,0.98)_0%,rgba(8,145,178,0.94)_100%)] px-5 py-4">
+                            <div className="flex flex-col gap-1">
+                                <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-sky-200">Paciente</p>
+                                <h2 className="text-lg font-bold text-white">Datos del paciente</h2>
+                            </div>
                         </div>
-                        <div className="p-5 md:p-6">
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                                <div className="flex flex-col gap-1">
-                                    <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">ID</span>
-                                    <span className="text-sm font-semibold text-sky-600">#{paciente.id_paciente}</span>
-                                </div>
-                                <div className="flex flex-col gap-1">
-                                    <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">Nombre</span>
-                                    <span className="text-sm font-medium text-slate-800">{paciente.nombre}</span>
-                                </div>
-                                <div className="flex flex-col gap-1">
-                                    <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">Apellido</span>
-                                    <span className="text-sm font-medium text-slate-800">{paciente.apellido}</span>
-                                </div>
-                                <div className="flex flex-col gap-1">
-                                    <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">RUT</span>
-                                    <span className="text-sm font-medium text-slate-800">{paciente.rut}</span>
-                                </div>
+
+                        <div className="grid grid-cols-1 gap-3 p-5 sm:grid-cols-2 xl:grid-cols-4">
+                            <div className="rounded-2xl border border-sky-200 bg-sky-50/80 px-4 py-3">
+                                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-sky-600">ID paciente</p>
+                                <p className="mt-1 text-sm font-semibold text-slate-900">#{paciente.id_paciente}</p>
+                            </div>
+                            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Nombre</p>
+                                <p className="mt-1 text-sm font-semibold text-slate-900">{paciente.nombre}</p>
+                            </div>
+                            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Apellido</p>
+                                <p className="mt-1 text-sm font-semibold text-slate-900">{paciente.apellido}</p>
+                            </div>
+                            <div className="rounded-2xl border border-cyan-200 bg-cyan-50/80 px-4 py-3">
+                                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-cyan-600">RUT</p>
+                                <p className="mt-1 text-sm font-semibold text-slate-900">{paciente.rut}</p>
                             </div>
                         </div>
                     </div>
                 ))}
 
-                {/* Formulario principal */}
-                <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-
-                    {/* Sección: Información General */}
-                    <div className="border-b border-slate-100 bg-slate-50/50 px-5 py-3">
-                        <h2 className="text-sm font-semibold text-slate-700 tracking-wide uppercase">
-                            Información de la Consulta
-                        </h2>
-                    </div>
-
-                    <div className="p-5 md:p-6 space-y-5">
-
-                        {/* Fecha */}
-                        <div className="max-w-xs">
-                            <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                                Fecha de Consulta
-                            </label>
-                            <ShadcnDatePicker
-                                className="border-slate-300 focus:border-sky-500"
-                                label=""
-                                value={fechaConsulta}
-                                onChange={(fecha) => setFechaConsulta(fecha)}
-                            />
-                        </div>
-
-                        {/* Campos en grid */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                                    Motivo Consulta
-                                </label>
-                                <p className="text-xs text-slate-400 mb-2">Motivo principal de la visita</p>
-                                <ShadcnInput
-                                    value={tipoAtencion}
-                                    placeholder="Ej: Seguimiento, Tratamiento, Evaluación..."
-                                    onChange={(e) => setTipoAtencion(e.target.value)}
-                                />
+                <div className="grid grid-cols-1 gap-6 xl:grid-cols-5">
+                    <div className="space-y-6 xl:col-span-3">
+                        <div className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-sm">
+                            <div className="border-b border-slate-100 bg-slate-50/60 px-5 py-3">
+                                <div className="flex flex-col gap-1">
+                                    <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-700">
+                                        Información de la consulta
+                                    </h2>
+                                    <p className="text-xs text-slate-500">
+                                        Fecha, motivo y profesional responsable de la atención.
+                                    </p>
+                                </div>
                             </div>
 
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                                    Profesional
-                                </label>
-                                <p className="text-xs text-slate-400 mb-2">Profesional a cargo de la atención</p>
-                                <ShadcnInput
-                                    value={observacionesPrecio}
-                                    placeholder="Ej: Dra. Andrea Moran"
-                                    onChange={(e) => setObservacionesPrecio(e.target.value)}
+                            <div className="space-y-5 p-5 md:p-6">
+                                <div className="max-w-sm">
+                                    <label className="mb-1.5 block text-sm font-medium text-slate-700">
+                                        Fecha de Consulta
+                                    </label>
+                                    <p className="mb-2 text-xs text-slate-400">Selecciona la fecha correspondiente al registro clínico</p>
+                                    <ShadcnDatePicker
+                                        className="border-slate-300 focus:border-sky-500"
+                                        label=""
+                                        value={fechaConsulta}
+                                        onChange={(fecha) => setFechaConsulta(fecha)}
+                                    />
+                                </div>
+
+                                <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                                    <div>
+                                        <label className="mb-1.5 block text-sm font-medium text-slate-700">
+                                            Motivo Consulta
+                                        </label>
+                                        <p className="mb-2 text-xs text-slate-400">Motivo principal de la visita</p>
+                                        <ShadcnInput
+                                            value={tipoAtencion}
+                                            placeholder="Ej: Seguimiento, Tratamiento, Evaluación..."
+                                            onChange={(e) => setTipoAtencion(e.target.value)}
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="mb-1.5 block text-sm font-medium text-slate-700">
+                                            Profesional
+                                        </label>
+                                        <p className="mb-2 text-xs text-slate-400">Profesional a cargo de la atención</p>
+                                        <ShadcnInput
+                                            value={observacionesPrecio}
+                                            placeholder="Ej: Dra. Andrea Moran"
+                                            onChange={(e) => setObservacionesPrecio(e.target.value)}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-sm">
+                            <div className="border-b border-slate-100 bg-slate-50/60 px-5 py-3">
+                                <div className="flex flex-col gap-1">
+                                    <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-700">
+                                        Anotaciones clínicas
+                                    </h2>
+                                    <p className="text-xs text-slate-500">
+                                        Registra hallazgos, procedimiento realizado, materiales indicados, evolución y plan de control.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="p-5 md:p-6">
+                                <Textarea
+                                    className="min-h-[220px] resize-none border-slate-300 text-sm leading-6 focus:border-sky-500 focus:ring-sky-500/20"
+                                    value={anotacionConsulta}
+                                    onChange={(e) => setAnotacionConsulta(e.target.value)}
+                                    placeholder="Ej: Odontograma: 3.6 caries O; se realiza resina; anestesia local; se indican cuidados y control en 7 días."
                                 />
                             </div>
                         </div>
                     </div>
 
-                    {/* Sección: Diagnóstico e Indicaciones */}
-                    <div className="border-t border-b border-slate-100 bg-slate-50/50 px-5 py-3">
-                        <h2 className="text-sm font-semibold text-slate-700 tracking-wide uppercase">
-                            Diagnóstico e Indicaciones
-                        </h2>
-                    </div>
+                    <div className="space-y-6 xl:col-span-2">
+                        <div className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-sm">
+                            <div className="border-b border-slate-100 bg-[linear-gradient(135deg,rgba(15,23,42,0.98)_0%,rgba(49,46,129,0.95)_100%)] px-5 py-4">
+                                <div className="flex flex-col gap-1">
+                                    <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-violet-200">Registro clínico</p>
+                                    <h2 className="text-lg font-bold text-white">Diagnóstico e indicaciones</h2>
+                                </div>
+                            </div>
 
-                    <div className="p-5 md:p-6 space-y-5">
-                        <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                                Diagnóstico
-                            </label>
-                            <p className="text-xs text-slate-400 mb-2">Diagnóstico clínico del paciente</p>
-                            <ShadcnInput
-                                value={diagnostico}
-                                placeholder="Ej: Caries dental activa en molar 3.6 (lesión oclusal)"
-                                onChange={(e) => setDiagnostico(e.target.value)}
-                            />
+                            <div className="space-y-5 p-5">
+                                <div>
+                                    <label className="mb-1.5 block text-sm font-medium text-slate-700">
+                                        Diagnóstico
+                                    </label>
+                                    <p className="mb-2 text-xs text-slate-400">Diagnóstico clínico del paciente</p>
+                                    <ShadcnInput
+                                        value={diagnostico}
+                                        placeholder="Ej: Caries dental activa en molar 3.6 (lesión oclusal)"
+                                        onChange={(e) => setDiagnostico(e.target.value)}
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="mb-1.5 block text-sm font-medium text-slate-700">
+                                        Indicaciones
+                                    </label>
+                                    <p className="mb-2 text-xs text-slate-400">Indicaciones post-atención para el paciente</p>
+                                    <Textarea
+                                        className="min-h-[160px] resize-none border-slate-300 text-sm leading-6 focus:border-sky-500 focus:ring-sky-500/20"
+                                        value={indicaciones}
+                                        onChange={(e) => setIndicaciones(e.target.value)}
+                                        placeholder="Ej: Mantener higiene oral estricta: cepillado suave 3 veces al día + uso de hilo dental nocturno."
+                                    />
+                                </div>
+                            </div>
                         </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                                Indicaciones
-                            </label>
-                            <p className="text-xs text-slate-400 mb-2">Indicaciones post-atención para el paciente</p>
-                            <Textarea
-                                className="min-h-[100px] resize-none border-slate-300 focus:border-sky-500 focus:ring-sky-500/20"
-                                value={indicaciones}
-                                onChange={(e) => setIndicaciones(e.target.value)}
-                                placeholder="Ej: Mantener higiene oral estricta: cepillado suave 3 veces al día + uso de hilo dental nocturno."
-                            />
-                        </div>
-                    </div>
-
-                    {/* Sección: Anotaciones Clínicas */}
-                    <div className="border-t border-b border-slate-100 bg-slate-50/50 px-5 py-3">
-                        <h2 className="text-sm font-semibold text-slate-700 tracking-wide uppercase">
-                            Anotaciones Clínicas
-                        </h2>
-                    </div>
-
-                    <div className="p-5 md:p-6">
-                        <p className="text-xs text-slate-400 mb-3">
-                            Registra hallazgos, procedimiento realizado, materiales/medicación indicada, evolución y plan de control.
-                        </p>
-                        <Textarea
-                            className="min-h-[140px] resize-none border-slate-300 focus:border-sky-500 focus:ring-sky-500/20"
-                            value={anotacionConsulta}
-                            onChange={(e) => setAnotacionConsulta(e.target.value)}
-                            placeholder="Ej: Odontograma: 3.6 caries O; se realiza resina; anestesia local; se indican cuidados y control en 7 días."
-                        />
                     </div>
                 </div>
 
-                {/* Botón de acción */}
-                <div className="mt-8 flex flex-col-reverse sm:flex-row justify-end gap-3">
+                <div className="mt-8 flex flex-col-reverse justify-end gap-3 border-t border-slate-200/80 pt-6 sm:flex-row">
                     <Link href={"/dashboard/FichaClinica"}>
-                        <button className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 text-sm font-medium text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 hover:border-slate-300 transition-all duration-150 shadow-sm">
+                        <button className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-6 py-2.5 text-sm font-medium text-slate-700 transition-all duration-150 hover:bg-slate-50 sm:w-auto">
                             Cancelar
                         </button>
                     </Link>
@@ -341,7 +366,7 @@ export default function NuevaFicha() {
                             fechaConsulta,
                             consentimientoFirmado
                         )}
-                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-sky-600 to-cyan-500 rounded-lg hover:from-sky-700 hover:to-cyan-600 transition-all duration-150 shadow-md hover:shadow-lg"
+                        className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-sky-600 to-cyan-500 px-6 py-2.5 text-sm font-semibold text-white shadow-md transition-all duration-150 hover:from-sky-700 hover:to-cyan-600 sm:w-auto"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -349,7 +374,6 @@ export default function NuevaFicha() {
                         Guardar Ficha Clínica
                     </button>
                 </div>
-
             </div>
         </div>
     );
