@@ -124,6 +124,8 @@ const [id_profesional, setId_profesional] = useState("");
                     setHoraFinalizacion("");
                     await verTodosLosBloqueos();
                     return toast.success('Se ha ingresado con exito el bloqueo al sistema. ')
+                }else if (respuestaBackend.message === "sindisponibilidad") {
+                    return toast.error("Ya existe un bloqueo que se cruza con ese rango horario.");
                 }else {
                     return toast.error("No se ha podido insertar bloqueo al sistema. Intente mas tarde.")
                 }

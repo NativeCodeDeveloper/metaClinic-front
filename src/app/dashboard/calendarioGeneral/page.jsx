@@ -42,24 +42,25 @@ export default function Calendario() {
         style.textContent = `
             /* Estilos para eventos en vista mes */
             .rbc-month-view .rbc-event {
-                min-height: 28px !important;
+                min-height: 0 !important;
                 height: auto !important;
-                padding: 6px 8px !important;
-                line-height: 1.3 !important;
+                padding: 2px 3px !important;
+                line-height: 1.1 !important;
                 white-space: normal !important;
                 overflow: visible !important;
                 word-break: break-word !important;
+                font-size: 40% !important;
             }
             
             /* Estilos para eventos en vista semana y día */
             .rbc-time-view .rbc-event {
-                min-height: 30px !important;
-                height: auto !important;
-                padding: 6px 8px !important;
-                line-height: 1.3 !important;
+                min-height: 0 !important;
+                padding: 1px 2px !important;
+                line-height: 1.1 !important;
                 white-space: normal !important;
-                overflow: visible !important;
+                overflow: hidden !important;
                 word-break: break-word !important;
+                font-size: 40% !important;
             }
             
             /* Aumentar altura de las celdas del mes para que quepan los nombres */
@@ -78,6 +79,32 @@ export default function Calendario() {
                 white-space: normal !important;
                 overflow: visible !important;
                 word-break: break-word !important;
+                font-size: 40% !important;
+            }
+
+            .rbc-event-label {
+                display: none !important;
+            }
+
+            .rbc-background-event {
+                background-color: rgba(107, 114, 128, 0.28) !important;
+                border: 1px solid rgba(107, 114, 128, 0.38) !important;
+                border-left: 4px solid rgba(71, 85, 105, 0.95) !important;
+                border-radius: 0 !important;
+                box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16) !important;
+            }
+
+            .rbc-event {
+                border-radius: 0 !important;
+            }
+
+            .rbc-toolbar,
+            .rbc-header,
+            .rbc-time-gutter,
+            .rbc-agenda-view,
+            .rbc-agenda-time-cell,
+            .rbc-agenda-date-cell {
+                font-size: 10px !important;
             }
         `;
         document.head.appendChild(style);
@@ -108,6 +135,7 @@ export default function Calendario() {
     const [dataBloqueos, setDataBloqueos] = useState([]);
     const [listaProfesionales, setListaProfesionales] = useState([]);
     const [id_profesional, setId_profesional] = useState("");
+    const [backgroundCalendarEvents, setBackgroundCalendarEvents] = useState([]);
 
     async function seleccionarTodosProfesionalesCalendario() {
         try {
@@ -160,6 +188,58 @@ export default function Calendario() {
     function convertirAFechaCalendario(fechaISO, hora) {
         const soloFecha = fechaISO.slice(0, 10);
         return new Date(`${soloFecha}T${hora}`);
+    }
+
+    function formatHoraCorta(date) {
+        return format(date, "HH:mm", {locale: es});
+    }
+
+    function obtenerTituloReserva(cita) {
+        const nombre = (cita?.nombrePaciente ?? "").trim();
+        const apellido = (cita?.apellidoPaciente ?? "").trim();
+        const inicialApellido = apellido ? `${apellido.charAt(0).toUpperCase()}.` : "";
+        return [nombre, inicialApellido].filter(Boolean).join(" ");
+    }
+
+    function obtenerTooltipEvento(event) {
+        if (event?.tipo === "bloqueo") {
+            return event.title || "Bloqueo";
+        }
+
+        if (event?.tipo === "reserva") {
+            const nombre = (event.resource?.nombrePaciente ?? "").trim();
+            const apellido = (event.resource?.apellidoPaciente ?? "").trim();
+            const horario = event.start && event.end
+                ? `${formatHoraCorta(event.start)} - ${formatHoraCorta(event.end)}`
+                : "";
+            return [nombre, apellido, horario].filter(Boolean).join(" | ");
+        }
+
+        return event?.title || "";
+    }
+
+    function estaFechaBloqueada(date) {
+        if (!dataBloqueos || dataBloqueos.length === 0) return false;
+
+        const fechaEvaluada = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+        for (const bloqueo of dataBloqueos) {
+            const fechaIniStr = (bloqueo.fechaInicio ?? "").slice(0, 10);
+            const fechaFinStr = (bloqueo.fechaFinalizacion ?? "").slice(0, 10);
+            const primerDia = new Date(`${fechaIniStr}T00:00:00`);
+            const ultimoDia = new Date(`${fechaFinStr}T00:00:00`);
+
+            if (isNaN(primerDia.getTime()) || isNaN(ultimoDia.getTime())) continue;
+
+            const inicioNormalizado = new Date(primerDia.getFullYear(), primerDia.getMonth(), primerDia.getDate());
+            const finNormalizado = new Date(ultimoDia.getFullYear(), ultimoDia.getMonth(), ultimoDia.getDate());
+
+            if (fechaEvaluada >= inicioNormalizado && fechaEvaluada <= finNormalizado) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     // Helper: comprueba si un rango [start, end) se solapa con alguna reserva en dataAgenda
@@ -357,63 +437,156 @@ export default function Calendario() {
         []
     );
 
+    function expandirBloqueosPorDiaCompleto(bloqueos) {
+        const resultado = [];
+
+        for (const bloqueo of bloqueos || []) {
+            const fechaIniStr = (bloqueo.fechaInicio ?? "").slice(0, 10);
+            const fechaFinStr = (bloqueo.fechaFinalizacion ?? "").slice(0, 10);
+            const primerDia = new Date(`${fechaIniStr}T00:00:00`);
+            const ultimoDia = new Date(`${fechaFinStr}T00:00:00`);
+
+            if (isNaN(primerDia.getTime()) || isNaN(ultimoDia.getTime())) continue;
+
+            let cursor = new Date(primerDia);
+            while (cursor <= ultimoDia) {
+                const y = cursor.getFullYear();
+                const m = String(cursor.getMonth() + 1).padStart(2, "0");
+                const d = String(cursor.getDate()).padStart(2, "0");
+                const fechaDia = `${y}-${m}-${d}`;
+
+                resultado.push({
+                    id_bloqueo: `${bloqueo.id_bloqueo}-${fechaDia}`,
+                    title: bloqueo.motivo || "Sin motivo",
+                    start: new Date(`${fechaDia}T00:00:00`),
+                    end: new Date(`${fechaDia}T23:59:00`),
+                    allDay: false,
+                    tipo: "bloqueo",
+                    resource: bloqueo,
+                });
+
+                cursor = new Date(y, cursor.getMonth(), cursor.getDate() + 1, 0, 0, 0);
+            }
+        }
+
+        return resultado;
+    }
+
 
     useEffect(() => {
         const eventosReservas = (dataAgenda || []).map((cita) => ({
             id_reserva: cita.id_reserva,
-            title: cita.nombrePaciente + " " + cita.apellidoPaciente,
+            title: obtenerTituloReserva(cita),
             start: convertirAFechaCalendario(cita.fechaInicio, cita.horaInicio),
             end: convertirAFechaCalendario(cita.fechaFinalizacion, cita.horaFinalizacion),
             tipo: "reserva",
             resource: cita,
         }));
-        const eventosBloqueos = (dataBloqueos || []).map((bloqueo) => ({
-            id_bloqueo: bloqueo.id_bloqueo,
-            title: "BLOQUEADO" + (bloqueo.motivo ? " - " + bloqueo.motivo : ""),
-            start: convertirAFechaCalendario(bloqueo.fechaInicio, bloqueo.horaInicio),
-            end: convertirAFechaCalendario(bloqueo.fechaFinalizacion, bloqueo.horaFinalizacion),
-            tipo: "bloqueo",
-            resource: bloqueo,
+        const eventosBloqueos = expandirBloqueosPorDiaCompleto(dataBloqueos || []).map((bloqueo) => ({
+            ...bloqueo,
+            allDay: currentView === "month",
         }));
-        setEvents([...eventosReservas, ...eventosBloqueos]);
-    }, [dataAgenda, dataBloqueos]);
+
+        if (currentView === "month") {
+            setEvents([...eventosReservas, ...eventosBloqueos]);
+            setBackgroundCalendarEvents([]);
+            return;
+        }
+
+        setEvents(eventosReservas);
+        setBackgroundCalendarEvents(eventosBloqueos);
+    }, [dataAgenda, dataBloqueos, currentView]);
 
     const eventStyleGetter = (event) => {
-        const esBloqueo = event.tipo === "bloqueo";
         const estadoReservaNormalizado = event.resource?.estadoReserva?.toLowerCase?.() ?? "";
         const paletteReserva = estadoReservaNormalizado === "confirmada"
-            ? {backgroundColor: "#16a34a", color: "#ffffff"}
+            ? {backgroundColor: "rgba(34, 197, 94, 0.22)", color: "#14532d", accentColor: "#166534", borderColor: "rgba(34, 197, 94, 0.30)"}
             : estadoReservaNormalizado === "anulada"
-                ? {backgroundColor: "#9f1239", color: "#ffffff"}
-                : {backgroundColor: "#7c3aed", color: "#ffffff"};
+                ? {backgroundColor: "rgba(244, 63, 94, 0.18)", color: "#881337", accentColor: "#881337", borderColor: "rgba(225, 29, 72, 0.28)"}
+                : {backgroundColor: "rgba(124, 58, 237, 0.20)", color: "#5b21b6", accentColor: "#5b21b6", borderColor: "rgba(124, 58, 237, 0.28)"};
+
+        if (event.tipo === "bloqueo") {
+            return monthEventStyleGetter(event);
+        }
+
+        return {
+            style: {
+                display: 'flex',
+                alignItems: 'stretch',
+                height: '100%',
+                minHeight: '0',
+                maxHeight: 'none',
+                whiteSpace: 'normal',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                lineHeight: '1',
+                padding: '0',
+                fontSize: '0.5rem',
+                boxSizing: 'border-box',
+                borderRadius: '0px',
+                backgroundColor: paletteReserva.backgroundColor,
+                color: paletteReserva.color,
+                fontWeight: '600',
+                wordBreak: 'break-word',
+                border: `1px solid ${paletteReserva.borderColor}`,
+                borderLeft: `4px solid ${paletteReserva.accentColor}`,
+                boxShadow: 'inset 0 0 0 1px rgba(255, 255, 255, 0.14)',
+            },
+        };
+    };
+
+    const monthEventStyleGetter = (event) => {
+        if (event.tipo !== "bloqueo") return null;
 
         return {
             style: {
                 display: 'flex',
                 alignItems: 'center',
-                height: 'auto',
-                minHeight: '28px',
-                maxHeight: 'none',
-                whiteSpace: 'normal',
-                overflow: 'visible',
-                textOverflow: 'clip',
-                lineHeight: '1.3',
-                padding: '6px 8px',
-                fontSize: '0.8rem',
+                minHeight: '22px',
+                padding: '3px 4px',
+                fontSize: '0.5rem',
+                lineHeight: '1',
                 boxSizing: 'border-box',
-                borderRadius: '4px',
-                backgroundColor: esBloqueo ? '#dc2626' : paletteReserva.backgroundColor,
-                color: esBloqueo ? '#fff' : paletteReserva.color,
-                fontWeight: '500',
-                wordBreak: 'break-word',
+                borderRadius: '0px',
+                backgroundColor: 'rgba(107, 114, 128, 0.28)',
+                color: '#334155',
+                fontWeight: '600',
+                border: '1px solid rgba(107, 114, 128, 0.38)',
+                borderLeft: '4px solid rgba(71, 85, 105, 0.95)',
+                boxShadow: 'inset 0 0 0 1px rgba(255, 255, 255, 0.16)',
             },
         };
     };
 
+    const backgroundEventStyleGetter = (event) => {
+        if (event.tipo !== "bloqueo") return {style: {}};
+
+        return {
+            style: {
+                backgroundColor: "rgba(107, 114, 128, 0.28)",
+                border: "1px solid rgba(107, 114, 128, 0.38)",
+                borderLeft: "4px solid rgba(71, 85, 105, 0.95)",
+                borderRadius: "0px",
+                boxShadow: "inset 0 0 0 1px rgba(255, 255, 255, 0.16)",
+            },
+        };
+    };
+
+    const dayPropGetter = (date) => {
+        if (currentView !== "month") return {};
+        if (!estaFechaBloqueada(date)) return {};
+
+        return {};
+    };
+
     const EventComponent = ({event}) => (
-        <div title={event.title} className="break-words text-[13px] leading-snug w-full flex items-center gap-1" style={{whiteSpace: 'normal', overflow: 'visible', wordBreak: 'break-word', hyphens: 'auto'}}>
+        <div
+            title={obtenerTooltipEvento(event)}
+            className="truncate text-[6px] leading-none w-full h-full flex items-center gap-1 px-[2px]"
+            style={{whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}
+        >
             {event.tipo === "bloqueo" && (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-2.5 w-2.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
             )}
@@ -422,9 +595,13 @@ export default function Calendario() {
     );
 
     const TitleOnlyEvent = ({event}) => (
-        <div title={event.title} className="break-words text-[13px] leading-snug font-medium w-full flex items-center gap-1" style={{whiteSpace: 'normal', overflow: 'visible', wordBreak: 'break-word'}}>
+        <div
+            title={obtenerTooltipEvento(event)}
+            className="truncate text-[6px] leading-none font-medium w-full flex items-center gap-1"
+            style={{whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}
+        >
             {event.tipo === "bloqueo" && (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-2.5 w-2.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
             )}
@@ -605,7 +782,7 @@ export default function Calendario() {
                                         <span className="text-xs text-slate-500">Anulada</span>
                                     </div>
                                     <div className="flex items-center gap-1.5">
-                                        <span className="inline-block h-3 w-3 rounded bg-red-600"></span>
+                                        <span className="inline-block h-3 w-3 rounded border border-slate-500/60 bg-slate-500/50"></span>
                                         <span className="text-xs text-slate-500">Bloqueado</span>
                                     </div>
                                     <div className="text-xs text-slate-500">Vista: <span className="font-medium text-slate-700">{currentView}</span></div>
@@ -618,8 +795,10 @@ export default function Calendario() {
                                 localizer={localizer}
                                 // Eventos que se mostrarán en el calendario
                                 events={events}
+                                backgroundEvents={backgroundCalendarEvents}
                                 // Evita que el título se corte en vistas comprimidas (p. ej. semana)
                                 eventPropGetter={eventStyleGetter}
+                                backgroundEventPropGetter={backgroundEventStyleGetter}
                                 // Usamos componentes específicos: para day y agenda mostramos sólo el título
                                 components={{
                                     event: EventComponent,
@@ -638,6 +817,7 @@ export default function Calendario() {
                                 onView={(nextView) => setCurrentView(nextView)}
                                 defaultView="month"
                                 style={{height: "100%"}}
+                                dayPropGetter={dayPropGetter}
 
                                 // Permite seleccionar rangos de tiempo en el calendario
                                 selectable
@@ -695,7 +875,7 @@ export default function Calendario() {
                                     <span>Reserva</span>
                                 </div>
                                 <div className="flex items-center gap-1.5">
-                                    <span className="inline-block w-3 h-3 rounded-sm bg-red-600" aria-hidden="true"/>
+                                    <span className="inline-block h-3 w-3 rounded-sm border border-slate-500/60 bg-slate-500/50" aria-hidden="true"/>
                                     <span>Bloqueado</span>
                                 </div>
                                 <span className="text-xs italic text-slate-500">Pasa el cursor sobre un evento para ver el detalle</span>
