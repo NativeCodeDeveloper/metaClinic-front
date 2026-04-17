@@ -117,6 +117,11 @@ function CalendarioContent() {
                 border: 0 !important;
                 box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08) !important;
             }
+            .rbc-background-event {
+                background-color: rgba(107, 114, 128, 0.28) !important;
+                border: 1px solid rgba(107, 114, 128, 0.38) !important;
+                box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16) !important;
+            }
             .rbc-addons-dnd-resizable {
                 border-radius: 16px !important;
             }
@@ -175,6 +180,7 @@ function CalendarioContent() {
     const [dataBloqueos, setDataBloqueos] = useState([]);
     const [listaProfesionales, setListaProfesionales] = useState([]);
     const [id_profesional, setId_profesional] = useState("");
+    const [backgroundCalendarEvents, setBackgroundCalendarEvents] = useState([]);
     const [selectionPreview, setSelectionPreview] = useState(null);
     const [selectionDraft, setSelectionDraft] = useState(null);
     const [floatingDraft, setFloatingDraft] = useState(null);
@@ -598,11 +604,11 @@ function CalendarioContent() {
             resource: cita,
         }));
         const eventosBloqueos = expandirBloqueosPorDia(dataBloqueos || []);
-        setEvents([...eventosReservas, ...eventosBloqueos]);
+        setEvents(eventosReservas);
+        setBackgroundCalendarEvents(eventosBloqueos);
     }, [dataAgenda, dataBloqueos]);
 
     const eventStyleGetter = (event) => {
-        const esBloqueo = event.tipo === "bloqueo";
         const esSeleccion = event.tipo === "seleccion";
         const estadoReservaNormalizado = event.resource?.estadoReserva?.toLowerCase?.() ?? "";
         const paletteReserva = estadoReservaNormalizado === "confirmada"
@@ -616,13 +622,43 @@ function CalendarioContent() {
                 display: 'flex', alignItems: 'center', height: 'auto', minHeight: '28px', maxHeight: 'none',
                 whiteSpace: 'normal', overflow: 'visible', textOverflow: 'clip', lineHeight: '1.3',
                 padding: '6px 8px', fontSize: '0.8rem', boxSizing: 'border-box', borderRadius: '16px',
-                backgroundColor: esSeleccion ? 'rgba(124, 58, 237, 0.24)' : esBloqueo ? '#dc2626' : paletteReserva.backgroundColor,
-                color: esSeleccion ? '#5b21b6' : esBloqueo ? '#fff' : paletteReserva.color,
+                backgroundColor: esSeleccion ? 'rgba(124, 58, 237, 0.24)' : paletteReserva.backgroundColor,
+                color: esSeleccion ? '#5b21b6' : paletteReserva.color,
                 fontWeight: '600', wordBreak: 'break-word',
                 border: esSeleccion ? '1px solid rgba(124, 58, 237, 0.45)' : 'none',
                 boxShadow: esSeleccion ? 'none' : '0 12px 24px rgba(15, 23, 42, 0.12)',
             },
         };
+    };
+
+    const backgroundEventStyleGetter = (event) => {
+        const esBloqueo = event.tipo === "bloqueo";
+        const esSeleccion = event.tipo === "seleccion";
+
+        if (esBloqueo) {
+            return {
+                className: "bloqueo-calendario-bg",
+                style: {
+                    backgroundColor: "rgba(107, 114, 128, 0.28)",
+                    border: "1px solid rgba(107, 114, 128, 0.38)",
+                    borderRadius: "14px",
+                    boxShadow: "inset 0 0 0 1px rgba(255, 255, 255, 0.18)",
+                },
+            };
+        }
+
+        if (esSeleccion) {
+            return {
+                style: {
+                    backgroundColor: "rgba(124, 58, 237, 0.22)",
+                    border: "1px solid rgba(124, 58, 237, 0.42)",
+                    borderRadius: "16px",
+                    boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.2)",
+                },
+            };
+        }
+
+        return {style: {}};
     };
 
     const EventComponent = ({event}) => (
@@ -977,7 +1013,7 @@ function CalendarioContent() {
                                 <span className="text-xs text-slate-500">Anulada</span>
                             </div>
                             <div className="flex items-center gap-1.5">
-                                <span className="inline-block w-3 h-3 rounded bg-red-600"></span>
+                                <span className="inline-block h-3 w-3 rounded border border-slate-500/60 bg-slate-500/50"></span>
                                 <span className="text-xs text-slate-500">Bloqueado</span>
                             </div>
                             <div className="flex items-center gap-1.5">
@@ -1003,8 +1039,9 @@ function CalendarioContent() {
                         <DnDCalendar
                             localizer={localizer}
                             events={events}
-                            backgroundEvents={floatingDraft ? [floatingDraft] : []}
+                            backgroundEvents={floatingDraft ? [...backgroundCalendarEvents, floatingDraft] : backgroundCalendarEvents}
                             eventPropGetter={eventStyleGetter}
+                            backgroundEventPropGetter={backgroundEventStyleGetter}
                             components={{
                                 event: EventComponent,
                                 day: {event: TitleOnlyEvent},
@@ -1038,9 +1075,6 @@ function CalendarioContent() {
                             }}
                             onSelectEvent={(event) => {
                                 limpiarSeleccionTemporal();
-                                if (event.tipo === "bloqueo") {
-                                    return toast("Bloqueo: " + (event.title || "Sin motivo"), {icon: "🔒"});
-                                }
                                 if (!event?.id_reserva) { toast.error("No se encontró el ID de la reserva"); return; }
                                 setid_reserva(event.id_reserva);
                                 seleccionarReservaEspecifica(event.id_reserva);
