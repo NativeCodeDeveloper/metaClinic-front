@@ -379,7 +379,7 @@ export default function CalendarioMensualHoras() {
 
     /* ---------- UI ---------- */
     return (
-        <div className="min-h-screen bg-gradient-to-b from-slate-100 via-slate-50 to-slate-100 px-4 py-10 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-gradient-to-b from-slate-100 via-slate-50 to-slate-100 px-4 pt-32 pb-16 sm:px-6 lg:px-8">
             <div className="mx-auto w-full max-w-3xl">
                 <header className="mb-6 flex flex-col items-center gap-2 text-center">
                     <div

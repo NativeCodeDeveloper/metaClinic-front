@@ -36,7 +36,7 @@ export default function AgendaProfesionales() {
   }, []);
 
   return (
-    <div className="bg-[#f8f9fa] min-h-screen pt-28 pb-32 text-slate-900 font-sans">
+    <div className="bg-[#f8f9fa] min-h-screen pt-32 pb-32 text-slate-900 font-sans">
       <div className="mx-auto max-w-7xl px-5 md:px-8 lg:px-10">
 
         {/* Usable Header Block */}

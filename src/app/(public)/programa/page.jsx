@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight, ShieldCheck, CalendarCheck, Headphones } from "lucide-react";
 import RevealOnScroll from "@/Componentes/RevealOnScroll";
 
@@ -162,21 +163,26 @@ export default function ProgramaPage() {
             {/* Test Inteligente */}
             <section id="test-metabolico" className="mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8">
                 <RevealOnScroll>
-                    <div className="bg-slate-900 rounded-2xl overflow-hidden">
+                    <div className="relative rounded-2xl overflow-hidden bg-slate-900">
+                        <Image src="/fondometa.webp" 
+                        alt="fondo test metabolico" 
+                        fill 
+                        className="object-container opacity-40" />
+                        <div className="absolute inset-0 bg-slate-900/30" />
 
-                        <div className="px-8 md:px-12 pt-10 pb-8 border-b border-white/10 flex flex-col md:flex-row md:items-end justify-between gap-4">
+                        <div className="relative z-10 px-8 md:px-12 pt-10 pb-8 border-b border-white/10 flex flex-col md:flex-row md:items-end justify-between gap-4">
                             <div>
-                                <p className="text-xs tracking-[0.2em] uppercase text-slate-500 font-medium mb-2">Evaluación rápida</p>
-                                <h2 className="text-2xl md:text-3xl font-semibold text-white">
+                                <p className="text-xs tracking-[0.2em] uppercase text-indigo-300 font-medium mb-2">Evaluación rápida</p>
+                                <h2 className="text-2xl md:text-3xl font-semibold text-white mb-1 leading-tight">
                                     Test Inteligente
                                 </h2>
                             </div>
-                            <p className="text-sm text-slate-400 font-light md:text-right">
+                            <p className="text-sm text-white font-light md:text-right">
                                 3 preguntas para saber<br className="hidden md:block" /> si eres candidato
                             </p>
                         </div>
 
-                        <div className="px-8 md:px-12 py-10">
+                        <div className="relative z-10 px-8 md:px-12 py-10">
                             <div className="w-full bg-white rounded-xl p-8 md:p-10 border border-slate-100 shadow-sm">
                                 {!testCompleted ? (
                                     <div className="w-full text-center space-y-6">
