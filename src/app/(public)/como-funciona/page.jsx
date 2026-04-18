@@ -2,106 +2,126 @@
 
 import RevealOnScroll from "@/Componentes/RevealOnScroll";
 import Link from "next/link";
-import { ScanFace, Aperture, Orbit, Target } from "lucide-react";
+import { ScanFace, Aperture, FileText, Target } from "lucide-react";
 
 const STEPS = [
     {
-        title: "Evaluación Médica",
-        description: "Evaluación clínica estructural adaptada a tus necesidades bioquímicas e historial clínico para determinar tu elegibilidad.",
+        step: 1,
+        title: "Diagnóstico metabólico real",
+        description: "Identificamos las causas de tu aumento de peso (hormonas, insulina, hábitos)",
         icon: ScanFace,
-        colorClass: "bg-slate-100 text-slate-800",
     },
     {
-        title: "Inicio Tratamiento",
-        description: "Utilizamos terapias farmacológicas avanzadas y basadas en evidencia científica (como agonistas GLP-1) prescriptas por médicos expertos.",
+        step: 2,
+        title: "Inicio de tratamiento médico",
+        description: "Reducimos el apetito, controlamos la ansiedad y activamos tu metabolismo",
         icon: Aperture,
-        colorClass: "bg-indigo-50 text-indigo-700",
     },
     {
-        title: "Seguimiento Semanal",
-        description: "Monitoreo remoto activo, acompañamiento nutricional profundo y ajustes dinámicos de tratamiento según tu tolerancia y avance.",
-        icon: Orbit,
-        colorClass: "bg-slate-100 text-slate-800",
+        step: 3,
+        title: "Seguimiento continuo",
+        description: "Ajustamos tu tratamiento semana a semana para asegurar resultados",
+        icon: FileText,
     },
     {
-        title: "Resultados Sostenibles",
-        description: "Un manejo continuo altamente adherente que permite no solo la pérdida de peso, sino una real reestructuración de tu perfil cardiometabólico.",
+        step: 4,
+        title: "Resultados sostenibles",
+        description: "Pierdes peso sin efecto rebote y mejoras tu salud metabólica",
         icon: Target,
-        colorClass: "bg-indigo-50 text-indigo-700",
     },
 ];
 
 export default function ComoFuncionaPage() {
     return (
-        <div className="bg-[#f8f9fa] min-h-screen pt-32 pb-32 font-sans text-slate-900">
-            <div className="mx-auto max-w-7xl px-5 md:px-8 lg:px-10">
+        <div className="bg-slate-50 min-h-screen pt-20 pb-24 md:pt-32 md:pb-32 lg:pt-40 lg:pb-40 font-sans text-slate-900">
+            <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
 
-                {/* Header Block Minimal */}
+                {/* Header */}
                 <RevealOnScroll>
-                    <div className="max-w-3xl mb-24 lg:mb-32">
-                        <h1 className="text-5xl md:text-6xl lg:text-[5.5rem] font-medium tracking-tight leading-[1.05] mb-8">
-                            Tu Ruta a <br />
-                            la Salud.
-                        </h1>
-                        <p className="text-slate-500 text-xl font-light leading-relaxed max-w-2xl">
-                            Combinamos evaluación estructurada, algoritmos clínicos de evidencia y un
-                            seguimiento semanal digital para un manejo metabólico continuo.
+                    <div className="text-center mb-20 md:mb-28">
+                        <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 text-slate-900">
+                            ¿Cómo funciona el tratamiento?
+                        </h2>
+                        <p className="text-lg md:text-xl text-slate-600 font-light max-w-2xl mx-auto">
+                            Un enfoque médico que ataca la <span className="text-indigo-600 font-semibold">causa real de tu peso</span>
                         </p>
                     </div>
                 </RevealOnScroll>
 
-                {/* Steps Grid - Minimalist approach */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 items-start">
-                    {STEPS.map((step, index) => {
-                        const StepIcon = step.icon;
-
-                        return (
-                            <RevealOnScroll key={index} delayClass={`delay-${index * 100}`}>
-                                <div className={`flex flex-col ${index % 2 !== 0 ? 'lg:mt-16' : ''}`}>
-
-                                    {/* Numbering at top left */}
-                                    <span className="text-slate-400 font-medium text-lg mb-6 border-b border-slate-200 pb-4 inline-block w-full">
-                                        0{index + 1}
-                                    </span>
-
-                                    {/* Clean Visual box */}
-                                    <div className="w-full aspect-[4/3] bg-white rounded-3xl flex items-center justify-center mb-8 group overflow-hidden transition-all duration-700 hover:-translate-y-2">
-                                        <div className={`inline-flex h-20 w-20 items-center justify-center rounded-2xl ${step.colorClass}`}>
-                                            <StepIcon strokeWidth={1} className={`h-10 w-10 ${index % 2 === 0 ? 'animate-icon-bounce-slow' : 'animate-icon-swing'}`} />
-                                        </div>
+                {/* Progress Line with Steps */}
+                <RevealOnScroll>
+                    <div className="mb-20 md:mb-28">
+                        {/* Progress Line - Desktop */}
+                        <div className="hidden lg:flex items-center justify-between mb-16 relative px-6">
+                            {STEPS.map((step, index) => (
+                                <div key={index} className="flex flex-col items-center flex-1 relative z-10">
+                                    {/* Step Circle */}
+                                    <div className="flex items-center justify-center w-12 h-12 rounded-full bg-indigo-600 text-white font-bold text-lg z-10 relative shadow-md">
+                                        {step.step}
                                     </div>
-
-                                    {/* Clean Typography */}
-                                    <h3 className="text-xl md:text-2xl font-medium text-slate-900 mb-3">{step.title}</h3>
-                                    <p className="text-slate-500 font-light leading-relaxed text-[15px]">
-                                        {step.description}
-                                    </p>
                                 </div>
-                            </RevealOnScroll>
-                        );
-                    })}
-                </div>
-
-                {/* Bottom CTA Outline Minimal */}
-                <RevealOnScroll className="mt-32">
-                    <div className="flex flex-col md:flex-row gap-12 items-center justify-between rounded-[2.5rem] bg-white p-12 md:p-20">
-                        <div className="max-w-2xl">
-                            <h2 className="text-4xl md:text-5xl font-medium tracking-tight mb-4">
-                                ¿Listo para el Paso 01?
-                            </h2>
-                            <p className="text-slate-500 text-lg font-light">
-                                Inicia tu evaluación médica. Tomamos decisiones individualizadas para tu éxito continuo.
-                            </p>
+                            ))}
                         </div>
 
-                        <div className="flex flex-col sm:flex-row gap-4 shrink-0">
-                            <Link
-                                href="/agendaProfesionales"
-                                className="inline-flex rounded-full border border-slate-900 px-8 py-3.5 text-sm md:text-base font-medium text-slate-900 transition hover:bg-slate-900 hover:text-white"
-                            >
-                                Agendar Mi Evaluación
-                            </Link>
+                        {/* Steps Cards */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-4">
+                            {STEPS.map((step, index) => {
+                                const StepIcon = step.icon;
+                                return (
+                                    <RevealOnScroll 
+                                        key={index}
+                                        delayClass={`delay-${index * 75}`}
+                                    >
+                                        <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm hover:shadow-lg transition-all duration-300 h-full">
+                                            {/* Mobile Step Number */}
+                                            <div className="lg:hidden mb-4">
+                                                <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 font-bold text-sm">
+                                                    {step.step}
+                                                </span>
+                                            </div>
+
+                                            {/* Icon */}
+                                            <div className="flex items-center justify-center w-14 h-14 rounded-2xl bg-indigo-50 text-indigo-600 mb-6">
+                                                <StepIcon strokeWidth={1.5} className="h-7 w-7" />
+                                            </div>
+
+                                            {/* Title */}
+                                            <h3 className="text-lg md:text-xl font-bold text-slate-900 mb-3">
+                                                {step.title}
+                                            </h3>
+
+                                            {/* Description */}
+                                            <p className="text-sm md:text-base text-slate-600 font-light leading-relaxed">
+                                                {step.description}
+                                            </p>
+                                        </div>
+                                    </RevealOnScroll>
+                                );
+                            })}
                         </div>
+                    </div>
+                </RevealOnScroll>
+
+                {/* Results Text */}
+                <RevealOnScroll className="text-center mb-12 md:mb-16">
+                    <p className="text-lg md:text-2xl font-semibold text-slate-700">
+                        <span className="text-indigo-600">baja entre un 8–10% de tu exceso de peso en 3 meses.</span> 
+                    </p>
+                </RevealOnScroll>
+
+                {/* CTA Section */}
+                <RevealOnScroll>
+                    <div className="text-center">
+                        <Link
+                            href="/agendaProfesionales"
+                            className="inline-flex items-center justify-center rounded-full bg-indigo-600 px-10 py-4 md:px-12 md:py-4 text-base md:text-lg font-semibold text-white transition-all hover:bg-indigo-700 shadow-lg hover:shadow-xl"
+                        >
+                            Agenda tu evaluación médica →
+                        </Link>
+                        
+                        <p className="text-sm md:text-base text-slate-500 font-light mt-6">
+                            Cupos limitados por seguimiento personalizado
+                        </p>
                     </div>
                 </RevealOnScroll>
 

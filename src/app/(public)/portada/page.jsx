@@ -52,8 +52,7 @@ export default function Portada() {
             </h1>
 
             <p className="text-lg text-slate-600 mb-10 leading-relaxed max-w-lg">
-              Evaluación médica completa, terapias farmacológicas avanzadas (GLP-1)
-              y acompañamiento continuo para un control metabólico real y duradero.
+              Evaluación médica completa, terapias farmacológicas avanzadas (GLP-1) y acompañamiento continuo para un control metabólico real y duradero.
             </p>
 
             <div className="flex items-center gap-3">

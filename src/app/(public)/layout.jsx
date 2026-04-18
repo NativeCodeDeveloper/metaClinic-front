@@ -14,7 +14,7 @@ export default function PublicLayout({ children }) {
           <div className="pointer-events-none fixed inset-0 z-0" />
           <ToasterClient />
           <Navbar />
-          <main className="relative z-10 pt-24 md:pt-20">{children}</main>
+          <main className="relative z-10 pt-24 md:pt-0.5">{children}</main>
           <FooterPremiumMedico />
           <WhatsAppFloatButton />
         </div>

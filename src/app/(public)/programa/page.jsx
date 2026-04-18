@@ -2,18 +2,31 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Check, ArrowRight, Eye, Grid3x3, Flame, Infinity } from "lucide-react";
+import { ArrowRight, ShieldCheck, CalendarCheck, Headphones } from "lucide-react";
 import RevealOnScroll from "@/Componentes/RevealOnScroll";
 
 const TIER_FEATURES = [
-    "Evaluación clínica y antropométrica",
-    "Análisis e interpretación de exámenes bio-químicos",
-    "Prescripción de medicamentos GLP-1 y ajustes dinámicos",
-    "Plan de Alimentación Personalizado",
-    "Pauta de suplementación específica",
-    "Educación mensual médica / nutricional",
-    "Acompañamiento online vía WhatsApp (Lun - Vie)",
-    "Reporte estructurado de avances",
+    "Consulta médica inicial completa",
+    "Evaluación metabólica + plan de tratamiento individualizado",
+    "Seguimiento médico continuo durante 3 meses",
+];
+
+const BENEFITS = [
+    {
+        title: "Control médico especializado",
+        description: "Seguimiento seguro, profesional y basado en evidencia",
+        icon: ShieldCheck,
+    },
+    {
+        title: "Plan de 3 meses",
+        description: "Baja en promedio entre 8% y 10% de tu peso corporal",
+        icon: CalendarCheck,
+    },
+    {
+        title: "Soporte continuo",
+        description: "Atención y ajustes cada semana para asegurar tu progreso",
+        icon: Headphones,
+    },
 ];
 
 const METABOLIC_QUESTIONS = [
@@ -39,7 +52,6 @@ export default function ProgramaPage() {
     const handleOptionSelect = (option) => {
         const newAnswers = [...testAnswers, option];
         setTestAnswers(newAnswers);
-
         if (testStep < METABOLIC_QUESTIONS.length - 1) {
             setTestStep(testStep + 1);
         } else {
@@ -48,144 +60,170 @@ export default function ProgramaPage() {
     };
 
     return (
-        <div className="bg-[#f8f9fa] text-slate-900 min-h-screen pt-32 pb-32 font-sans">
+        <div className="bg-slate-50 min-h-screen pt-20 pb-24 md:pt-32 md:pb-32 lg:pt-40 lg:pb-40 font-sans text-slate-900">
 
-            {/* Header Section Minimalist */}
-            <section className="mx-auto w-full max-w-7xl px-5 md:px-8 lg:px-10 mb-20 lg:mb-32">
+            <div className="h-16 md:h-10 lg:h-32 -mt-16 md:-mt-10 lg:-mt-32"></div>
+
+            {/* Hero */}
+            <section className="mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8 mb-24 lg:mb-32">
                 <RevealOnScroll>
-                    <div className="max-w-4xl">
-                        <h1 className="text-5xl md:text-6xl lg:text-[6rem] font-medium tracking-tight leading-[1.05] mb-8">
-                            Programa <br />
-                            Metabólico.
-                        </h1>
-                        <p className="text-xl lg:text-2xl text-slate-500 font-light max-w-2xl leading-relaxed mb-10">
-                            Un plan mensual diseñado para pacientes que buscan resultados reales,
-                            prescripción segura (GLP-1) y acompañamiento guiado.
-                        </p>
-                        <a href="#test-metabolico" className="inline-flex rounded-full bg-slate-900 px-8 py-3.5 text-sm md:text-base font-medium text-white transition hover:bg-indigo-600">
-                            Ir al Test Inicial
-                        </a>
-                    </div>
-                </RevealOnScroll>
-            </section>
+                    <div className="space-y-12">
 
-            {/* Program Details - Asymmetrical minimalist split layout */}
-            <section className="mx-auto w-full max-w-7xl px-5 md:px-8 lg:px-10 mb-32">
-                <RevealOnScroll>
-                    <div className="flex flex-col lg:flex-row gap-16 lg:gap-24 items-start">
-
-                        {/* Value Proposion Grid */}
-                        <div className="w-full lg:w-1/2 grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-16">
-                            <div className="group">
-                                <span className="block text-slate-400 font-medium mb-4 border-b border-slate-200 pb-2">01</span>
-                                <Eye strokeWidth={1} className="w-10 h-10 text-slate-900 mb-6 animate-icon-swing" />
-                                <h3 className="font-medium text-xl mb-2 text-slate-900">Visión Médica</h3>
-                                <p className="text-slate-500 font-light text-[15px]">Tratamiento con respaldo técnico y científico riguroso.</p>
-                            </div>
-                            <div className="group lg:mt-12">
-                                <span className="block text-slate-400 font-medium mb-4 border-b border-slate-200 pb-2">02</span>
-                                <Grid3x3 strokeWidth={1} className="w-10 h-10 text-slate-900 mb-6 animate-icon-bounce-slow" />
-                                <h3 className="font-medium text-xl mb-2 text-slate-900">Pauta Exacta</h3>
-                                <p className="text-slate-500 font-light text-[15px]">Trazabilidad nutricional y farmacológica diaria.</p>
-                            </div>
-                            <div className="group">
-                                <span className="block text-slate-400 font-medium mb-4 border-b border-slate-200 pb-2">03</span>
-                                <Flame strokeWidth={1} className="w-10 h-10 text-slate-900 mb-6 animate-icon-bounce-slow" />
-                                <h3 className="font-medium text-xl mb-2 text-slate-900">Pérdida de Grasa</h3>
-                                <p className="text-slate-500 font-light text-[15px]">Enfoque protector muscular y regenerativo base.</p>
-                            </div>
-                            <div className="group lg:mt-12">
-                                <span className="block text-slate-400 font-medium mb-4 border-b border-slate-200 pb-2">04</span>
-                                <Infinity strokeWidth={1} className="w-10 h-10 text-slate-900 mb-6 animate-icon-spin-pulse" />
-                                <h3 className="font-medium text-xl mb-2 text-slate-900">Alianza Activa</h3>
-                                <p className="text-slate-500 font-light text-[15px]">No estás solo durante tu transformación física.</p>
-                            </div>
+                        <div className="space-y-6">
+                            <p className="text-xs tracking-[0.2em] uppercase text-slate-400 font-medium">
+                                Programa médico — 3 meses
+                            </p>
+                            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.0] text-slate-900">
+                                Inicia tu programa<br />
+                                <span className="font-light text-indigo-500">de pérdida de peso</span>
+                            </h1>
+                            <p className="text-base md:text-lg text-slate-500 font-light leading-relaxed max-w-lg">
+                                Evaluación metabólica completa, tratamiento farmacológico avanzado y seguimiento semanal personalizado.
+                            </p>
                         </div>
 
-                        {/* Pricing Section Minimal */}
-                        <div className="w-full lg:w-1/2 rounded-[2.5rem] bg-white p-12 lg:p-16">
-                            <h3 className="font-medium tracking-tight text-3xl mb-10 text-slate-900">
-                                ¿Qué incluye?
-                            </h3>
+                        <div className="w-full h-px bg-slate-200"></div>
 
-                            <ul className="space-y-6 mb-12">
+                        <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-start">
+
+                            <div className="space-y-5">
                                 {TIER_FEATURES.map((feature, i) => (
-                                    <li key={i} className="flex flex-start gap-4 text-slate-800">
-                                        <Check className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
-                                        <span className="font-light leading-relaxed">{feature}</span>
-                                    </li>
-                                ))}
-                            </ul>
-
-                            <Link
-                                href="/agendaProfesionales"
-                                className="inline-flex w-full justify-center rounded-full border border-slate-900 px-8 py-3.5 font-medium text-slate-900 transition hover:bg-slate-900 hover:text-white"
-                            >
-                                Ver Disponibilidad
-                            </Link>
-                        </div>
-
-                    </div>
-                </RevealOnScroll>
-            </section>
-
-            {/* Interactive Metabolic Test - Clean App-like Layout */}
-            <section id="test-metabolico" className="mx-auto w-full max-w-3xl px-5 md:px-8 lg:px-10">
-                <RevealOnScroll>
-                    <div className="flex flex-col text-center items-center">
-
-                        <h2 className="text-4xl md:text-5xl font-medium tracking-tight mb-4">
-                            Test Inteligente.
-                        </h2>
-                        <p className="text-slate-500 text-lg font-light mb-12">
-                            Responde 3 breves preguntas para pre-evaluar tu elegibilidad clínica.
-                        </p>
-
-                        <div className="w-full bg-white rounded-[2.5rem] p-10 md:p-16 border border-slate-100">
-                            {!testCompleted ? (
-                                <div className="w-full text-center">
-                                    <div className="flex justify-center gap-3 mb-10">
-                                        {METABOLIC_QUESTIONS.map((_, i) => (
-                                            <div key={i} className={`h-1.5 w-16 rounded-full transition-all duration-300 ${i <= testStep ? 'bg-slate-900' : 'bg-slate-200'}`}></div>
-                                        ))}
+                                    <div key={i} className="flex items-start gap-4">
+                                        <span className="text-xs text-indigo-500 font-mono mt-1 select-none">0{i + 1}</span>
+                                        <span className="text-sm md:text-base text-slate-700 font-light leading-relaxed">{feature}</span>
                                     </div>
+                                ))}
+                            </div>
 
-                                    <h3 className="text-2xl lg:text-3xl font-medium text-slate-900 mb-10 leading-snug">
-                                        {METABOLIC_QUESTIONS[testStep].question}
-                                    </h3>
-
-                                    <div className="flex flex-col gap-4">
-                                        {METABOLIC_QUESTIONS[testStep].options.map((option, i) => (
-                                            <button
-                                                key={i}
-                                                onClick={() => handleOptionSelect(option)}
-                                                className="w-full text-left bg-transparent border border-slate-200 hover:border-slate-900 rounded-full px-8 py-4 font-medium text-slate-700 transition flex items-center justify-between group"
-                                            >
-                                                {option}
-                                                <ArrowRight className="w-5 h-5 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
-                                            </button>
-                                        ))}
+                            <div className="space-y-6">
+                                <div>
+                                    <p className="text-xs tracking-[0.15em] uppercase text-slate-400 font-medium mb-3">Inversión</p>
+                                    <div className="flex items-end gap-4">
+                                        <span className="text-5xl md:text-6xl font-bold text-slate-900 leading-none">$200.000</span>
+                                        <div className="pb-1 space-y-0.5">
+                                            <p className="text-sm text-slate-400 line-through">$280.000</p>
+                                            <p className="text-xs text-indigo-500 font-medium">— 29% off</p>
+                                        </div>
                                     </div>
                                 </div>
-                            ) : (
-                                <div className="w-full text-center py-6">
-                                    <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-8 relative">
-                                        <Check className="w-10 h-10 text-slate-900 relative z-10" />
-                                    </div>
-                                    <h3 className="text-3xl font-medium text-slate-900 mb-4 leading-tight">
-                                        ¡Análisis Completado!
-                                    </h3>
-                                    <p className="text-slate-500 text-lg font-light mb-10 leading-relaxed max-w-sm mx-auto">
-                                        Basado en tu perfil, posees alta probabilidad de ser candidato a nuestro programa.
-                                    </p>
+
+                                <div className="space-y-3">
                                     <Link
                                         href="/agendaProfesionales"
-                                        className="inline-flex rounded-full bg-slate-900 px-8 py-4 text-white font-medium transition hover:bg-indigo-600"
+                                        className="group inline-flex items-center justify-between w-full bg-indigo-600 hover:bg-indigo-700 rounded-lg px-6 py-3.5 text-sm font-semibold text-white transition-all duration-300"
                                     >
-                                        Agendar mi Evaluación Médica
+                                        Agendar evaluación médica
+                                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                    </Link>
+                                    <Link
+                                        href="#test-metabolico"
+                                        className="inline-flex items-center justify-center w-full rounded-lg border border-slate-200 hover:border-slate-300 bg-white px-6 py-3.5 text-sm font-medium text-slate-600 hover:text-slate-900 transition-all duration-300"
+                                    >
+                                        Evaluar mi elegibilidad
                                     </Link>
                                 </div>
-                            )}
+
+                                <p className="text-xs text-slate-400">
+                                    Cupos limitados — consulta sin costo adicional
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                </RevealOnScroll>
+            </section>
+
+            {/* Benefits */}
+            <section className="mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8 mb-24 lg:mb-32">
+                <RevealOnScroll>
+                    <div className="grid gap-4 md:grid-cols-3 md:items-stretch">
+                        {BENEFITS.map((benefit, index) => {
+                            const BenefitIcon = benefit.icon;
+                            return (
+                                <RevealOnScroll key={index} delayClass={`delay-${index * 100}`}>
+                                    <article className="group flex flex-col h-full bg-white rounded-3xl p-7 transition-transform duration-500 ease-out hover:-translate-y-1.5">
+                                        <div className="inline-flex w-11 h-11 items-center justify-center rounded-2xl bg-indigo-50 mb-5">
+                                            <BenefitIcon className="w-5 h-5 text-indigo-600" strokeWidth={1.5} />
+                                        </div>
+                                        <h3 className="text-sm font-semibold text-slate-900 mb-2 leading-snug">
+                                            {benefit.title}
+                                        </h3>
+                                        <p className="text-sm text-slate-500 font-light leading-relaxed">
+                                            {benefit.description}
+                                        </p>
+                                    </article>
+                                </RevealOnScroll>
+                            );
+                        })}
+                    </div>
+                </RevealOnScroll>
+            </section>
+
+            {/* Test Inteligente */}
+            <section id="test-metabolico" className="mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8">
+                <RevealOnScroll>
+                    <div className="bg-slate-900 rounded-2xl overflow-hidden">
+
+                        <div className="px-8 md:px-12 pt-10 pb-8 border-b border-white/10 flex flex-col md:flex-row md:items-end justify-between gap-4">
+                            <div>
+                                <p className="text-xs tracking-[0.2em] uppercase text-slate-500 font-medium mb-2">Evaluación rápida</p>
+                                <h2 className="text-2xl md:text-3xl font-semibold text-white">
+                                    Test Inteligente
+                                </h2>
+                            </div>
+                            <p className="text-sm text-slate-400 font-light md:text-right">
+                                3 preguntas para saber<br className="hidden md:block" /> si eres candidato
+                            </p>
+                        </div>
+
+                        <div className="px-8 md:px-12 py-10">
+                            <div className="w-full bg-white rounded-xl p-8 md:p-10 border border-slate-100 shadow-sm">
+                                {!testCompleted ? (
+                                    <div className="w-full text-center space-y-6">
+                                        <div className="flex justify-center gap-2">
+                                            {METABOLIC_QUESTIONS.map((_, i) => (
+                                                <div key={i} className={`h-1 w-12 rounded-full transition-all duration-300 ${i <= testStep ? "bg-indigo-600" : "bg-slate-100"}`} />
+                                            ))}
+                                        </div>
+
+                                        <h3 className="text-lg md:text-xl font-light text-slate-900 leading-relaxed">
+                                            {METABOLIC_QUESTIONS[testStep].question}
+                                        </h3>
+
+                                        <div className="flex flex-col gap-2">
+                                            {METABOLIC_QUESTIONS[testStep].options.map((option, i) => (
+                                                <button
+                                                    key={i}
+                                                    onClick={() => handleOptionSelect(option)}
+                                                    className="w-full text-left bg-transparent border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50 rounded-full px-6 py-3.5 text-sm font-light text-slate-700 hover:text-indigo-700 transition-all duration-200 flex items-center justify-between group"
+                                                >
+                                                    {option}
+                                                    <ArrowRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-all" />
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="w-full text-center space-y-5 py-4">
+                                        <div className="space-y-2">
+                                            <p className="text-xs tracking-[0.15em] uppercase text-indigo-500 font-medium">Resultado</p>
+                                            <h3 className="text-2xl font-semibold text-slate-900">
+                                                Eres candidato al programa
+                                            </h3>
+                                            <p className="text-slate-500 text-sm font-light leading-relaxed max-w-xs mx-auto">
+                                                Tu perfil indica alta compatibilidad. Un médico revisará tu caso en la consulta inicial.
+                                            </p>
+                                        </div>
+                                        <Link
+                                            href="/agendaProfesionales"
+                                            className="group inline-flex items-center gap-2 rounded-full bg-indigo-600 hover:bg-indigo-700 px-7 py-3 text-sm font-semibold text-white transition-all duration-300"
+                                        >
+                                            Agendar evaluación médica
+                                            <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                                        </Link>
+                                    </div>
+                                )}
+                            </div>
                         </div>
 
                     </div>
