@@ -124,13 +124,21 @@ export default function Dashboard() {
             })
 
             if(!res.ok){
+                setlistaSubcategorias([]);
                 return;
             }
 
-                const dataSubcategoria = await res.json();
-                setlistaSubcategorias(dataSubcategoria);
+            const dataSubcategoria = await res.json();
+            const subcategoriasList = Array.isArray(dataSubcategoria)
+                ? dataSubcategoria
+                : Array.isArray(dataSubcategoria?.rows)
+                    ? dataSubcategoria.rows
+                    : [];
+
+            setlistaSubcategorias(subcategoriasList);
 
         }catch (e) {
+            setlistaSubcategorias([]);
             return toast.error('No ha sido posible listar las subcategorias contacte  a soporte de NativeCode: ERROR :' + e);
         }
 }
@@ -507,7 +515,7 @@ useEffect(() => {
                                     className="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-700 shadow-sm outline-none transition duration-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 hover:border-slate-300 cursor-pointer placeholder:text-slate-400"
                                 >
                                     <option value="" disabled>Seleccione</option>
-                                    {listaSubcategorias.map((subcategoria) => (
+                                    {(Array.isArray(listaSubcategorias) ? listaSubcategorias : []).map((subcategoria) => (
                                         <option key={subcategoria.id_subcategoria} value={subcategoria.id_subcategoria}>
                                             {subcategoria.descripcionCategoria}
                                         </option>
@@ -526,7 +534,7 @@ useEffect(() => {
                                     className="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-700 shadow-sm outline-none transition duration-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 hover:border-slate-300 cursor-pointer placeholder:text-slate-400"
                                 >
                                     <option value="" disabled>Seleccione</option>
-                                    {listaSubSubCategorias.map((subsubcategoria) => (
+                                    {(Array.isArray(listaSubSubCategorias) ? listaSubSubCategorias : []).map((subsubcategoria) => (
                                         <option key={subsubcategoria.id_subsubcategoria} value={subsubcategoria.id_subsubcategoria}>
                                             {subsubcategoria.descripcionSubSubCategoria}
                                         </option>

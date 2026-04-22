@@ -7,6 +7,7 @@ function ReservaHoraContent() {
     const fechaInicio = searchParams.get('fecha') || '';
     const horaInicio = searchParams.get('hora') || '';
     const emailPaciente = searchParams.get('email') || '';
+    const nombreEmpresa = process.env.NEXT_PUBLIC_EMPRESA_NOMBRE || 'Centro Integral ESSENZA';
 
   return (
     <section className="relative min-h-[70vh] w-full px-4 py-10 flex items-center justify-center bg-gradient-to-b from-slate-100 via-slate-50 to-slate-100">
@@ -46,7 +47,7 @@ function ReservaHoraContent() {
               <p className="mt-2 text-slate-700">
                 Su hora con{" "}
                 <span className="font-semibold text-slate-900">
-                  el equipo profesional de Centro Integral ESSENZA
+                  el equipo profesional de {nombreEmpresa}
                 </span>{" "}
                 ha sido reservada con éxito.
               </p>
@@ -112,7 +113,7 @@ function ReservaHoraContent() {
                   </div>
                   <div className="flex-1">
                     <p className="text-sm font-semibold text-slate-900">Ubicación</p>
-                    <p className="text-sm text-slate-600">Centro Integral ESSENZA, 12 de Febrero 926, Pitrufquen</p>
+                    <p className="text-sm text-slate-600">{nombreEmpresa}, 12 de Febrero 926, Pitrufquen</p>
                   </div>
                 </div>
               </div>

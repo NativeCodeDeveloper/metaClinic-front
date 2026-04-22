@@ -1,77 +1,49 @@
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
+import {
+  canAccessDashboardPath,
+  DASHBOARD_ROLES,
+  getDefaultDashboardPath,
+  getRoleFromSessionClaims,
+} from "@/lib/dashboard-access";
 
-
-
-
-
-
-
-// frontend/src/middleware.ts
-import { NextResponse, type NextRequest } from 'next/server'
-
-// Middleware sin lógica — solo deja pasar todo
-export default function middleware(_req: NextRequest) {
-return NextResponse.next()
-}
-
-// (Opcional) Indica en qué rutas se ejecuta
-export const config = {
-matcher: ['/dashboard/:path*'], // o simplemente [] si quieres que no aplique a ninguna
-}
-
-
-/*
-
-
-
-
-
-
-
-
-
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
-import { NextResponse } from 'next/server'
-
-const isDashboard = createRouteMatcher(['/dashboard(.*)'])
-
-// Rutas permitidas para recepcionista: inicio + módulo calendario completo
-const isRecepcionistaAllowed = createRouteMatcher([
-  '/dashboard',
-  '/dashboard/no-access',
-  '/dashboard/calendarioGeneral',
-  '/dashboard/calendario',
-  '/dashboard/agendaCitas',
-  '/dashboard/bloqueosAgenda',
-  '/dashboard/AgendaDetalle/(.*)',
-  '/dashboard/GestionPaciente',
-  '/dashboard/paciente/(.*)',
-])
+const isDashboardRoute = createRouteMatcher(["/dashboard(.*)"]);
 
 export default clerkMiddleware(async (auth, req) => {
-  if (!isDashboard(req)) return NextResponse.next()
+  if (!isDashboardRoute(req)) {
+    return NextResponse.next();
+  }
 
-  const { userId, sessionClaims } = await auth()
+  const { userId, sessionClaims } = await auth();
 
-  // No autenticado → sign-in
   if (!userId) {
-    return NextResponse.redirect(new URL('/sign-in', req.url))
+    return NextResponse.redirect(new URL("/sign-in", req.url));
   }
 
-  // Leer rol desde publicMetadata (configurado en Clerk Dashboard)
-  const role = (sessionClaims?.metadata as { role?: string } | undefined)?.role
+  const role = getRoleFromSessionClaims(sessionClaims);
+  const pathname = req.nextUrl.pathname;
 
-  // Recepcionista → solo accede a inicio + calendario, el resto → no-access
-  if (role === 'recepcionista' && !isRecepcionistaAllowed(req)) {
-    return NextResponse.redirect(new URL('/dashboard/no-access', req.url))
+  if (
+    role === DASHBOARD_ROLES.USUARIO_REPORTE_SEGUIMIENTO &&
+    pathname === "/dashboard"
+  ) {
+    return NextResponse.redirect(
+      new URL(getDefaultDashboardPath(role), req.url)
+    );
   }
 
-  return NextResponse.next()
-})
+  if (!canAccessDashboardPath(role, pathname)) {
+    const redirectPath =
+      role === DASHBOARD_ROLES.USUARIO_REPORTE_SEGUIMIENTO
+        ? getDefaultDashboardPath(role)
+        : "/dashboard/no-access";
+
+    return NextResponse.redirect(new URL(redirectPath, req.url));
+  }
+
+  return NextResponse.next();
+});
 
 export const config = {
-  matcher: ['/dashboard/:path*'],
-}
-
-
-
-*/
+  matcher: ["/dashboard/:path*"],
+};

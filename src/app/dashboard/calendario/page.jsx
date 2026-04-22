@@ -766,6 +766,7 @@ function CalendarioContent() {
     const eventStyleGetter = (event) => {
         const esBloqueo = event.tipo === "bloqueo";
         const esSeleccion = event.tipo === "seleccion";
+        const esVistaMes = currentView === "month";
         const estadoReservaNormalizado = event.resource?.estadoReserva?.toLowerCase?.() ?? "";
         const paletteReserva = estadoReservaNormalizado === "confirmada"
             ? {
@@ -793,15 +794,15 @@ function CalendarioContent() {
                 style: {
                     display: 'flex',
                     alignItems: 'center',
-                    height: '100%',
-                    minHeight: '0',
+                    height: esVistaMes ? 'auto' : '100%',
+                    minHeight: esVistaMes ? '20px' : '0',
                     maxHeight: 'none',
                     whiteSpace: 'normal',
                     overflow: 'hidden',
                     textOverflow: 'clip',
-                    lineHeight: '1.3',
-                    padding: '6px 8px',
-                    fontSize: '0.32rem',
+                    lineHeight: esVistaMes ? '1' : '1.3',
+                    padding: esVistaMes ? '2px 4px' : '6px 8px',
+                    fontSize: esVistaMes ? '0.45rem' : '0.32rem',
                     boxSizing: 'border-box',
                     borderRadius: '0px',
                     backgroundColor: 'rgba(107, 114, 128, 0.28)',
@@ -819,15 +820,15 @@ function CalendarioContent() {
             style: {
                 display: 'flex',
                 alignItems: 'stretch',
-                height: '100%',
-                minHeight: '0',
+                height: esVistaMes ? 'auto' : '100%',
+                minHeight: esVistaMes ? '20px' : '0',
                 maxHeight: 'none',
                 whiteSpace: 'normal',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 lineHeight: '1',
-                padding: '0',
-                fontSize: '0.32rem',
+                padding: esVistaMes ? '2px 4px' : '0',
+                fontSize: esVistaMes ? '0.45rem' : '0.32rem',
                 boxSizing: 'border-box',
                 borderRadius: '0px',
                 backgroundColor: esSeleccion ? 'rgba(124, 58, 237, 0.24)' : paletteReserva.backgroundColor,

@@ -125,71 +125,63 @@ export default function ExamenDocumento() {
         const pageH = doc.internal.pageSize.getHeight();
         const margin = 18;
         const rightX = pageW - margin;
+        const contentLeft = margin + 4;
+        const contentRight = rightX - 4;
+        const contentWidth = contentRight - contentLeft;
+        const columnWidth = contentWidth / 2;
 
-        try {
-            const fontRes = await fetch("/fonts/Michroma-Regular.ttf");
-            const fontBuffer = await fontRes.arrayBuffer();
-            const fontBytes = new Uint8Array(fontBuffer);
-            let binary = "";
-            for (let i = 0; i < fontBytes.length; i++) binary += String.fromCharCode(fontBytes[i]);
-            doc.addFileToVFS("Michroma-Regular.ttf", btoa(binary));
-            doc.addFont("Michroma-Regular.ttf", "Michroma", "normal");
-        } catch (error) {
-            // fallback silencioso
-        }
+        doc.setDrawColor(45, 45, 45);
+        doc.setLineWidth(0.4);
+        doc.rect(margin, 14, rightX - margin, pageH - 28);
 
-        doc.setFillColor(15, 23, 42);
-        doc.rect(0, 0, pageW, 36, "F");
-
-        doc.setDrawColor(34, 211, 238);
-        doc.setLineWidth(0.7);
-        doc.line(margin, 36, rightX, 36);
-
-        try {
-            doc.setFont("Michroma", "normal");
-        } catch (error) {
-            doc.setFont("helvetica", "bold");
-        }
-
-        doc.setFontSize(17);
-        doc.setTextColor(255, 255, 255);
-        doc.text(EMPRESA_NOMBRE, margin, 17);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(16);
+        doc.setTextColor(25, 25, 25);
+        doc.text(EMPRESA_NOMBRE.toUpperCase(), contentLeft, 24);
 
         doc.setFont("helvetica", "normal");
-        doc.setFontSize(7.5);
-        doc.setTextColor(148, 163, 184);
-        doc.text("Solicitud de examenes clinicos", margin, 24);
+        doc.setFontSize(8);
+        doc.setTextColor(90, 90, 90);
+        doc.text("Solicitud de examenes clinicos", contentLeft, 29);
+
+        doc.setDrawColor(60, 60, 60);
+        doc.setLineWidth(0.6);
+        doc.line(contentLeft, 34, contentRight, 34);
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(9);
+        doc.setTextColor(40, 40, 40);
+        doc.text("ORDEN DE EXAMENES", contentRight, 22, {align: "right"});
+
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(8);
+        doc.text(`Fecha de emision: ${new Date(`${fechaSolicitud}T00:00:00`).toLocaleDateString("es-CL")}`, contentRight, 28, {align: "right"});
+
+        let y = 44;
 
         doc.setFont("helvetica", "bold");
         doc.setFontSize(8);
-        doc.setTextColor(103, 232, 249);
-        doc.text("DOCUMENTO DE SOLICITUD", rightX, 18, {align: "right"});
+        doc.setTextColor(95, 95, 95);
+        doc.text("DATOS DEL PACIENTE", contentLeft, y);
 
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(8);
-        doc.setTextColor(226, 232, 240);
-        doc.text(`Fecha de emision: ${new Date(fechaSolicitud).toLocaleDateString("es-CL")}`, rightX, 24, {align: "right"});
-
-        let y = 48;
-
-        doc.setFillColor(248, 250, 252);
-        doc.roundedRect(margin, y - 6, rightX - margin, 34, 2, 2, "F");
+        doc.setDrawColor(185, 185, 185);
+        doc.setLineWidth(0.2);
+        doc.line(contentLeft, y + 2, contentRight, y + 2);
 
         doc.setFont("helvetica", "bold");
         doc.setFontSize(7);
-        doc.setTextColor(100, 116, 139);
-        doc.text("PACIENTE", margin + 5, y);
-        doc.text("RUT", margin + 98, y);
-        doc.text("PROFESIONAL", margin + 5, y + 13);
+        doc.text("Paciente", contentLeft, y + 10);
+        doc.text("RUT", contentLeft + 108, y + 10);
+        doc.text("Profesional solicitante", contentLeft, y + 21);
 
         doc.setFont("helvetica", "normal");
         doc.setFontSize(10);
-        doc.setTextColor(30, 41, 59);
-        doc.text(nombrePaciente.trim() || "-", margin + 5, y + 6);
-        doc.text(rutPaciente.trim() || "-", margin + 98, y + 6);
-        doc.text(nombreProfesional.trim() || "-", margin + 5, y + 19);
+        doc.setTextColor(25, 25, 25);
+        doc.text(nombrePaciente.trim() || "-", contentLeft, y + 16);
+        doc.text(rutPaciente.trim() || "-", contentLeft + 108, y + 16);
+        doc.text(nombreProfesional.trim() || "-", contentLeft, y + 27);
 
-        y = 92;
+        y = 82;
 
         const rows = [];
         for (let i = 0; i < listaExamenesSolicitados.length; i += 2) {
@@ -206,71 +198,76 @@ export default function ExamenDocumento() {
             head: [["Examen solicitado", "Examen solicitado"]],
             body: rows,
             startY: y,
-            margin: {left: margin, right: margin},
-            theme: "plain",
+            margin: {left: contentLeft, right: contentLeft},
+            theme: "grid",
             headStyles: {
-                fillColor: [15, 23, 42],
-                textColor: [255, 255, 255],
+                fillColor: [238, 238, 238],
+                textColor: [35, 35, 35],
                 fontStyle: "bold",
                 fontSize: 8,
                 cellPadding: {top: 4, bottom: 4, left: 4, right: 4},
+                lineColor: [145, 145, 145],
+                lineWidth: 0.2,
             },
             columnStyles: {
-                0: {cellWidth: 85},
-                1: {cellWidth: 85},
+                0: {cellWidth: columnWidth},
+                1: {cellWidth: columnWidth},
             },
             bodyStyles: {
                 fontSize: 8.5,
-                textColor: [30, 41, 59],
+                textColor: [35, 35, 35],
                 cellPadding: {top: 3.5, bottom: 3.5, left: 4, right: 4},
+                lineColor: [200, 200, 200],
+                lineWidth: 0.15,
             },
             alternateRowStyles: {
-                fillColor: [248, 250, 252],
+                fillColor: [250, 250, 250],
             },
             styles: {
-                lineWidth: 0,
+                lineWidth: 0.15,
                 overflow: "linebreak",
             },
+            tableWidth: contentWidth,
         });
 
         let finalY = doc.lastAutoTable.finalY + 10;
 
-        doc.setDrawColor(34, 211, 238);
-        doc.setLineWidth(0.35);
-        doc.line(rightX - 55, finalY, rightX, finalY);
+        doc.setDrawColor(120, 120, 120);
+        doc.setLineWidth(0.25);
+        doc.line(contentRight - 51, finalY, contentRight, finalY);
 
         finalY += 8;
         doc.setFont("helvetica", "bold");
         doc.setFontSize(11);
-        doc.setTextColor(15, 23, 42);
-        doc.text("Total examenes:", rightX - 55, finalY);
-        doc.text(String(listaExamenesSolicitados.length), rightX, finalY, {align: "right"});
+        doc.setTextColor(25, 25, 25);
+        doc.text("Total examenes:", contentRight - 51, finalY);
+        doc.text(String(listaExamenesSolicitados.length), contentRight, finalY, {align: "right"});
 
         finalY += 7;
         doc.setFont("helvetica", "normal");
         doc.setFontSize(9);
-        doc.setTextColor(100, 116, 139);
-        doc.text("Documento de solicitud clínica", rightX, finalY, {align: "right"});
+        doc.setTextColor(95, 95, 95);
+        doc.text("Documento de solicitud clinica", contentRight, finalY, {align: "right"});
 
-        const firmaY = Math.max(finalY + 22, pageH - 48);
-        doc.setDrawColor(203, 213, 225);
+        const footerY = pageH - 18;
+        const firmaY = Math.min(Math.max(finalY + 22, pageH - 52), footerY - 18);
+        doc.setDrawColor(135, 135, 135);
         doc.setLineWidth(0.3);
-        doc.line(margin, firmaY, margin + 70, firmaY);
-        doc.line(rightX - 70, firmaY, rightX, firmaY);
+        doc.line(contentLeft, firmaY, contentLeft + 66, firmaY);
+        doc.line(contentRight - 66, firmaY, contentRight, firmaY);
 
         doc.setFont("helvetica", "normal");
         doc.setFontSize(8);
-        doc.setTextColor(100, 116, 139);
-        doc.text("Firma profesional", margin, firmaY + 5);
-        doc.text("Recepcion paciente", rightX, firmaY + 5, {align: "right"});
+        doc.setTextColor(90, 90, 90);
+        doc.text("Firma profesional", contentLeft, firmaY + 5);
+        doc.text("Recepcion paciente", contentRight, firmaY + 5, {align: "right"});
 
-        const footerY = pageH - 14;
-        doc.setDrawColor(226, 232, 240);
-        doc.line(margin, footerY - 5, rightX, footerY - 5);
+        doc.setDrawColor(190, 190, 190);
+        doc.line(contentLeft, footerY - 5, contentRight, footerY - 5);
         doc.setFontSize(7);
-        doc.setTextColor(148, 163, 184);
-        doc.text("Documento generado desde AgendaClinica para solicitud interna o entrega al paciente.", margin, footerY);
-        doc.text("Examenes clinicos", rightX, footerY, {align: "right"});
+        doc.setTextColor(110, 110, 110);
+        doc.text("Documento generado desde AgendaClinica para solicitud interna o entrega al paciente.", contentLeft, footerY);
+        doc.text("Examenes clinicos", contentRight, footerY, {align: "right"});
 
         const nombrePacienteArchivo = `${nombrePaciente || "paciente"}`
             .trim()
@@ -282,24 +279,24 @@ export default function ExamenDocumento() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-sky-50/30">
+        <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(99,102,241,0.10),_transparent_28%),radial-gradient(circle_at_right,_rgba(6,182,212,0.10),_transparent_24%),linear-gradient(180deg,_#f8fafc_0%,_#ffffff_55%,_#f8fafc_100%)]">
             <ToasterClient/>
 
             <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 md:py-10">
-                <div className="mb-8 rounded-[28px] border border-slate-200/80 bg-white/90 p-5 shadow-[0_20px_60px_rgba(15,23,42,0.08)] backdrop-blur-sm">
+                <div className="mb-8 rounded-[28px] border border-slate-200/80 bg-white/85 p-5 shadow-[0_20px_60px_rgba(15,23,42,0.08)] backdrop-blur-sm">
                     <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
                         <div>
-                            <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.22em] text-sky-600">Documentos clínicos</p>
+                            <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.22em] text-violet-600">Documentación clínica</p>
                             <h1 className="text-2xl font-bold tracking-tight text-slate-900 md:text-3xl">
                                 Solicitud de exámenes
                             </h1>
-                            <p className="mt-2 max-w-2xl text-sm text-slate-600">
-                                Ingresa nombre, RUT, profesional, fecha del documento y los exámenes requeridos para generar una solicitud formal.
+                            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
+                                Completa los antecedentes clínicos básicos y arma una orden de exámenes con un formato sobrio, legible y adecuado para entrega hospitalaria.
                             </p>
                         </div>
                         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                             <div className="rounded-2xl border border-violet-200 bg-violet-50/80 px-4 py-3">
-                                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-violet-500">Exámenes</p>
+                                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-violet-500">Catálogo</p>
                                 <p className="mt-1 text-sm font-semibold text-slate-900">{listaExamenes.length}</p>
                             </div>
                             <div className="rounded-2xl border border-cyan-200 bg-cyan-50/80 px-4 py-3">
@@ -366,7 +363,7 @@ export default function ExamenDocumento() {
                                     <button
                                         type="button"
                                         onClick={generarDocumentoPDF}
-                                        className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-sky-600 to-cyan-500 px-4 py-2.5 text-sm font-semibold text-white shadow-md transition-all duration-150 hover:from-sky-700 hover:to-cyan-600"
+                                        className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_10px_30px_rgba(79,70,229,0.28)] transition-all duration-150 hover:from-violet-700 hover:to-indigo-700"
                                     >
                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 16v-8m0 8l-3-3m3 3l3-3M4 19h16"/>
@@ -376,7 +373,7 @@ export default function ExamenDocumento() {
                                     <button
                                         type="button"
                                         onClick={limpiarDocumento}
-                                        className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition-all duration-150 hover:bg-slate-50"
+                                        className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-medium text-slate-700 transition-all duration-150 hover:border-slate-300 hover:bg-slate-100"
                                     >
                                         Limpiar
                                     </button>
@@ -425,7 +422,7 @@ export default function ExamenDocumento() {
                                 <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                                     <div>
                                         <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-700">Catálogo de exámenes</h2>
-                                        <p className="mt-1 text-xs text-slate-500">Selecciona los exámenes que aparecerán en el PDF.</p>
+                                        <p className="mt-1 text-xs text-slate-500">Selecciona los exámenes que aparecerán en la orden clínica.</p>
                                     </div>
                                     <div className="w-full md:w-72">
                                         <ShadcnInput

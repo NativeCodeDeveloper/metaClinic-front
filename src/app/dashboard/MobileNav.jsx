@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
+import { useUser } from "@clerk/nextjs";
+import { DASHBOARD_ROLES } from "@/lib/dashboard-access";
 
 const links = [
   { label: "Inicio", href: "/dashboard" },
@@ -24,6 +26,24 @@ const sections = [
 
 export default function MobileNav() {
   const [open, setOpen] = useState(false);
+  const { user } = useUser();
+  const role = user?.publicMetadata?.role;
+  const isRestrictedUser =
+    role === DASHBOARD_ROLES.USUARIO_REPORTE_SEGUIMIENTO;
+
+  const mobileSections = isRestrictedUser
+    ? [
+        {
+          title: "Seguimiento",
+          items: [
+            {
+              label: "Reporte y seguimiento",
+              href: "/dashboard/usuarioReporteSeguimiento",
+            },
+          ],
+        },
+      ]
+    : sections;
 
   return (
     <div className="md:hidden sticky top-0 z-40">
@@ -57,7 +77,7 @@ export default function MobileNav() {
           {/* Menu panel */}
           <div className="absolute left-0 right-0 z-50 mx-3 mt-1 max-h-[70vh] overflow-y-auto rounded-xl border border-slate-200 bg-white shadow-xl">
             <nav className="p-3 space-y-3">
-              {sections.map((section) => (
+              {mobileSections.map((section) => (
                 <div key={section.title}>
                   <div className="px-3 pb-1.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-400">
                     {section.title}

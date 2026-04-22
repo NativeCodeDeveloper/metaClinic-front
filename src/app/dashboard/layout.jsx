@@ -1,15 +1,25 @@
 // app/dashboard/layout.jsx
 import { ClerkProvider } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import Link from "next/link";
 import MobileNav from "./MobileNav";
 import SignOutBtn from "./SignOutBtn";
+import {
+    DASHBOARD_ROLES,
+    getRoleFromSessionClaims,
+} from "@/lib/dashboard-access";
 
 export const metadata = {
     title: "Dashboard",
     description: "Panel de administración",
 };
 
-export default function DashboardLayout({ children }) {
+export default async function DashboardLayout({ children }) {
+    const { sessionClaims } = await auth();
+    const role = getRoleFromSessionClaims(sessionClaims);
+    const isRestrictedUser = role === DASHBOARD_ROLES.USUARIO_REPORTE_SEGUIMIENTO;
+    const isAdmin = role === DASHBOARD_ROLES.ADMIN;
+
     return (
         <ClerkProvider>
         <div className="h-screen w-full overflow-hidden bg-white">
@@ -28,6 +38,54 @@ export default function DashboardLayout({ children }) {
 
                     {/* ── Navigation ── */}
                     <nav className="flex-1 px-3 py-1 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+                        {isRestrictedUser ? (
+                            <div className="space-y-4">
+                                <details className="group" open>
+                                    <summary className="flex items-center justify-between px-2 py-1 text-[11px] font-medium text-white/30 hover:text-white/45 transition-colors duration-200 cursor-pointer list-none select-none tracking-normal">
+                                        <span>seguimiento</span>
+                                        <svg className="h-3 w-3 text-white/15 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.25a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clipRule="evenodd" />
+                                        </svg>
+                                    </summary>
+                                    <div className="mt-1 space-y-0.5">
+                                        <Link
+                                            href="/dashboard/usuarioReporteSeguimiento"
+                                            className="group/link flex items-center gap-2.5 rounded-md px-2 py-[6px] text-[12.5px] font-light text-white/70 hover:text-white/95 hover:bg-white/[0.05] transition-all duration-200"
+                                        >
+                                            <span className="h-[3px] w-[3px] rounded-full bg-cyan-400 shadow-[0_0_6px_rgba(34,211,238,0.6)] transition-all duration-200" />
+                                            Reporte y seguimiento
+                                        </Link>
+                                    </div>
+                                </details>
+
+                                <div className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-3">
+                                    <div className="text-[10px] font-medium uppercase tracking-[0.18em] text-cyan-300">
+                                        Acceso limitado
+                                    </div>
+                                    <p className="mt-2 text-[12px] leading-5 text-white/55">
+                                        Este usuario solo tiene habilitado el modulo de seguimiento.
+                                    </p>
+                                </div>
+
+                                <div className="mt-6 pt-4 relative">
+                                    <div className="absolute top-0 left-2 right-2 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+                                    <div className="px-2 text-[11px] font-medium text-white/30 tracking-normal">Atajos</div>
+                                    <div className="mt-1.5 space-y-0.5">
+                                        <Link
+                                            href="/"
+                                            className="group/link flex items-center gap-2.5 rounded-md px-2 py-[6px] text-[12.5px] font-light text-white/50 hover:text-white/90 hover:bg-white/[0.05] transition-all duration-200"
+                                        >
+                                            <svg className="h-3.5 w-3.5 text-white/20 group-hover/link:text-violet-400 transition-colors duration-200" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fillRule="evenodd" d="M4.25 5.5a.75.75 0 00-.75.75v8.5c0 .414.336.75.75.75h8.5a.75.75 0 00.75-.75v-4a.75.75 0 011.5 0v4A2.25 2.25 0 0112.75 17h-8.5A2.25 2.25 0 012 14.75v-8.5A2.25 2.25 0 014.25 4h5a.75.75 0 010 1.5h-5z" clipRule="evenodd" />
+                                                <path fillRule="evenodd" d="M6.194 12.753a.75.75 0 001.06.053L16.5 4.44v2.81a.75.75 0 001.5 0v-4.5a.75.75 0 00-.75-.75h-4.5a.75.75 0 000 1.5h2.553l-9.056 8.194a.75.75 0 00-.053 1.06z" clipRule="evenodd" />
+                                            </svg>
+                                            Volver al sitio
+                                        </Link>
+                                        <SignOutBtn />
+                                    </div>
+                                </div>
+                            </div>
+                        ) : (
                         <div className="space-y-4">
 
                             {/* — Principal — */}
@@ -210,8 +268,10 @@ export default function DashboardLayout({ children }) {
 
 
 
-                            {/* — Administración Web — */}
-                            <details className="group">
+                            {/* — Administración Web —
+
+
+                         <details className="group">
                                 <summary className="flex items-center justify-between px-2 py-1 text-[11px] font-medium text-white/30 hover:text-white/45 transition-colors duration-200 cursor-pointer list-none select-none tracking-normal">
                                     <span>Administracion web</span>
                                     <svg className="h-3 w-3 text-white/15 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor">
@@ -248,6 +308,8 @@ export default function DashboardLayout({ children }) {
                                     </Link>
                                 </div>
                             </details>
+                            */}
+
 
                             {/* — Cobro por Consulta — */}
                             <details className="group">
@@ -299,9 +361,28 @@ export default function DashboardLayout({ children }) {
                                     </svg>
                                     Volver al sitio
                                 </Link>
+                                {isAdmin && (
+                                    <>
+                                        <Link
+                                            href="/dashboard/crearUsuarios"
+                                            className="group/link flex items-center gap-2.5 rounded-md px-2 py-[6px] text-[12.5px] font-light text-white/50 hover:text-white/90 hover:bg-white/[0.05] transition-all duration-200"
+                                        >
+                                            <span className="h-[3px] w-[3px] rounded-full bg-white/15 group-hover/link:bg-violet-400 group-hover/link:shadow-[0_0_6px_rgba(139,92,246,0.6)] transition-all duration-200" />
+                                            Crear usuarios seguimiento
+                                        </Link>
+                                        <Link
+                                            href="/dashboard/usuarioReporteSeguimiento"
+                                            className="group/link flex items-center gap-2.5 rounded-md px-2 py-[6px] text-[12.5px] font-light text-white/50 hover:text-white/90 hover:bg-white/[0.05] transition-all duration-200"
+                                        >
+                                            <span className="h-[3px] w-[3px] rounded-full bg-white/15 group-hover/link:bg-violet-400 group-hover/link:shadow-[0_0_6px_rgba(139,92,246,0.6)] transition-all duration-200" />
+                                            Modulo seguimiento
+                                        </Link>
+                                    </>
+                                )}
                                 <SignOutBtn />
                             </div>
                         </div>
+                        )}
                     </nav>
 
                     {/* ── Footer status ── */}

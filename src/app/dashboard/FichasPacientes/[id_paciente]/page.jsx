@@ -270,6 +270,14 @@ export default function Paciente() {
         router.push(`/dashboard/recetaPacientes/${id_paciente}`);
     }
 
+
+
+
+    function irAOdontograma(id_paciente) {
+        router.push(`/dashboard/odontogramasPaciente/${id_paciente}`);
+    }
+
+
     async function enviarLinkTelemedicina() {
         const paciente = detallePaciente[0];
 
@@ -494,6 +502,28 @@ export default function Paciente() {
                             </svg>
                             Telemedicina
                         </button>
+
+
+
+
+
+
+
+                        {/*
+
+                                                <button
+                            onClick={() => irAOdontograma(id_paciente)}
+                            className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-cyan-500 to-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_10px_30px_rgba(14,165,233,0.24)] transition-all duration-150 hover:from-cyan-600 hover:to-sky-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c-2.7 0-5 1.9-5 4.9 0 1.3.3 2.6.8 3.8.4 1 .7 2 .7 3.1 0 2.4.9 6.2 3.5 6.2s3.5-3.8 3.5-6.2c0-1.1.3-2.1.7-3.1.5-1.2.8-2.5.8-3.8C17 4.9 14.7 3 12 3z"/>
+                            </svg>
+                            Odontograma
+                        </button>
+
+
+                        */}
+
+
 
 
 
