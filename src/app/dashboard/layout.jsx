@@ -86,6 +86,7 @@ export default async function DashboardLayout({ children }) {
                                 </div>
                             </div>
                         ) : (
+                            <>
                         <div className="space-y-4">
 
                             {/* — Principal — */}
@@ -382,6 +383,7 @@ export default async function DashboardLayout({ children }) {
                                 <SignOutBtn />
                             </div>
                         </div>
+                            </>
                         )}
                     </nav>
 
