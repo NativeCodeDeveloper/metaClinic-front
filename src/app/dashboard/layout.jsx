@@ -7,6 +7,7 @@ import SignOutBtn from "./SignOutBtn";
 import {
     DASHBOARD_ROLES,
     getRoleFromSessionClaims,
+    isAdminRole,
 } from "@/lib/dashboard-access";
 
 export const metadata = {
@@ -18,7 +19,7 @@ export default async function DashboardLayout({ children }) {
     const { sessionClaims } = await auth();
     const role = getRoleFromSessionClaims(sessionClaims);
     const isRestrictedUser = role === DASHBOARD_ROLES.USUARIO_REPORTE_SEGUIMIENTO;
-    const isAdmin = role === DASHBOARD_ROLES.ADMIN;
+    const isAdmin = isAdminRole(role);
 
     return (
         <ClerkProvider>

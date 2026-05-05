@@ -1,6 +1,10 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import { DASHBOARD_ROLES, getRoleFromSessionClaims } from "@/lib/dashboard-access";
+import {
+  DASHBOARD_ROLES,
+  getRoleFromSessionClaims,
+  isAdminRole,
+} from "@/lib/dashboard-access";
 
 function getErrorMessage(error) {
   return (
@@ -24,7 +28,7 @@ export async function POST(request) {
 
     const role = getRoleFromSessionClaims(sessionClaims);
 
-    if (role !== DASHBOARD_ROLES.ADMIN) {
+    if (!isAdminRole(role)) {
       return NextResponse.json(
         { message: "Solo un administrador puede crear usuarios." },
         { status: 403 }

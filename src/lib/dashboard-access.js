@@ -1,5 +1,6 @@
 export const DASHBOARD_ROLES = {
   ADMIN: "admin",
+  CLINICO: "clinico",
   RECEPCIONISTA: "recepcionista",
   USUARIO_REPORTE_SEGUIMIENTO: "usuario_reporte_seguimiento",
 };
@@ -23,7 +24,18 @@ const ROLE_ALLOWED_PATHS = {
 };
 
 export function getRoleFromSessionClaims(sessionClaims) {
-  return sessionClaims?.metadata?.role;
+  const role = sessionClaims?.metadata?.role;
+
+  // Mantiene compatibilidad con usuarios Clerk antiguos que siguen usando "clinico".
+  if (role === DASHBOARD_ROLES.CLINICO) {
+    return DASHBOARD_ROLES.ADMIN;
+  }
+
+  return role;
+}
+
+export function isAdminRole(role) {
+  return role === DASHBOARD_ROLES.ADMIN;
 }
 
 export function getDefaultDashboardPath(role) {
