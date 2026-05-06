@@ -27,8 +27,18 @@ export async function POST(request) {
     }
 
     const role = getRoleFromSessionClaims(sessionClaims);
+    console.log("[clerk-users] auth context", {
+      userId,
+      role,
+      sessionClaims,
+    });
 
     if (!isAdminRole(role)) {
+      console.warn("[clerk-users] forbidden request", {
+        userId,
+        role,
+        sessionClaims,
+      });
       return NextResponse.json(
         { message: "Solo un administrador puede crear usuarios." },
         { status: 403 }
