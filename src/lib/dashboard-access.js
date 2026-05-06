@@ -5,6 +5,15 @@ export const DASHBOARD_ROLES = {
   USUARIO_REPORTE_SEGUIMIENTO: "usuario_reporte_seguimiento",
 };
 
+const ROLE_CLAIM_PATHS = [
+  ["metadata", "role"],
+  ["public_metadata", "role"],
+  ["publicMetadata", "role"],
+  ["unsafe_metadata", "role"],
+  ["unsafeMetadata", "role"],
+  ["role"],
+];
+
 const ROLE_ALLOWED_PATHS = {
   [DASHBOARD_ROLES.RECEPCIONISTA]: [
     "/dashboard",
@@ -24,7 +33,16 @@ const ROLE_ALLOWED_PATHS = {
 };
 
 export function getRoleFromSessionClaims(sessionClaims) {
-  const role = sessionClaims?.metadata?.role;
+  const role = ROLE_CLAIM_PATHS.reduce((foundRole, claimPath) => {
+    if (foundRole) {
+      return foundRole;
+    }
+
+    return claimPath.reduce(
+      (value, key) => (value == null ? undefined : value[key]),
+      sessionClaims
+    );
+  }, undefined);
 
   // Mantiene compatibilidad con usuarios Clerk antiguos que siguen usando "clinico".
   if (role === DASHBOARD_ROLES.CLINICO) {
