@@ -13,15 +13,9 @@ const links = [
   { label: "Estado de Reservaciones", href: "/dashboard/agendaCitas" },
   { label: "Ingreso de Pacientes", href: "/dashboard/GestionPaciente" },
   { label: "Carpeta del paciente", href: "/dashboard/FichaClinica" },
+  { label: "Crear usuario de seguimiento", href: "/dashboard/crearUsuarios" },
   { label: "Publicaciones", href: "/dashboard/publicaciones" },
   { label: "Carrusel de Portada", href: "/dashboard/portadaEdit" },
-];
-
-const sections = [
-  { title: "Principal", items: [links[0]] },
-  { title: "Agenda Clínica", items: [links[1], links[2], links[3]] },
-  { title: "Registros Clínicos", items: [links[4], links[5]] },
-  { title: "Administración Web", items: [links[6], links[7]] },
 ];
 
 export default function MobileNav() {
@@ -30,6 +24,18 @@ export default function MobileNav() {
   const role = user?.publicMetadata?.role;
   const isRestrictedUser =
     role === DASHBOARD_ROLES.USUARIO_REPORTE_SEGUIMIENTO;
+  const isAdmin =
+    role === DASHBOARD_ROLES.ADMIN || role === DASHBOARD_ROLES.CLINICO;
+
+  const sections = [
+    { title: "Principal", items: [links[0]] },
+    { title: "Agenda Clínica", items: [links[1], links[2], links[3]] },
+    {
+      title: "Registros Clínicos",
+      items: isAdmin ? [links[4], links[5], links[6]] : [links[4], links[5]],
+    },
+    { title: "Administración Web", items: [links[7], links[8]] },
+  ];
 
   const mobileSections = isRestrictedUser
     ? [

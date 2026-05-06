@@ -66,7 +66,15 @@ export default function CrearUsuariosPage() {
 
       setLastCreatedUser(respuestaBackend);
       setFormData(initialForm);
-      toast.success("Usuario creado correctamente en Clerk.");
+      if (respuestaBackend?.credentialsEmailSent) {
+        toast.success("Usuario creado y correo de acceso enviado correctamente.");
+      } else {
+        toast.success("Usuario creado correctamente en Clerk.");
+        toast.error(
+          respuestaBackend?.credentialsEmailError ||
+            "El usuario fue creado, pero no se pudo enviar el correo de acceso."
+        );
+      }
     } catch (error) {
       console.log(error);
       toast.error("Ocurrio un error inesperado al crear el usuario.");

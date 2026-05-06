@@ -7,6 +7,8 @@ import {
   normalizeDashboardRole,
 } from "@/lib/dashboard-access";
 
+const BACKEND_API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 function getErrorMessage(error) {
   return (
     error?.errors?.[0]?.longMessage ||
@@ -14,6 +16,57 @@ function getErrorMessage(error) {
     error?.message ||
     "No fue posible crear el usuario en Clerk."
   );
+}
+
+async function sendCredentialsEmail({
+  email,
+  firstName,
+  lastName,
+  password,
+  accessUrl,
+}) {
+  if (!BACKEND_API_URL) {
+    return {
+      sent: false,
+      error: "No existe configuracion de backend para enviar el correo de acceso.",
+    };
+  }
+
+  try {
+    const response = await fetch(`${BACKEND_API_URL}/correo/acceso-seguimiento`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        firstName,
+        lastName,
+        password,
+        accessUrl,
+      }),
+    });
+
+    const data = await response.json().catch(() => null);
+
+    if (!response.ok || !data?.message) {
+      return {
+        sent: false,
+        error: "No fue posible enviar el correo de acceso.",
+      };
+    }
+
+    return {
+      sent: true,
+      messageId: data?.messageId || null,
+    };
+  } catch (error) {
+    return {
+      sent: false,
+      error: error?.message || "No fue posible enviar el correo de acceso.",
+    };
+  }
 }
 
 export async function POST(request) {
@@ -35,12 +88,6 @@ export async function POST(request) {
       role = normalizeDashboardRole(currentUser?.publicMetadata?.role);
     }
 
-    console.log("[clerk-users] auth context", {
-      userId,
-      role,
-      sessionClaims,
-    });
-
     if (!isAdminRole(role)) {
       console.warn("[clerk-users] forbidden request", {
         userId,
@@ -58,6 +105,7 @@ export async function POST(request) {
     const password = body?.password?.trim();
     const firstName = body?.firstName?.trim();
     const lastName = body?.lastName?.trim();
+    const accessUrl = `${new URL(request.url).origin}/sign-in`;
 
     if (!email || !password || !firstName || !lastName) {
       return NextResponse.json(
@@ -75,6 +123,13 @@ export async function POST(request) {
         role: DASHBOARD_ROLES.USUARIO_REPORTE_SEGUIMIENTO,
       },
     });
+    const credentialsEmail = await sendCredentialsEmail({
+      email,
+      firstName,
+      lastName,
+      password,
+      accessUrl,
+    });
 
     return NextResponse.json(
       {
@@ -83,6 +138,8 @@ export async function POST(request) {
         firstName: user.firstName,
         lastName: user.lastName,
         role: DASHBOARD_ROLES.USUARIO_REPORTE_SEGUIMIENTO,
+        credentialsEmailSent: credentialsEmail.sent,
+        credentialsEmailError: credentialsEmail.error || null,
       },
       { status: 201 }
     );
