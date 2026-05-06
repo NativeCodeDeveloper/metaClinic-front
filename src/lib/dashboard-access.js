@@ -5,6 +5,8 @@ export const DASHBOARD_ROLES = {
   USUARIO_REPORTE_SEGUIMIENTO: "usuario_reporte_seguimiento",
 };
 
+export const RESTRICTED_PATIENTS_PATH = "/DashboardPacientes";
+
 const ROLE_CLAIM_PATHS = [
   ["metadata", "role"],
   ["public_metadata", "role"],
@@ -27,8 +29,7 @@ const ROLE_ALLOWED_PATHS = {
     "/dashboard/paciente/",
   ],
   [DASHBOARD_ROLES.USUARIO_REPORTE_SEGUIMIENTO]: [
-    "/dashboard/no-access",
-    "/dashboard/usuarioReporteSeguimiento",
+    RESTRICTED_PATIENTS_PATH,
   ],
 };
 
@@ -62,7 +63,7 @@ export function isAdminRole(role) {
 
 export function getDefaultDashboardPath(role) {
   if (role === DASHBOARD_ROLES.USUARIO_REPORTE_SEGUIMIENTO) {
-    return "/dashboard/usuarioReporteSeguimiento";
+    return RESTRICTED_PATIENTS_PATH;
   }
 
   return "/dashboard";

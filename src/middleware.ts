@@ -7,10 +7,13 @@ import {
   getRoleFromSessionClaims,
 } from "@/lib/dashboard-access";
 
-const isDashboardRoute = createRouteMatcher(["/dashboard(.*)"]);
+const isProtectedAppRoute = createRouteMatcher([
+  "/dashboard(.*)",
+  "/DashboardPacientes",
+]);
 
 export default clerkMiddleware(async (auth, req) => {
-  if (!isDashboardRoute(req)) {
+  if (!isProtectedAppRoute(req)) {
     return NextResponse.next();
   }
 
@@ -25,7 +28,7 @@ export default clerkMiddleware(async (auth, req) => {
 
   if (
     role === DASHBOARD_ROLES.USUARIO_REPORTE_SEGUIMIENTO &&
-    pathname === "/dashboard"
+    pathname.startsWith("/dashboard")
   ) {
     return NextResponse.redirect(
       new URL(getDefaultDashboardPath(role), req.url)
@@ -45,5 +48,5 @@ export default clerkMiddleware(async (auth, req) => {
 });
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/api/admin/clerk-users"],
+  matcher: ["/dashboard/:path*", "/DashboardPacientes", "/api/admin/clerk-users"],
 };

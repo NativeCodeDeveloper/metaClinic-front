@@ -8,6 +8,7 @@ import {
     DASHBOARD_ROLES,
     getRoleFromSessionClaims,
     isAdminRole,
+    RESTRICTED_PATIENTS_PATH,
 } from "@/lib/dashboard-access";
 
 export const metadata = {
@@ -50,11 +51,11 @@ export default async function DashboardLayout({ children }) {
                                     </summary>
                                     <div className="mt-1 space-y-0.5">
                                         <Link
-                                            href="/dashboard/usuarioReporteSeguimiento"
+                                            href={RESTRICTED_PATIENTS_PATH}
                                             className="group/link flex items-center gap-2.5 rounded-md px-2 py-[6px] text-[12.5px] font-light text-white/70 hover:text-white/95 hover:bg-white/[0.05] transition-all duration-200"
                                         >
                                             <span className="h-[3px] w-[3px] rounded-full bg-cyan-400 shadow-[0_0_6px_rgba(34,211,238,0.6)] transition-all duration-200" />
-                                            Reporte y seguimiento
+                                            Seguimiento de tratamiento
                                         </Link>
                                     </div>
                                 </details>
@@ -375,11 +376,11 @@ export default async function DashboardLayout({ children }) {
                                 {isAdmin && (
                                     <>
                                         <Link
-                                            href="/dashboard/usuarioReporteSeguimiento"
+                                            href={RESTRICTED_PATIENTS_PATH}
                                             className="group/link flex items-center gap-2.5 rounded-md px-2 py-[6px] text-[12.5px] font-light text-white/50 hover:text-white/90 hover:bg-white/[0.05] transition-all duration-200"
                                         >
                                             <span className="h-[3px] w-[3px] rounded-full bg-white/15 group-hover/link:bg-violet-400 group-hover/link:shadow-[0_0_6px_rgba(139,92,246,0.6)] transition-all duration-200" />
-                                            Modulo seguimiento
+                                            Seguimiento pacientes
                                         </Link>
                                     </>
                                 )}

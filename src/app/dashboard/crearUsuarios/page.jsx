@@ -103,7 +103,7 @@ export default function CrearUsuariosPage() {
                 <span className="mx-1 rounded-full bg-slate-900 px-2 py-0.5 text-[11px] font-semibold text-white">
                   usuario_reporte_seguimiento
                 </span>
-                y acceso exclusivo al modulo de reportes de seguimiento.
+                y acceso exclusivo a la vista clinica de seguimiento para pacientes.
               </p>
             </div>
 
@@ -113,7 +113,7 @@ export default function CrearUsuariosPage() {
                   Acceso permitido
                 </div>
                 <div className="mt-2 text-sm font-medium text-slate-800">
-                  `/dashboard/usuarioReporteSeguimiento`
+                  `/DashboardPacientes`
                 </div>
               </div>
 
@@ -212,7 +212,7 @@ export default function CrearUsuariosPage() {
 
             <div className="mt-8 flex flex-col gap-3 border-t border-slate-200 pt-6 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm text-slate-500">
-                El nuevo usuario podra iniciar sesion en Clerk con correo y contrasena.
+                El nuevo usuario iniciara sesion con correo y contrasena y solo podra entrar a la vista de pacientes.
               </p>
 
               <button
@@ -231,12 +231,12 @@ export default function CrearUsuariosPage() {
                 Permisos del rol
               </div>
               <h3 className="mt-3 text-xl font-semibold">
-                Usuario de seguimiento
+                Acceso paciente
               </h3>
               <ul className="mt-5 space-y-3 text-sm text-white/75">
-                <li>Puede entrar al dashboard solo mediante el modulo de seguimiento.</li>
-                <li>No puede navegar a agenda, pacientes, fichas ni administracion.</li>
-                <li>Si intenta abrir otra URL del dashboard, el middleware lo redirige.</li>
+                <li>Puede entrar solo a la vista protegida `/DashboardPacientes`.</li>
+                <li>No puede ingresar al dashboard administrativo ni navegar sus modulos.</li>
+                <li>Si intenta abrir cualquier URL de `/dashboard`, el middleware lo redirige automaticamente.</li>
               </ul>
             </div>
 

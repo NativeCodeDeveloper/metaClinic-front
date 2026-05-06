@@ -5,6 +5,7 @@ import {
   getRoleFromSessionClaims,
   isAdminRole,
   normalizeDashboardRole,
+  RESTRICTED_PATIENTS_PATH,
 } from "@/lib/dashboard-access";
 
 const BACKEND_API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -105,7 +106,7 @@ export async function POST(request) {
     const password = body?.password?.trim();
     const firstName = body?.firstName?.trim();
     const lastName = body?.lastName?.trim();
-    const accessUrl = `${new URL(request.url).origin}/sign-in`;
+    const accessUrl = `${new URL(request.url).origin}${RESTRICTED_PATIENTS_PATH}`;
 
     if (!email || !password || !firstName || !lastName) {
       return NextResponse.json(

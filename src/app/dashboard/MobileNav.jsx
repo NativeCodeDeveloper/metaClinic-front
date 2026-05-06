@@ -4,7 +4,10 @@ import { useState } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
-import { DASHBOARD_ROLES } from "@/lib/dashboard-access";
+import {
+  DASHBOARD_ROLES,
+  RESTRICTED_PATIENTS_PATH,
+} from "@/lib/dashboard-access";
 
 const links = [
   { label: "Inicio", href: "/dashboard" },
@@ -43,8 +46,8 @@ export default function MobileNav() {
           title: "Seguimiento",
           items: [
             {
-              label: "Reporte y seguimiento",
-              href: "/dashboard/usuarioReporteSeguimiento",
+              label: "Seguimiento de tratamiento",
+              href: RESTRICTED_PATIENTS_PATH,
             },
           ],
         },
