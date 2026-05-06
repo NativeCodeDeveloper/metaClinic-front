@@ -32,6 +32,15 @@ const ROLE_ALLOWED_PATHS = {
   ],
 };
 
+export function normalizeDashboardRole(role) {
+  // Mantiene compatibilidad con usuarios Clerk antiguos que siguen usando "clinico".
+  if (role === DASHBOARD_ROLES.CLINICO) {
+    return DASHBOARD_ROLES.ADMIN;
+  }
+
+  return role;
+}
+
 export function getRoleFromSessionClaims(sessionClaims) {
   const role = ROLE_CLAIM_PATHS.reduce((foundRole, claimPath) => {
     if (foundRole) {
@@ -44,12 +53,7 @@ export function getRoleFromSessionClaims(sessionClaims) {
     );
   }, undefined);
 
-  // Mantiene compatibilidad con usuarios Clerk antiguos que siguen usando "clinico".
-  if (role === DASHBOARD_ROLES.CLINICO) {
-    return DASHBOARD_ROLES.ADMIN;
-  }
-
-  return role;
+  return normalizeDashboardRole(role);
 }
 
 export function isAdminRole(role) {

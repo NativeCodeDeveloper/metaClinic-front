@@ -4,6 +4,7 @@ import {
   DASHBOARD_ROLES,
   getRoleFromSessionClaims,
   isAdminRole,
+  normalizeDashboardRole,
 } from "@/lib/dashboard-access";
 
 function getErrorMessage(error) {
@@ -26,7 +27,14 @@ export async function POST(request) {
       );
     }
 
-    const role = getRoleFromSessionClaims(sessionClaims);
+    const client = await clerkClient();
+    let role = getRoleFromSessionClaims(sessionClaims);
+
+    if (!role) {
+      const currentUser = await client.users.getUser(userId);
+      role = normalizeDashboardRole(currentUser?.publicMetadata?.role);
+    }
+
     console.log("[clerk-users] auth context", {
       userId,
       role,
@@ -58,7 +66,6 @@ export async function POST(request) {
       );
     }
 
-    const client = await clerkClient();
     const user = await client.users.createUser({
       emailAddress: [email],
       password,
