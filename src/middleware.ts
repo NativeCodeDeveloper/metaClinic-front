@@ -1,10 +1,15 @@
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import {
+  clerkClient,
+  clerkMiddleware,
+  createRouteMatcher,
+} from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import {
   canAccessDashboardPath,
   DASHBOARD_ROLES,
   getDefaultDashboardPath,
   getRoleFromSessionClaims,
+  normalizeDashboardRole,
 } from "@/lib/dashboard-access";
 
 const isProtectedAppRoute = createRouteMatcher([
@@ -23,7 +28,14 @@ export default clerkMiddleware(async (auth, req) => {
     return NextResponse.redirect(new URL("/sign-in", req.url));
   }
 
-  const role = getRoleFromSessionClaims(sessionClaims);
+  let role = getRoleFromSessionClaims(sessionClaims);
+
+  if (!role) {
+    const client = await clerkClient();
+    const currentUser = await client.users.getUser(userId);
+    role = normalizeDashboardRole(currentUser?.publicMetadata?.role);
+  }
+
   const pathname = req.nextUrl.pathname;
 
   if (

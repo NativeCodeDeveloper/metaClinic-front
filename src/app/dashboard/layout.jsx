@@ -1,6 +1,6 @@
 // app/dashboard/layout.jsx
 import { ClerkProvider } from "@clerk/nextjs";
-import { auth } from "@clerk/nextjs/server";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 import Link from "next/link";
 import MobileNav from "./MobileNav";
 import SignOutBtn from "./SignOutBtn";
@@ -8,6 +8,7 @@ import {
     DASHBOARD_ROLES,
     getRoleFromSessionClaims,
     isAdminRole,
+    normalizeDashboardRole,
     RESTRICTED_PATIENTS_PATH,
 } from "@/lib/dashboard-access";
 
@@ -17,8 +18,15 @@ export const metadata = {
 };
 
 export default async function DashboardLayout({ children }) {
-    const { sessionClaims } = await auth();
-    const role = getRoleFromSessionClaims(sessionClaims);
+    const { userId, sessionClaims } = await auth();
+    let role = getRoleFromSessionClaims(sessionClaims);
+
+    if (!role && userId) {
+        const client = await clerkClient();
+        const currentUser = await client.users.getUser(userId);
+        role = normalizeDashboardRole(currentUser?.publicMetadata?.role);
+    }
+
     const isRestrictedUser = role === DASHBOARD_ROLES.USUARIO_REPORTE_SEGUIMIENTO;
     const isAdmin = isAdminRole(role);
 
