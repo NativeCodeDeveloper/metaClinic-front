@@ -17,6 +17,7 @@ const links = [
   { label: "Ingreso de Pacientes", href: "/dashboard/GestionPaciente" },
   { label: "Carpeta del paciente", href: "/dashboard/FichaClinica" },
   { label: "Crear usuario de seguimiento", href: "/dashboard/crearUsuarios" },
+  { label: "Mensajes a pacientes", href: "/dashboard/mensajesPaciente" },
   { label: "Publicaciones", href: "/dashboard/publicaciones" },
   { label: "Carrusel de Portada", href: "/dashboard/portadaEdit" },
 ];
@@ -35,9 +36,9 @@ export default function MobileNav() {
     { title: "Agenda Clínica", items: [links[1], links[2], links[3]] },
     {
       title: "Registros Clínicos",
-      items: isAdmin ? [links[4], links[5], links[6]] : [links[4], links[5]],
+      items: isAdmin ? [links[4], links[5], links[6], links[7]] : [links[4], links[5]],
     },
-    { title: "Administración Web", items: [links[7], links[8]] },
+    { title: "Administración Web", items: [links[8], links[9]] },
   ];
 
   const mobileSections = isRestrictedUser
