@@ -6,16 +6,12 @@ import {
   CalendarDays,
   ChevronRight,
   ClipboardPenLine,
-  FileText,
-  FlaskConical,
   LoaderCircle,
   Mail,
-  Pill,
   Scale,
   ShieldCheck,
   Sparkles,
   Stethoscope,
-  Utensils,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import ToasterClient from "@/Componentes/ToasterClient";
@@ -44,10 +40,6 @@ const tabs = [
   { id: "mensajes", label: "Mensajes", icon: Mail },
   { id: "progreso", label: "Progreso", icon: Activity },
   { id: "checkin", label: "Check-in", icon: ClipboardPenLine },
-  { id: "medicacion", label: "Medicación", icon: Pill },
-  { id: "examenes", label: "Exámenes", icon: FlaskConical },
-  { id: "nutricion", label: "Nutrición", icon: Utensils },
-  { id: "consentimientos", label: "Consent.", icon: ShieldCheck },
 ];
 
 const adherenciaOptions = ["Excelente", "Buena", "Regular", "Mala"];
@@ -741,34 +733,6 @@ export default function PatientPortalClient({ patientEmail, patientName }) {
           </form>
         ) : null}
 
-        {activeTab === "medicacion" ? (
-          <EmptyPanel
-            title="Medicaciones del tratamiento"
-            description="Esta sección quedó preparada para mostrar indicaciones, dosis y observaciones. Todavía no está conectada a una fuente clínica del proyecto."
-          />
-        ) : null}
-
-        {activeTab === "examenes" ? (
-          <EmptyPanel
-            title="Exámenes y resultados"
-            description="Aquí podemos conectar más adelante exámenes clínicos o documentos revisados por el equipo médico."
-          />
-        ) : null}
-
-        {activeTab === "nutricion" ? (
-          <EmptyPanel
-            title="Indicaciones de nutrición"
-            description="El contenedor ya está listo para agregar recomendaciones alimentarias o planes de apoyo nutricional."
-          />
-        ) : null}
-
-        {activeTab === "consentimientos" ? (
-          <EmptyPanel
-            title="Consentimientos y documentos"
-            description="Esta pestaña se dejó disponible para adjuntar consentimientos, archivos firmados o material de apoyo."
-          />
-        ) : null}
-
         <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
           <div className="rounded-[28px] border border-white/70 bg-white/90 p-6 shadow-[0_22px_70px_rgba(15,23,42,0.05)]">
             <div className="flex items-center gap-3">
@@ -802,10 +766,10 @@ export default function PatientPortalClient({ patientEmail, patientName }) {
           </div>
 
           <div className="rounded-[28px] border border-white/70 bg-slate-950 p-6 text-white shadow-[0_22px_70px_rgba(15,23,42,0.12)]">
-            <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10 text-cyan-200">
-                <FileText className="h-5 w-5" />
-              </div>
+              <div className="flex items-center gap-3">
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10 text-cyan-200">
+                  <ShieldCheck className="h-5 w-5" />
+                </div>
               <div>
                 <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-cyan-300">
                   Estado del portal
