@@ -266,7 +266,12 @@ export default function PatientPortalClient({ patientEmail, patientName }) {
         return toast.error("No fue posible guardar tu check-in semanal.");
       }
 
-      toast.success("Tu check-in semanal fue enviado correctamente.");
+      if (respuestaBackend?.mailSent === false) {
+        toast.success("Tu check-in semanal fue guardado correctamente.");
+        toast.error("Se guardó tu registro, pero no fue posible enviar el correo automático.");
+      } else {
+        toast.success("Tu check-in semanal fue enviado correctamente.");
+      }
       setActiveTab("mensajes");
       await cargarResumenPortal();
     } catch (error) {
