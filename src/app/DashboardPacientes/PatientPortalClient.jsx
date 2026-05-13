@@ -51,7 +51,17 @@ function formatDate(dateString) {
     return "Fecha por confirmar";
   }
 
-  const date = new Date(`${dateString}T00:00:00`);
+  const normalizedDate =
+    typeof dateString === "string" && dateString.includes("T")
+      ? dateString
+      : `${String(dateString).split(" ")[0]}T00:00:00`;
+
+  const date = new Date(normalizedDate);
+
+  if (Number.isNaN(date.getTime())) {
+    return "Fecha por confirmar";
+  }
+
   return date.toLocaleDateString("es-CL", {
     weekday: "long",
     day: "numeric",
