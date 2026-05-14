@@ -2,8 +2,8 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import PatientPortalClient from "./PatientPortalClient";
 import {
+  DASHBOARD_ROLES,
   getRoleFromSessionClaims,
-  isAdminRole,
   normalizeDashboardRole,
 } from "@/lib/dashboard-access";
 
@@ -31,16 +31,19 @@ export default async function DashboardPacientesPage({ searchParams }) {
     "Paciente";
   const patientEmailParam = searchParams?.patientEmail || "";
   const patientNameParam = searchParams?.patientName || "";
-  const canPreviewAsAdmin = isAdminRole(role) && Boolean(patientEmailParam);
-  const effectivePatientEmail = canPreviewAsAdmin ? patientEmailParam : primaryEmail;
-  const effectivePatientName = canPreviewAsAdmin ? patientNameParam || "Paciente" : fullName;
+  const canPreviewPatientPortal =
+    role &&
+    role !== DASHBOARD_ROLES.USUARIO_REPORTE_SEGUIMIENTO &&
+    Boolean(patientEmailParam);
+  const effectivePatientEmail = canPreviewPatientPortal ? patientEmailParam : primaryEmail;
+  const effectivePatientName = canPreviewPatientPortal ? patientNameParam || "Paciente" : fullName;
 
   return (
     <ClerkProvider>
       <PatientPortalClient
         patientEmail={effectivePatientEmail}
         patientName={effectivePatientName}
-        isAdminPreview={canPreviewAsAdmin}
+        isAdminPreview={canPreviewPatientPortal}
       />
     </ClerkProvider>
   );
