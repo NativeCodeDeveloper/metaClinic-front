@@ -57,6 +57,27 @@ export default function Paciente() {
         router.push(`/dashboard/calendario?${params.toString()}`);
     }
 
+    function crearUsuarioSeguimiento() {
+        const paciente = detallePaciente[0];
+        if (!paciente) {
+            return toast.error("No hay datos del paciente para crear el usuario de seguimiento.");
+        }
+
+        if (!paciente.correo) {
+            return toast.error("El paciente no tiene correo registrado.");
+        }
+
+        const params = new URLSearchParams({
+            firstName: paciente.nombre || "",
+            lastName: paciente.apellido || "",
+            email: paciente.correo || "",
+            source: "fichaPaciente",
+            id_paciente: String(paciente.id_paciente || ""),
+        });
+
+        router.push(`/dashboard/crearUsuarios?${params.toString()}`);
+    }
+
     const [nombre, setNombre] = useState("");
     const [apellido, setApellido] = useState("");
     const [rut, setRut] = useState("");
@@ -483,6 +504,15 @@ export default function Paciente() {
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                             </svg>
                             Agendar ahora
+                        </button>
+
+                        <button
+                            onClick={crearUsuarioSeguimiento}
+                            className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-600 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_10px_30px_rgba(16,185,129,0.24)] transition-all duration-150 hover:from-emerald-600 hover:to-cyan-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M18 9v6m3-3h-6M5 20h8a2 2 0 002-2v-3a4 4 0 10-8 0v3a2 2 0 00-2 2zm9-11a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                            Crear usuario seguimiento
                         </button>
 
 

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { ShieldCheck, UserPlus, LockKeyhole, Mail, UserRound } from "lucide-react";
 import toast from "react-hot-toast";
 import ToasterClient from "@/Componentes/ToasterClient";
@@ -13,9 +14,27 @@ const initialForm = {
 };
 
 export default function CrearUsuariosPage() {
+  const searchParams = useSearchParams();
   const [formData, setFormData] = useState(initialForm);
   const [submitting, setSubmitting] = useState(false);
   const [lastCreatedUser, setLastCreatedUser] = useState(null);
+
+  useEffect(() => {
+    const firstName = searchParams.get("firstName") || "";
+    const lastName = searchParams.get("lastName") || "";
+    const email = searchParams.get("email") || "";
+
+    if (!firstName && !lastName && !email) {
+      return;
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      firstName,
+      lastName,
+      email,
+    }));
+  }, [searchParams]);
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -147,6 +166,12 @@ export default function CrearUsuariosPage() {
                 </p>
               </div>
             </div>
+
+            {searchParams.get("source") === "fichaPaciente" ? (
+              <div className="mt-6 rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+                Se precargaron nombre y correo desde la ficha del paciente. Solo falta definir la contraseña inicial para crear su acceso de seguimiento.
+              </div>
+            ) : null}
 
             <div className="mt-8 grid gap-5 sm:grid-cols-2">
               <label className="block">
