@@ -78,6 +78,26 @@ export default function Paciente() {
         router.push(`/dashboard/crearUsuarios?${params.toString()}`);
     }
 
+    function verDashboardPaciente() {
+        const paciente = detallePaciente[0];
+        if (!paciente) {
+            return toast.error("No hay datos del paciente para abrir su portal.");
+        }
+
+        if (!paciente.correo) {
+            return toast.error("El paciente no tiene correo registrado.");
+        }
+
+        const params = new URLSearchParams({
+            patientEmail: paciente.correo || "",
+            patientName: `${paciente.nombre || ""} ${paciente.apellido || ""}`.trim(),
+            source: "fichaPaciente",
+            id_paciente: String(paciente.id_paciente || ""),
+        });
+
+        router.push(`/DashboardPacientes?${params.toString()}`);
+    }
+
     const [nombre, setNombre] = useState("");
     const [apellido, setApellido] = useState("");
     const [rut, setRut] = useState("");
@@ -513,6 +533,15 @@ export default function Paciente() {
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M18 9v6m3-3h-6M5 20h8a2 2 0 002-2v-3a4 4 0 10-8 0v3a2 2 0 00-2 2zm9-11a4 4 0 11-8 0 4 4 0 018 0z" />
                             </svg>
                             Crear usuario seguimiento
+                        </button>
+
+                        <button
+                            onClick={verDashboardPaciente}
+                            className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_10px_30px_rgba(59,130,246,0.24)] transition-all duration-150 hover:from-sky-600 hover:to-indigo-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14m-6 4h4a2 2 0 002-2V8a2 2 0 00-2-2H9a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                            </svg>
+                            Ver portal paciente
                         </button>
 
 

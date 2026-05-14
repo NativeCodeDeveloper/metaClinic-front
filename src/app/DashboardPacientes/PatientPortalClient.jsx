@@ -164,7 +164,7 @@ function Field({ label, children, helper }) {
   );
 }
 
-export default function PatientPortalClient({ patientEmail, patientName }) {
+export default function PatientPortalClient({ patientEmail, patientName, isAdminPreview = false }) {
   const [activeTab, setActiveTab] = useState("mensajes");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -355,6 +355,11 @@ export default function PatientPortalClient({ patientEmail, patientName }) {
                 <div className="text-xs text-white/50">Correo asociado</div>
                 <div className="mt-1 text-sm font-medium text-white">{patientEmail}</div>
               </div>
+              {isAdminPreview ? (
+                <div className="mt-4 rounded-2xl border border-amber-300/20 bg-amber-400/10 p-3 text-sm text-amber-100">
+                  Vista administrativa del portal del paciente.
+                </div>
+              ) : null}
               <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.04] p-2">
                 <SignOutBtn />
               </div>

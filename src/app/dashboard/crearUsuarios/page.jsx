@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { ShieldCheck, UserPlus, LockKeyhole, Mail, UserRound } from "lucide-react";
 import toast from "react-hot-toast";
 import ToasterClient from "@/Componentes/ToasterClient";
@@ -14,10 +15,13 @@ const initialForm = {
 };
 
 export default function CrearUsuariosPage() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const [formData, setFormData] = useState(initialForm);
   const [submitting, setSubmitting] = useState(false);
   const [lastCreatedUser, setLastCreatedUser] = useState(null);
+  const source = searchParams.get("source");
+  const idPaciente = searchParams.get("id_paciente");
 
   useEffect(() => {
     const firstName = searchParams.get("firstName") || "";
@@ -146,6 +150,21 @@ export default function CrearUsuariosPage() {
               </div>
             </div>
           </div>
+
+          {source === "fichaPaciente" && idPaciente ? (
+            <div className="mt-5 flex flex-col gap-3 border-t border-slate-200 pt-4 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-sm text-slate-500">
+                Este flujo fue abierto desde la carpeta clínica del paciente.
+              </p>
+              <button
+                type="button"
+                onClick={() => router.push(`/dashboard/FichasPacientes/${idPaciente}`)}
+                className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-semibold text-slate-700 transition-all hover:border-slate-300 hover:bg-slate-100"
+              >
+                Volver a carpeta del paciente
+              </button>
+            </div>
+          ) : null}
         </div>
 
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(320px,0.8fr)]">
