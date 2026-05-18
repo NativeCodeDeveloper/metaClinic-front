@@ -121,33 +121,6 @@ export default function CrearUsuariosPage() {
               <h1 className="mt-4 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
                 Crear usuarios restringidos para seguimiento
               </h1>
-              <p className="mt-3 max-w-xl text-sm leading-6 text-slate-600">
-                Esta pantalla crea usuarios directamente en Clerk con el rol
-                <span className="mx-1 rounded-full bg-slate-900 px-2 py-0.5 text-[11px] font-semibold text-white">
-                  usuario_reporte_seguimiento
-                </span>
-                y acceso exclusivo a la vista clinica de seguimiento para pacientes.
-              </p>
-            </div>
-
-            <div className="grid gap-3 sm:grid-cols-2">
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                  Acceso permitido
-                </div>
-                <div className="mt-2 text-sm font-medium text-slate-800">
-                  `/DashboardPacientes`
-                </div>
-              </div>
-
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                  Tipo de usuario
-                </div>
-                <div className="mt-2 text-sm font-medium text-slate-800">
-                  Seguimiento y reportes
-                </div>
-              </div>
             </div>
           </div>
 
@@ -264,26 +237,12 @@ export default function CrearUsuariosPage() {
                 disabled={submitting}
                 className="inline-flex h-12 items-center justify-center rounded-2xl bg-gradient-to-r from-cyan-600 to-indigo-700 px-6 text-sm font-semibold text-white shadow-[0_18px_45px_rgba(14,165,233,0.28)] transition-all hover:from-cyan-500 hover:to-indigo-600 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {submitting ? "Creando usuario..." : "Crear usuario en Clerk"}
+                {submitting ? "Creando usuario..." : "Crear usuario"}
               </button>
             </div>
           </form>
 
           <aside className="space-y-6">
-            <div className="rounded-[28px] border border-slate-200 bg-slate-900 p-6 text-white shadow-[0_26px_80px_rgba(15,23,42,0.16)]">
-              <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-cyan-300">
-                Permisos del rol
-              </div>
-              <h3 className="mt-3 text-xl font-semibold">
-                Acceso paciente
-              </h3>
-              <ul className="mt-5 space-y-3 text-sm text-white/75">
-                <li>Puede entrar solo a la vista protegida `/DashboardPacientes`.</li>
-                <li>No puede ingresar al dashboard administrativo ni navegar sus modulos.</li>
-                <li>Si intenta abrir cualquier URL de `/dashboard`, el middleware lo redirige automaticamente.</li>
-              </ul>
-            </div>
-
             <div className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-[0_18px_60px_rgba(15,23,42,0.06)]">
               <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
                 Ultimo usuario creado
