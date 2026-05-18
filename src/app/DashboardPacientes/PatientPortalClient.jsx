@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import {
   Activity,
   CalendarDays,
+  CalendarPlus2,
   ChevronRight,
   ClipboardPenLine,
   LoaderCircle,
@@ -144,9 +145,9 @@ function StatCard({ icon: Icon, label, value, hint, tone = "default" }) {
 function Field({ label, children, helper }) {
   return (
     <label className="block">
-      <span className="mb-2 block text-sm font-medium text-slate-600">{label}</span>
+      <span className="mb-1.5 block text-sm font-medium text-slate-600">{label}</span>
       {children}
-      {helper ? <span className="mt-2 block text-xs leading-5 text-slate-400">{helper}</span> : null}
+      {helper ? <span className="mt-1.5 block text-xs leading-5 text-slate-400">{helper}</span> : null}
     </label>
   );
 }
@@ -293,7 +294,7 @@ export default function PatientPortalClient({ patientEmail, patientName, isAdmin
   }, [progresoPeso]);
 
   const chartPoints = useMemo(
-    () => buildChartPoints(progresoPeso, 720, 280, 30),
+    () => buildChartPoints(progresoPeso, 620, 220, 28),
     [progresoPeso]
   );
 
@@ -352,6 +353,17 @@ export default function PatientPortalClient({ patientEmail, patientName, isAdmin
               <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-500">
                 Bienvenida/o a tu portal de seguimiento de tratamiento. Aquí podrás revisar tus próximos controles, completar tu check-in semanal y ver los mensajes enviados por tu equipo médico.
               </p>
+              <div className="mt-4">
+                <a
+                  href="https://metabocare.agendaclinicas.cl/agendaProfesionales"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex h-10 items-center justify-center gap-2 rounded-2xl border border-sky-200 bg-[linear-gradient(180deg,_#ffffff_0%,_#f3f9ff_100%)] px-4 text-sm font-medium text-sky-700 shadow-[0_10px_24px_rgba(14,165,233,0.08)] transition-all hover:-translate-y-0.5 hover:border-sky-300 hover:text-sky-800 hover:shadow-[0_16px_30px_rgba(14,165,233,0.12)]"
+                >
+                  <CalendarPlus2 className="h-4 w-4" />
+                  Agendar cita medica
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -429,11 +441,11 @@ export default function PatientPortalClient({ patientEmail, patientName, isAdmin
         {activeTab === "mensajes" ? (
           <div className="rounded-[26px] border border-white/70 bg-white/92 p-5 shadow-[0_20px_60px_rgba(15,23,42,0.05)] sm:p-6">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
-                <Mail className="h-4.5 w-4.5" />
+              <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
+                <Mail className="h-4 w-4" />
               </div>
               <div>
-                <h2 className="text-xl font-semibold text-slate-900 sm:text-2xl">Mensajes de tu médico</h2>
+                <h2 className="text-lg font-semibold text-slate-900 sm:text-xl">Mensaje de MetaboCare</h2>
                 <p className="mt-1 text-sm text-slate-500">
                   Aquí verás mensajes directos y respuestas automáticas generadas según tu check-in semanal.
                 </p>
@@ -449,16 +461,16 @@ export default function PatientPortalClient({ patientEmail, patientName, isAdmin
                 </p>
               </div>
             ) : (
-              <div className="mt-6 space-y-3">
+              <div className="mt-5 space-y-2.5">
                 {mensajes.map((mensaje) => (
                   <article
                     key={mensaje.id_mensaje}
-                    className="rounded-[22px] border border-slate-200 bg-slate-50/90 p-4"
+                    className="rounded-[20px] border border-slate-200 bg-slate-50/90 px-4 py-3.5"
                   >
-                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] ${
+                          <span className={`inline-flex rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] ${
                             mensaje.tipo_mensaje === "directo"
                               ? "bg-sky-100 text-sky-700"
                               : "bg-emerald-100 text-emerald-700"
@@ -466,11 +478,11 @@ export default function PatientPortalClient({ patientEmail, patientName, isAdmin
                             {mensaje.tipo_mensaje === "directo" ? "Mensaje directo" : "Automático"}
                           </span>
                         </div>
-                        <h3 className="mt-2 text-base font-semibold text-slate-900 sm:text-lg">{mensaje.titulo}</h3>
+                        <h3 className="mt-2 text-[15px] font-semibold text-slate-900 sm:text-base">{mensaje.titulo}</h3>
                       </div>
-                      <div className="text-sm text-slate-400">{formatMessageDate(mensaje.fecha_publicacion)}</div>
+                      <div className="text-xs text-slate-400 sm:pt-1">{formatMessageDate(mensaje.fecha_publicacion)}</div>
                     </div>
-                    <p className="mt-3 whitespace-pre-line text-sm leading-6 text-slate-600">{mensaje.mensaje}</p>
+                    <p className="mt-2.5 whitespace-pre-line text-sm leading-5 text-slate-600">{mensaje.mensaje}</p>
                   </article>
                 ))}
               </div>
@@ -493,16 +505,17 @@ export default function PatientPortalClient({ patientEmail, patientName, isAdmin
             </div>
 
             {progresoPeso.length === 0 ? (
-              <div className="mt-8 rounded-[28px] border border-dashed border-slate-300 bg-slate-50 p-8 text-center">
-                <Scale className="mx-auto h-10 w-10 text-slate-300" />
-                <p className="mt-4 text-base font-semibold text-slate-700">Aún no hay datos de evolución disponibles.</p>
-                <p className="mt-2 text-sm text-slate-500">
+              <div className="mx-auto mt-8 max-w-4xl rounded-[24px] border border-dashed border-slate-300 bg-slate-50 px-6 py-10 text-center sm:px-8">
+                <Scale className="mx-auto h-8 w-8 text-slate-300" />
+                <p className="mt-3 text-base font-semibold text-slate-700">Aún no hay datos de evolución disponibles.</p>
+                <p className="mt-2 text-sm leading-5 text-slate-500">
                   Cuando existan evaluaciones con peso registrado, aparecerán aquí.
                 </p>
               </div>
             ) : (
-              <div className="mt-8 rounded-[28px] border border-slate-200 bg-slate-50 p-5">
-                <svg viewBox="0 0 720 280" className="h-auto w-full">
+              <div className="mx-auto mt-8 max-w-4xl rounded-[24px] border border-slate-200 bg-slate-50 px-4 py-4 sm:px-5">
+                <div className="mx-auto max-w-3xl">
+                <svg viewBox="0 0 620 220" className="mx-auto h-auto w-full">
                   <defs>
                     <linearGradient id="lineGradient" x1="0%" x2="100%">
                       <stop offset="0%" stopColor="#3b82f6" />
@@ -510,13 +523,13 @@ export default function PatientPortalClient({ patientEmail, patientName, isAdmin
                     </linearGradient>
                   </defs>
                   {[0, 1, 2, 3].map((line) => {
-                    const y = 30 + line * 73;
+                    const y = 28 + line * 54;
                     return (
                       <line
                         key={line}
-                        x1="30"
+                        x1="28"
                         y1={y}
-                        x2="690"
+                        x2="592"
                         y2={y}
                         stroke="#dbeafe"
                         strokeDasharray="6 6"
@@ -539,11 +552,11 @@ export default function PatientPortalClient({ patientEmail, patientName, isAdmin
                         const y = Number(coordinates[1]);
                         return (
                           <g key={item.id_evaluacion || index}>
-                            <circle cx={x} cy={y} r="6" fill="#ffffff" stroke="#2563eb" strokeWidth="3" />
-                            <text x={x} y="262" textAnchor="middle" className="fill-slate-500 text-[12px]">
+                            <circle cx={x} cy={y} r="5" fill="#ffffff" stroke="#2563eb" strokeWidth="2.5" />
+                            <text x={x} y="208" textAnchor="middle" className="fill-slate-500 text-[11px]">
                               {`S${index + 1}`}
                             </text>
-                            <text x={x} y={y - 12} textAnchor="middle" className="fill-slate-700 text-[12px] font-semibold">
+                            <text x={x} y={y - 10} textAnchor="middle" className="fill-slate-700 text-[11px] font-semibold">
                               {item.peso_kg} kg
                             </text>
                           </g>
@@ -552,8 +565,9 @@ export default function PatientPortalClient({ patientEmail, patientName, isAdmin
                     </>
                   ) : null}
                 </svg>
+                </div>
 
-                <div className="mt-6 grid gap-3 md:grid-cols-3">
+                <div className="mx-auto mt-5 grid max-w-3xl gap-3 md:grid-cols-3">
                   {progresoPeso.slice(-3).map((item, index) => (
                     <div key={item.id_evaluacion || index} className="rounded-2xl border border-white bg-white p-4">
                       <div className="text-xs uppercase tracking-[0.18em] text-slate-400">
@@ -572,14 +586,14 @@ export default function PatientPortalClient({ patientEmail, patientName, isAdmin
         {activeTab === "checkin" ? (
           <form
             onSubmit={handleSubmit}
-            className="rounded-[30px] border border-white/70 bg-white/92 p-6 shadow-[0_26px_80px_rgba(15,23,42,0.06)] sm:p-8"
+            className="rounded-[26px] border border-white/70 bg-white/92 p-5 shadow-[0_20px_60px_rgba(15,23,42,0.05)] sm:p-6"
           >
             <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
-                <ClipboardPenLine className="h-5 w-5" />
+              <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
+                <ClipboardPenLine className="h-4 w-4" />
               </div>
               <div>
-                <h2 className="text-2xl font-semibold text-slate-900">
+                <h2 className="text-xl font-semibold text-slate-900 sm:text-2xl">
                   Registro semanal {checkinActual?.semana_label ? `— ${checkinActual.semana_label}` : ""}
                 </h2>
                 <p className="mt-1 text-sm text-slate-500">
@@ -588,10 +602,10 @@ export default function PatientPortalClient({ patientEmail, patientName, isAdmin
               </div>
             </div>
 
-            <div className="mt-8 space-y-8">
+            <div className="mt-6 space-y-6">
               <div>
-                <div className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-400">Medidas</div>
-                <div className="mt-5 grid gap-5 md:grid-cols-2">
+                <div className="text-[13px] font-semibold uppercase tracking-[0.18em] text-slate-400">Medidas</div>
+                <div className="mt-4 grid gap-4 md:grid-cols-2">
                   <Field label="Peso (kg) *" helper="Pesarte en ayuno, con la misma ropa y la misma balanza.">
                     <input
                       type="text"
@@ -599,7 +613,7 @@ export default function PatientPortalClient({ patientEmail, patientName, isAdmin
                       value={formData.peso}
                       onChange={handleChange}
                       placeholder="Ej: 83.5"
-                      className="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition-all focus:border-sky-300 focus:bg-white focus:shadow-[0_0_0_4px_rgba(56,189,248,0.12)]"
+                      className="h-11 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition-all focus:border-sky-300 focus:bg-white focus:shadow-[0_0_0_4px_rgba(56,189,248,0.12)]"
                     />
                   </Field>
                   <Field label="Cintura (cm) *" helper="Medir a la altura del ombligo.">
@@ -609,7 +623,7 @@ export default function PatientPortalClient({ patientEmail, patientName, isAdmin
                       value={formData.cintura}
                       onChange={handleChange}
                       placeholder="Ej: 95"
-                      className="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition-all focus:border-sky-300 focus:bg-white focus:shadow-[0_0_0_4px_rgba(56,189,248,0.12)]"
+                      className="h-11 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition-all focus:border-sky-300 focus:bg-white focus:shadow-[0_0_0_4px_rgba(56,189,248,0.12)]"
                     />
                   </Field>
                   <Field label="Presión arterial" helper="Solo si tienes tensiómetro en casa.">
@@ -619,7 +633,7 @@ export default function PatientPortalClient({ patientEmail, patientName, isAdmin
                       value={formData.presion_arterial}
                       onChange={handleChange}
                       placeholder="Ej: 120/80"
-                      className="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition-all focus:border-sky-300 focus:bg-white focus:shadow-[0_0_0_4px_rgba(56,189,248,0.12)]"
+                      className="h-11 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition-all focus:border-sky-300 focus:bg-white focus:shadow-[0_0_0_4px_rgba(56,189,248,0.12)]"
                     />
                   </Field>
                   <Field label="Glicemia en ayuno" helper="Solo si tienes glucómetro.">
@@ -629,21 +643,21 @@ export default function PatientPortalClient({ patientEmail, patientName, isAdmin
                       value={formData.glicemia_ayuno}
                       onChange={handleChange}
                       placeholder="Ej: 95"
-                      className="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition-all focus:border-sky-300 focus:bg-white focus:shadow-[0_0_0_4px_rgba(56,189,248,0.12)]"
+                      className="h-11 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition-all focus:border-sky-300 focus:bg-white focus:shadow-[0_0_0_4px_rgba(56,189,248,0.12)]"
                     />
                   </Field>
                 </div>
               </div>
 
               <div>
-                <div className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-400">Hábitos y adherencia</div>
-                <div className="mt-5 grid gap-5 md:grid-cols-2">
+                <div className="text-[13px] font-semibold uppercase tracking-[0.18em] text-slate-400">Hábitos y adherencia</div>
+                <div className="mt-4 grid gap-4 md:grid-cols-2">
                   <Field label="Adherencia al tratamiento">
                     <select
                       name="adherencia_tratamiento"
                       value={formData.adherencia_tratamiento}
                       onChange={handleChange}
-                      className="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition-all focus:border-sky-300 focus:bg-white"
+                      className="h-11 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition-all focus:border-sky-300 focus:bg-white"
                     >
                       {adherenciaOptions.map((option) => (
                         <option key={option} value={option}>
@@ -657,7 +671,7 @@ export default function PatientPortalClient({ patientEmail, patientName, isAdmin
                       name="apetito_semana"
                       value={formData.apetito_semana}
                       onChange={handleChange}
-                      className="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition-all focus:border-sky-300 focus:bg-white"
+                      className="h-11 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition-all focus:border-sky-300 focus:bg-white"
                     >
                       {apetitoOptions.map((option) => (
                         <option key={option} value={option}>
@@ -673,15 +687,15 @@ export default function PatientPortalClient({ patientEmail, patientName, isAdmin
                       value={formData.horas_ejercicio}
                       onChange={handleChange}
                       placeholder="Ej: 3"
-                      className="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition-all focus:border-sky-300 focus:bg-white focus:shadow-[0_0_0_4px_rgba(56,189,248,0.12)]"
+                      className="h-11 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition-all focus:border-sky-300 focus:bg-white focus:shadow-[0_0_0_4px_rgba(56,189,248,0.12)]"
                     />
                   </Field>
                 </div>
               </div>
 
               <div>
-                <div className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-400">Síntomas</div>
-                <div className="mt-5 grid gap-5 md:grid-cols-2">
+                <div className="text-[13px] font-semibold uppercase tracking-[0.18em] text-slate-400">Síntomas</div>
+                <div className="mt-4 grid gap-4 md:grid-cols-2">
                   {[
                     ["nauseas", "Náuseas", "No tuve náuseas en ningún momento de la semana."],
                     ["vomitos", "Vómitos", "No vomité durante la semana."],
@@ -695,7 +709,7 @@ export default function PatientPortalClient({ patientEmail, patientName, isAdmin
                         name={name}
                         value={formData[name]}
                         onChange={handleChange}
-                        className="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition-all focus:border-sky-300 focus:bg-white"
+                        className="h-11 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition-all focus:border-sky-300 focus:bg-white"
                       >
                         {symptomOptions.map((option) => (
                           <option key={option} value={option}>
@@ -714,7 +728,7 @@ export default function PatientPortalClient({ patientEmail, patientName, isAdmin
                     name="observaciones_paciente"
                     value={formData.observaciones_paciente}
                     onChange={handleChange}
-                    rows={5}
+                    rows={4}
                     placeholder="Si quieres, aquí puedes dejar una nota para tu médico."
                     className="w-full rounded-[24px] border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition-all focus:border-sky-300 focus:bg-white focus:shadow-[0_0_0_4px_rgba(56,189,248,0.12)]"
                   />
@@ -722,14 +736,14 @@ export default function PatientPortalClient({ patientEmail, patientName, isAdmin
               </div>
             </div>
 
-            <div className="mt-8 flex flex-col gap-4 border-t border-slate-200 pt-6 sm:flex-row sm:items-center sm:justify-between">
+            <div className="mt-6 flex flex-col gap-4 border-t border-slate-200 pt-5 sm:flex-row sm:items-center sm:justify-between">
               <div className="max-w-2xl text-sm leading-6 text-slate-500">
                 Este formulario usa datos simples en texto para mantener el flujo liviano. Si no completas tu registro, el sistema puede enviarte recordatorios por correo.
               </div>
               <button
                 type="submit"
                 disabled={saving}
-                className="inline-flex h-12 items-center justify-center rounded-2xl bg-gradient-to-r from-sky-600 to-blue-700 px-6 text-sm font-semibold text-white shadow-[0_18px_45px_rgba(14,165,233,0.28)] transition-all hover:from-sky-500 hover:to-blue-600 disabled:cursor-not-allowed disabled:opacity-50"
+                className="inline-flex h-11 items-center justify-center rounded-2xl bg-gradient-to-r from-sky-600 to-blue-700 px-5 text-sm font-semibold text-white shadow-[0_14px_34px_rgba(14,165,233,0.24)] transition-all hover:from-sky-500 hover:to-blue-600 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {saving ? "Enviando..." : "Enviar check-in semanal"}
               </button>
