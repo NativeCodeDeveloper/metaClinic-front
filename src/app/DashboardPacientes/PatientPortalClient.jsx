@@ -319,7 +319,7 @@ export default function PatientPortalClient({ patientEmail, patientName, isAdmin
         <div className="rounded-[28px] border border-white/70 bg-white/90 p-4 shadow-[0_18px_60px_rgba(15,23,42,0.06)] backdrop-blur-xl sm:p-5">
           <div className="flex flex-col gap-4 border-b border-slate-200/80 pb-4 md:flex-row md:items-center md:justify-between">
             <div className="flex items-center gap-3">
-              <div className="rounded-full border border-sky-100 bg-sky-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-sky-700">
+              <div className="rounded-full border border-sky-100 bg-[linear-gradient(180deg,_#f6fbff_0%,_#edf7ff_100%)] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-sky-700 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]">
                 Sesion protegida
               </div>
               {isAdminPreview ? (
@@ -330,15 +330,13 @@ export default function PatientPortalClient({ patientEmail, patientName, isAdmin
             </div>
 
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2.5">
+              <div className="rounded-[22px] border border-slate-200 bg-[linear-gradient(180deg,_#ffffff_0%,_#f8fbff_100%)] px-4 py-3 shadow-[0_10px_24px_rgba(15,23,42,0.04)]">
                 <div className="text-[11px] uppercase tracking-[0.18em] text-slate-400">
                   Correo asociado
                 </div>
                 <div className="mt-1 text-sm font-medium text-slate-700 break-all">{patientEmail}</div>
               </div>
-              <div className="rounded-2xl border border-slate-200 bg-white px-2 py-2">
-                <SignOutBtn />
-              </div>
+              <SignOutBtn variant="light" />
             </div>
           </div>
 
