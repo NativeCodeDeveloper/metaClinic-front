@@ -7,7 +7,6 @@ import ShadcnInput from "@/Componentes/shadcnInput2";
 import {toast} from "react-hot-toast";
 import * as React from "react"
 import {useRouter} from "next/navigation";
-import {BookOpenIcon} from "@heroicons/react/24/outline";
 import {InfoButton} from "@/Componentes/InfoButton";
 
 
@@ -23,6 +22,32 @@ export default function FichaClinica() {
 
     function verDetallePaciente(id_paciente) {
         router.push(`/dashboard/FichasPacientes/${id_paciente}`);
+    }
+
+    function construirDetalleAlerta(paciente) {
+        const sintomas = [
+            ["Náuseas", paciente.checkin_alerta_nauseas],
+            ["Diarrea", paciente.checkin_alerta_diarrea],
+            ["Constipación", paciente.checkin_alerta_constipacion],
+            ["Dolor abdominal", paciente.checkin_alerta_dolor_abdominal],
+            ["Hambre nocturna", paciente.checkin_alerta_hambre_nocturna],
+        ]
+            .filter(([, value]) => {
+                const normalized = String(value || "").trim().toLowerCase();
+                return normalized && !["ninguna", "ninguno", "normal", "no", "sin sintomas", "sin síntoma", "sin sintoma", "ausente"].includes(normalized);
+            })
+            .map(([label, value]) => `${label}: ${value}`);
+
+        if (sintomas.length === 0) {
+            return "";
+        }
+
+        const semana = paciente.checkin_alerta_semana ? `${paciente.checkin_alerta_semana}. ` : "";
+        return `${semana}${sintomas.join(" · ")}`;
+    }
+
+    function tieneAlertaCheckin(paciente) {
+        return Number(paciente.checkin_alerta_activa) === 1;
     }
 
     async function buscarRutSimilar(rutBuscado) {
@@ -228,6 +253,7 @@ export default function FichaClinica() {
                                 <TableHeader>
                                     <TableRow className="bg-gradient-to-r from-sky-600 to-cyan-500 hover:from-sky-600 hover:to-cyan-500">
                                         <TableHead className="w-[80px] text-center font-semibold text-white text-xs uppercase tracking-wider px-3 py-3">Ver</TableHead>
+                                        <TableHead className="text-left font-semibold text-white text-xs uppercase tracking-wider px-3 py-3">Alerta</TableHead>
                                         <TableHead className="text-left font-semibold text-white text-xs uppercase tracking-wider px-3 py-3">Nombre</TableHead>
                                         <TableHead className="text-left font-semibold text-white text-xs uppercase tracking-wider px-3 py-3">Apellido</TableHead>
                                         <TableHead className="text-left font-semibold text-white text-xs uppercase tracking-wider px-3 py-3">RUT</TableHead>
@@ -236,7 +262,11 @@ export default function FichaClinica() {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {listaPacientes.map((paciente, i) => (
+                                    {listaPacientes.map((paciente, i) => {
+                                        const alertaActiva = tieneAlertaCheckin(paciente);
+                                        const detalleAlerta = construirDetalleAlerta(paciente);
+
+                                        return (
                                         <TableRow
                                             key={paciente.id_paciente}
                                             className={"hover:bg-sky-50/50 transition-colors duration-100 " + (i % 2 === 0 ? 'bg-white' : 'bg-slate-50/50')}>
@@ -252,13 +282,31 @@ export default function FichaClinica() {
                                                     </span>
                                                 </button>
                                             </TableCell>
+                                            <TableCell className="px-3 py-2.5">
+                                                {alertaActiva ? (
+                                                    <div
+                                                        className="inline-flex max-w-[240px] flex-col rounded-lg border border-amber-200 bg-amber-50 px-2.5 py-2 text-left"
+                                                        title={detalleAlerta}
+                                                    >
+                                                        <span className="text-[10px] font-semibold uppercase tracking-wider text-amber-700">
+                                                            Alerta
+                                                        </span>
+                                                        <span className="mt-0.5 text-xs font-medium leading-4 text-amber-800">
+                                                            Sintomas en check-in
+                                                        </span>
+                                                    </div>
+                                                ) : (
+                                                    <span className="text-xs text-slate-400">Sin alerta</span>
+                                                )}
+                                            </TableCell>
                                             <TableCell className="font-medium text-slate-800 text-sm px-3 py-2.5">{paciente.nombre}</TableCell>
                                             <TableCell className="text-slate-600 text-sm px-3 py-2.5">{paciente.apellido}</TableCell>
                                             <TableCell className="text-slate-600 text-sm px-3 py-2.5 font-mono">{paciente.rut}</TableCell>
                                             <TableCell className="text-right text-slate-600 text-sm px-3 py-2.5">{paciente.telefono}</TableCell>
                                             <TableCell className="text-right text-slate-500 text-sm px-3 py-2.5">{paciente.correo}</TableCell>
                                         </TableRow>
-                                    ))}
+                                        );
+                                    })}
                                 </TableBody>
                             </Table>
                         </div>
