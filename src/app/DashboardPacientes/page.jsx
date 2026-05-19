@@ -13,6 +13,7 @@ export const metadata = {
 };
 
 export default async function DashboardPacientesPage({ searchParams }) {
+  const resolvedSearchParams = await searchParams;
   const { userId, sessionClaims } = await auth();
   const client = await clerkClient();
   const currentUser = userId ? await client.users.getUser(userId) : null;
@@ -29,11 +30,13 @@ export default async function DashboardPacientesPage({ searchParams }) {
     [currentUser?.firstName, currentUser?.lastName].filter(Boolean).join(" ").trim() ||
     currentUser?.username ||
     "Paciente";
-  const patientEmailParam = searchParams?.patientEmail || "";
-  const patientNameParam = searchParams?.patientName || "";
+  const patientEmailParam = resolvedSearchParams?.patientEmail || "";
+  const patientNameParam = resolvedSearchParams?.patientName || "";
+  const sourceParam = resolvedSearchParams?.source || "";
   const canPreviewPatientPortal =
-    role &&
+    userId &&
     role !== DASHBOARD_ROLES.USUARIO_REPORTE_SEGUIMIENTO &&
+    sourceParam === "fichaPaciente" &&
     Boolean(patientEmailParam);
   const effectivePatientEmail = canPreviewPatientPortal ? patientEmailParam : primaryEmail;
   const effectivePatientName = canPreviewPatientPortal ? patientNameParam || "Paciente" : fullName;
