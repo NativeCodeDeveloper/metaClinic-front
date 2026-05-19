@@ -157,6 +157,7 @@ export default function PatientPortalClient({ patientEmail, patientName, isAdmin
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [portalData, setPortalData] = useState(null);
+  const [portalUnavailable, setPortalUnavailable] = useState(false);
   const [formData, setFormData] = useState(initialForm);
 
   async function cargarResumenPortal() {
@@ -167,6 +168,7 @@ export default function PatientPortalClient({ patientEmail, patientName, isAdmin
 
     try {
       setLoading(true);
+      setPortalUnavailable(false);
 
       const response = await fetch(`${API}/portalPacientes/resumenPacientePortal`, {
         method: "POST",
@@ -181,6 +183,12 @@ export default function PatientPortalClient({ patientEmail, patientName, isAdmin
       });
 
       const respuestaBackend = await response.json();
+
+      if (response.status === 404 || respuestaBackend?.message === false) {
+        setPortalData(null);
+        setPortalUnavailable(true);
+        return;
+      }
 
       if (!response.ok) {
         throw new Error(respuestaBackend?.error || "No se pudo cargar el portal del paciente.");
@@ -306,6 +314,33 @@ export default function PatientPortalClient({ patientEmail, patientName, isAdmin
           <div className="flex items-center gap-3 text-slate-600">
             <LoaderCircle className="h-5 w-5 animate-spin" />
             Cargando portal del paciente...
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (portalUnavailable) {
+    return (
+      <section className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.16),_transparent_35%),linear-gradient(180deg,_#f8fafc_0%,_#edf4fb_100%)] px-4 py-10">
+        <ToasterClient />
+        <div className="mx-auto flex max-w-4xl flex-col gap-4 rounded-[32px] border border-white/70 bg-white/90 p-8 shadow-[0_30px_90px_rgba(15,23,42,0.08)]">
+          <div className="inline-flex w-fit items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-amber-700">
+            Portal no disponible
+          </div>
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
+              Este paciente no posee portal de seguimiento activo
+            </h1>
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-500">
+              No encontramos un paciente habilitado para portal con el correo asociado. Verifica el correo del paciente o activa su acceso antes de volver a intentarlo.
+            </p>
+          </div>
+          <div className="rounded-[22px] border border-slate-200 bg-[linear-gradient(180deg,_#ffffff_0%,_#f8fbff_100%)] px-4 py-3 shadow-[0_10px_24px_rgba(15,23,42,0.04)]">
+            <div className="text-[11px] uppercase tracking-[0.18em] text-slate-400">
+              Correo consultado
+            </div>
+            <div className="mt-1 text-sm font-medium text-slate-700 break-all">{patientEmail}</div>
           </div>
         </div>
       </section>
