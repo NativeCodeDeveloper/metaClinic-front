@@ -46,6 +46,18 @@ const adherenciaOptions = ["Excelente", "Buena", "Regular", "Mala"];
 const apetitoOptions = ["Muy reducido", "Reducido", "Normal", "Aumentado"];
 const symptomOptions = ["Ninguna", "Leve", "Moderada", "Intensa"];
 
+const neutralSymptomValues = [
+  "",
+  "ninguna",
+  "ninguno",
+  "normal",
+  "no",
+  "sin sintomas",
+  "sin síntoma",
+  "sin sintoma",
+  "ausente",
+];
+
 function formatDate(dateString) {
   if (!dateString) {
     return "Fecha por confirmar";
@@ -85,6 +97,46 @@ function formatMessageDate(dateString) {
     month: "long",
     year: "numeric",
   });
+}
+
+function isHighlightedValue(value) {
+  const normalized = String(value || "").trim().toLowerCase();
+  return normalized && !neutralSymptomValues.includes(normalized);
+}
+
+function buildCheckinSummaryRows(checkinActual) {
+  if (!checkinActual) {
+    return [];
+  }
+
+  return [
+    { label: "Peso", value: checkinActual.peso ? `${checkinActual.peso} kg` : "--" },
+    { label: "Cintura", value: checkinActual.cintura ? `${checkinActual.cintura} cm` : "--" },
+    { label: "Presión arterial", value: checkinActual.presion_arterial || "--" },
+    { label: "Glicemia en ayuno", value: checkinActual.glicemia_ayuno || "--" },
+    { label: "Horas de ejercicio", value: checkinActual.horas_ejercicio || "--" },
+    {
+      label: "Adherencia al tratamiento",
+      value: checkinActual.adherencia_tratamiento || "--",
+      highlight: ["regular", "mala"].includes(String(checkinActual.adherencia_tratamiento || "").trim().toLowerCase()),
+    },
+    {
+      label: "Apetito esta semana",
+      value: checkinActual.apetito_semana || "--",
+      highlight: ["muy reducido", "reducido", "aumentado"].includes(String(checkinActual.apetito_semana || "").trim().toLowerCase()),
+    },
+    { label: "Náuseas", value: checkinActual.nauseas || "--", highlight: isHighlightedValue(checkinActual.nauseas) },
+    { label: "Vómitos", value: checkinActual.vomitos || "--", highlight: isHighlightedValue(checkinActual.vomitos) },
+    { label: "Diarrea", value: checkinActual.diarrea || "--", highlight: isHighlightedValue(checkinActual.diarrea) },
+    { label: "Constipación", value: checkinActual.constipacion || "--", highlight: isHighlightedValue(checkinActual.constipacion) },
+    { label: "Dolor abdominal", value: checkinActual.dolor_abdominal || "--", highlight: isHighlightedValue(checkinActual.dolor_abdominal) },
+    { label: "Hambre nocturna", value: checkinActual.hambre_nocturna || "--", highlight: isHighlightedValue(checkinActual.hambre_nocturna) },
+    {
+      label: "Observaciones",
+      value: checkinActual.observaciones_paciente || "--",
+      fullWidth: true,
+    },
+  ];
 }
 
 function buildChartPoints(items, width, height, padding) {
@@ -285,6 +337,7 @@ export default function PatientPortalClient({ patientEmail, patientName, isAdmin
   const progresoPeso = portalData?.progresoPeso || [];
   const checkinActual = portalData?.checkinActual || null;
   const proximoControl = controles[0] || null;
+  const checkinSummaryRows = useMemo(() => buildCheckinSummaryRows(checkinActual), [checkinActual]);
 
   const cambioPeso = useMemo(() => {
     if (progresoPeso.length < 2) {
@@ -518,6 +571,31 @@ export default function PatientPortalClient({ patientEmail, patientName, isAdmin
                       <div className="text-xs text-slate-400 sm:pt-1">{formatMessageDate(mensaje.fecha_publicacion)}</div>
                     </div>
                     <p className="mt-2.5 whitespace-pre-line text-sm leading-5 text-slate-600">{mensaje.mensaje}</p>
+                    {mensaje.tipo_mensaje === "automatico" && checkinActual?.estado_checkin === "completado" ? (
+                      <div className="mt-4 rounded-[18px] border border-slate-200 bg-white/90 p-3 sm:p-4">
+                        <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                          Resumen de tu check-in
+                        </div>
+                        <div className="mt-3 overflow-hidden rounded-2xl border border-slate-200">
+                          <table className="w-full border-collapse text-sm">
+                            <tbody>
+                              {checkinSummaryRows.map((row) => (
+                                <tr key={row.label} className="border-b border-slate-100 last:border-b-0">
+                                  <td className="w-[42%] bg-slate-50 px-3 py-2.5 font-medium text-slate-600 sm:w-[34%]">
+                                    {row.label}
+                                  </td>
+                                  <td
+                                    className={`px-3 py-2.5 ${row.highlight ? "font-semibold text-red-600" : "text-slate-700"} ${row.fullWidth ? "whitespace-pre-line" : ""}`}
+                                  >
+                                    {row.value}
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    ) : null}
                   </article>
                 ))}
               </div>
