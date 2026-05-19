@@ -25,18 +25,8 @@ export default function FichaClinica() {
     }
 
     function construirDetalleAlerta(paciente) {
-        const sintomas = [
-            ["Náuseas", paciente.checkin_alerta_nauseas],
-            ["Diarrea", paciente.checkin_alerta_diarrea],
-            ["Constipación", paciente.checkin_alerta_constipacion],
-            ["Dolor abdominal", paciente.checkin_alerta_dolor_abdominal],
-            ["Hambre nocturna", paciente.checkin_alerta_hambre_nocturna],
-        ]
-            .filter(([, value]) => {
-                const normalized = String(value || "").trim().toLowerCase();
-                return normalized && !["ninguna", "ninguno", "normal", "no", "sin sintomas", "sin síntoma", "sin sintoma", "ausente"].includes(normalized);
-            })
-            .map(([label, value]) => `${label}: ${value}`);
+        const sintomas = obtenerSintomasAlerta(paciente)
+            .map(({ label, value }) => `${label}: ${value}`);
 
         if (sintomas.length === 0) {
             return "";
@@ -46,8 +36,33 @@ export default function FichaClinica() {
         return `${semana}${sintomas.join(" · ")}`;
     }
 
+    function valorEsSintomaActivo(value) {
+        const normalized = String(value || "").trim().toLowerCase();
+        return normalized && !["ninguna", "ninguno", "normal", "no", "sin sintomas", "sin síntoma", "sin sintoma", "ausente"].includes(normalized);
+    }
+
+    function obtenerSintomasAlerta(paciente) {
+        return [
+            ["Náuseas", paciente.checkin_alerta_nauseas],
+            ["Diarrea", paciente.checkin_alerta_diarrea],
+            ["Constipación", paciente.checkin_alerta_constipacion],
+            ["Dolor abdominal", paciente.checkin_alerta_dolor_abdominal],
+            ["Hambre nocturna", paciente.checkin_alerta_hambre_nocturna],
+        ]
+            .filter(([, value]) => valorEsSintomaActivo(value))
+            .map(([label, value]) => ({ label, value }));
+    }
+
     function tieneAlertaCheckin(paciente) {
-        return Number(paciente.checkin_alerta_activa) === 1;
+        if (Number(paciente.checkin_alerta_activa) === 1) {
+            return true;
+        }
+
+        if (paciente.checkin_alerta_activa === true) {
+            return true;
+        }
+
+        return obtenerSintomasAlerta(paciente).length > 0;
     }
 
     async function buscarRutSimilar(rutBuscado) {
