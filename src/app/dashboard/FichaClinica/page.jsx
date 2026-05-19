@@ -384,7 +384,7 @@ export default function FichaClinica() {
                                                             </div>
                                                             <div>
                                                                 <span className="text-[10px] font-bold uppercase tracking-[0.22em] text-red-700">
-                                                                    Alerta clínica
+                                                                    Alerta
                                                                 </span>
                                                                 <span className="mt-0.5 block text-xs font-semibold leading-4 text-red-700">
                                                                     Check-in alterado
@@ -394,7 +394,7 @@ export default function FichaClinica() {
                                                         <button
                                                             onClick={() => marcarAlertaComoRevisada(paciente.checkin_alerta_id_checkin)}
                                                             disabled={marcandoRevisionId === paciente.checkin_alerta_id_checkin}
-                                                            className="mt-3 inline-flex items-center justify-center rounded-lg border border-red-200 bg-white/90 px-2.5 py-1.5 text-[11px] font-semibold text-red-700 transition-all hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
+                                                            className="mt-2 inline-flex w-fit items-center justify-center rounded-lg border border-red-200 bg-white/90 px-2 py-1 text-[10px] font-semibold text-red-700 transition-all hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
                                                         >
                                                             {marcandoRevisionId === paciente.checkin_alerta_id_checkin ? "Guardando..." : "Marcar revisada"}
                                                         </button>
