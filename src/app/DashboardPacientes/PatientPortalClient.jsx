@@ -563,9 +563,16 @@ export default function PatientPortalClient({ patientEmail, patientName, isAdmin
                               ? "bg-sky-100 text-sky-700"
                               : "bg-emerald-100 text-emerald-700"
                           }`}>
-                            {mensaje.tipo_mensaje === "directo" ? "Mensaje directo" : "Automático"}
+                            {mensaje.tipo_mensaje === "directo"
+                              ? "Equipo de MetaboCare - Centro Clinico Metabolico:"
+                              : "Automático"}
                           </span>
                         </div>
+                        {mensaje.tipo_mensaje === "directo" ? (
+                          <p className="mt-2 text-xs font-medium tracking-[0.08em] text-sky-700/80">
+                            Esta es una observacion medica
+                          </p>
+                        ) : null}
                         <h3 className="mt-2 text-[15px] font-semibold text-slate-900 sm:text-base">{mensaje.titulo}</h3>
                       </div>
                       <div className="text-xs text-slate-400 sm:pt-1">{formatMessageDate(mensaje.fecha_publicacion)}</div>
