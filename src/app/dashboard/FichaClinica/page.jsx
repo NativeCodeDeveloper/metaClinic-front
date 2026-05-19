@@ -66,32 +66,6 @@ export default function FichaClinica() {
         return obtenerSintomasAlerta(paciente).length > 0;
     }
 
-    function combinarPacientesConAlertas(pacientes, alertas) {
-        const alertasPorPaciente = new Map(
-            (Array.isArray(alertas) ? alertas : []).map((alerta) => [String(alerta.id_paciente), alerta])
-        );
-
-        return (Array.isArray(pacientes) ? pacientes : []).map((paciente) => {
-            const alerta = alertasPorPaciente.get(String(paciente.id_paciente));
-
-            if (!alerta) {
-                return paciente;
-            }
-
-            return {
-                ...paciente,
-                checkin_alerta_activa: alerta.checkin_alerta_activa,
-                checkin_alerta_semana: alerta.semana_label,
-                checkin_alerta_nauseas: alerta.nauseas,
-                checkin_alerta_vomitos: alerta.vomitos,
-                checkin_alerta_diarrea: alerta.diarrea,
-                checkin_alerta_constipacion: alerta.constipacion,
-                checkin_alerta_dolor_abdominal: alerta.dolor_abdominal,
-                checkin_alerta_hambre_nocturna: alerta.hambre_nocturna,
-            };
-        });
-    }
-
     async function buscarRutSimilar(rutBuscado) {
         try {
             if (!rutBuscado) {
@@ -166,30 +140,20 @@ export default function FichaClinica() {
 
     async function listarPacientes() {
         try {
-            const [pacientesResponse, alertasResponse] = await Promise.all([
-                fetch(`${API}/pacientes`, {
-                    method: "GET",
-                    headers: {
-                        Accept: "application/json",
-                    },
-                    mode: "cors"
-                }),
-                fetch(`${API}/portalPacientes/resumenAlertasCheckin`, {
-                    method: "GET",
-                    headers: {
-                        Accept: "application/json",
-                    },
-                    mode: "cors"
-                })
-            ]);
+            const pacientesResponse = await fetch(`${API}/pacientes`, {
+                method: "GET",
+                headers: {
+                    Accept: "application/json",
+                },
+                mode: "cors"
+            });
 
             if (!pacientesResponse.ok) {
                 return toast.error("Ha ocurrido un error listando los pacientes . contacte a soporte IT de Medify")
             }
 
             const dataPacientes = await pacientesResponse.json();
-            const dataAlertas = alertasResponse.ok ? await alertasResponse.json() : [];
-            setListaPacientes(combinarPacientesConAlertas(dataPacientes, dataAlertas));
+            setListaPacientes(Array.isArray(dataPacientes) ? dataPacientes : []);
         } catch (error) {
             console.log(error);
             return toast.success("Ha ocurrido un error contacte a soporte de Medify");
