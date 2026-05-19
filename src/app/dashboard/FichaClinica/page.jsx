@@ -44,6 +44,7 @@ export default function FichaClinica() {
     function obtenerSintomasAlerta(paciente) {
         return [
             ["Náuseas", paciente.checkin_alerta_nauseas],
+            ["Vómitos", paciente.checkin_alerta_vomitos],
             ["Diarrea", paciente.checkin_alerta_diarrea],
             ["Constipación", paciente.checkin_alerta_constipacion],
             ["Dolor abdominal", paciente.checkin_alerta_dolor_abdominal],
@@ -82,6 +83,7 @@ export default function FichaClinica() {
                 checkin_alerta_activa: alerta.checkin_alerta_activa,
                 checkin_alerta_semana: alerta.semana_label,
                 checkin_alerta_nauseas: alerta.nauseas,
+                checkin_alerta_vomitos: alerta.vomitos,
                 checkin_alerta_diarrea: alerta.diarrea,
                 checkin_alerta_constipacion: alerta.constipacion,
                 checkin_alerta_dolor_abdominal: alerta.dolor_abdominal,
