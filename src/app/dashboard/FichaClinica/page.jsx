@@ -14,6 +14,7 @@ export default function FichaClinica() {
 
     const API = process.env.NEXT_PUBLIC_API_URL;
     const [listaPacientes, setListaPacientes] = useState([]);
+    const [marcandoRevisionId, setMarcandoRevisionId] = useState(null);
 
     const [nombreBuscado, setNombreBuscado] = useState("");
     const [rutBuscado, setRutBuscado] = useState("");
@@ -41,6 +42,24 @@ export default function FichaClinica() {
         return normalized && !["ninguna", "ninguno", "normal", "no", "sin sintomas", "sin síntoma", "sin sintoma", "ausente"].includes(normalized);
     }
 
+    function obtenerValorOrdenPaciente(paciente) {
+        const nombre = `${paciente.nombre || ""} ${paciente.apellido || ""}`.trim().toLowerCase();
+        return nombre;
+    }
+
+    function ordenarPacientesPorAlerta(pacientes) {
+        return [...(Array.isArray(pacientes) ? pacientes : [])].sort((a, b) => {
+            const alertaA = tieneAlertaCheckin(a) ? 1 : 0;
+            const alertaB = tieneAlertaCheckin(b) ? 1 : 0;
+
+            if (alertaA !== alertaB) {
+                return alertaB - alertaA;
+            }
+
+            return obtenerValorOrdenPaciente(a).localeCompare(obtenerValorOrdenPaciente(b), "es");
+        });
+    }
+
     function obtenerSintomasAlerta(paciente) {
         return [
             ["Náuseas", paciente.checkin_alerta_nauseas],
@@ -55,6 +74,10 @@ export default function FichaClinica() {
     }
 
     function tieneAlertaCheckin(paciente) {
+        if (Number(paciente.checkin_alerta_revisada) === 1 || paciente.checkin_alerta_revisada === true) {
+            return false;
+        }
+
         if (Number(paciente.checkin_alerta_activa) === 1) {
             return true;
         }
@@ -64,6 +87,54 @@ export default function FichaClinica() {
         }
 
         return obtenerSintomasAlerta(paciente).length > 0;
+    }
+
+    function alertaFueRevisada(paciente) {
+        return Number(paciente.checkin_alerta_revisada) === 1 || paciente.checkin_alerta_revisada === true;
+    }
+
+    async function marcarAlertaComoRevisada(id_checkin) {
+        try {
+            if (!id_checkin) {
+                return toast.error("No se encontró el check-in asociado a esta alerta.");
+            }
+
+            setMarcandoRevisionId(id_checkin);
+
+            const res = await fetch(`${API}/portalPacientes/marcarAlertaCheckinRevisada`, {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ id_checkin }),
+                mode: "cors"
+            });
+
+            const data = await res.json().catch(() => ({}));
+
+            if (!res.ok || data?.message !== true) {
+                return toast.error("No fue posible marcar la alerta como revisada.");
+            }
+
+            setListaPacientes((prev) => ordenarPacientesPorAlerta(
+                prev.map((paciente) => (
+                    Number(paciente.checkin_alerta_id_checkin) === Number(id_checkin)
+                        ? {
+                            ...paciente,
+                            checkin_alerta_revisada: 1,
+                            checkin_alerta_activa: 0,
+                        }
+                        : paciente
+                ))
+            ));
+            toast.success("Alerta marcada como revisada.");
+        } catch (error) {
+            console.log(error);
+            toast.error("Ha ocurrido un problema actualizando la alerta.");
+        } finally {
+            setMarcandoRevisionId(null);
+        }
     }
 
     async function buscarRutSimilar(rutBuscado) {
@@ -89,7 +160,7 @@ export default function FichaClinica() {
                 const dataRutSimilar = await res.json()
 
                 if (Array.isArray(dataRutSimilar) && dataRutSimilar.length > 0) {
-                    setListaPacientes(dataRutSimilar)
+                    setListaPacientes(ordenarPacientesPorAlerta(dataRutSimilar))
                     return toast.success("Similitud encontrada!")
                 } else {
                     return toast.error("No se han encontrado similitudes.")
@@ -126,7 +197,7 @@ export default function FichaClinica() {
                 const dataSimilar = await res.json();
 
                 if (Array.isArray(dataSimilar) && dataSimilar.length > 0) {
-                    setListaPacientes(dataSimilar);
+                    setListaPacientes(ordenarPacientesPorAlerta(dataSimilar));
                     return toast.success("Similitud encontrada!")
                 } else {
                     return toast.error("No se han encontrado similitudes.")
@@ -153,7 +224,7 @@ export default function FichaClinica() {
             }
 
             const dataPacientes = await pacientesResponse.json();
-            setListaPacientes(Array.isArray(dataPacientes) ? dataPacientes : []);
+            setListaPacientes(ordenarPacientesPorAlerta(dataPacientes));
         } catch (error) {
             console.log(error);
             return toast.success("Ha ocurrido un error contacte a soporte de Medify");
@@ -280,6 +351,7 @@ export default function FichaClinica() {
                                 <TableBody>
                                     {listaPacientes.map((paciente, i) => {
                                         const alertaActiva = tieneAlertaCheckin(paciente);
+                                        const alertaRevisada = alertaFueRevisada(paciente);
                                         const detalleAlerta = construirDetalleAlerta(paciente);
 
                                         return (
@@ -301,14 +373,39 @@ export default function FichaClinica() {
                                             <TableCell className="px-3 py-2.5">
                                                 {alertaActiva ? (
                                                     <div
-                                                        className="inline-flex max-w-[240px] flex-col rounded-lg border border-amber-200 bg-amber-50 px-2.5 py-2 text-left"
+                                                        className="inline-flex max-w-[260px] flex-col rounded-xl border border-red-300 bg-[linear-gradient(135deg,_#fff7ed_0%,_#fef2f2_50%,_#fff1f2_100%)] px-3 py-2.5 text-left shadow-[0_10px_25px_rgba(239,68,68,0.12)]"
                                                         title={detalleAlerta}
                                                     >
-                                                        <span className="text-[10px] font-semibold uppercase tracking-wider text-amber-700">
-                                                            Alerta
+                                                        <div className="flex items-start gap-2">
+                                                            <div className="mt-0.5 flex h-7 w-7 items-center justify-center rounded-full bg-red-100 text-red-600">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86l-7.5 13A1 1 0 003.66 18h16.68a1 1 0 00.87-1.5l-7.5-13a1 1 0 00-1.74 0z"/>
+                                                                </svg>
+                                                            </div>
+                                                            <div>
+                                                                <span className="text-[10px] font-bold uppercase tracking-[0.22em] text-red-700">
+                                                                    Alerta clínica
+                                                                </span>
+                                                                <span className="mt-0.5 block text-xs font-semibold leading-4 text-red-700">
+                                                                    Check-in alterado
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <button
+                                                            onClick={() => marcarAlertaComoRevisada(paciente.checkin_alerta_id_checkin)}
+                                                            disabled={marcandoRevisionId === paciente.checkin_alerta_id_checkin}
+                                                            className="mt-3 inline-flex items-center justify-center rounded-lg border border-red-200 bg-white/90 px-2.5 py-1.5 text-[11px] font-semibold text-red-700 transition-all hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
+                                                        >
+                                                            {marcandoRevisionId === paciente.checkin_alerta_id_checkin ? "Guardando..." : "Marcar revisada"}
+                                                        </button>
+                                                    </div>
+                                                ) : alertaRevisada ? (
+                                                    <div className="inline-flex max-w-[220px] flex-col rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2 text-left">
+                                                        <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+                                                            Revisada
                                                         </span>
-                                                        <span className="mt-0.5 text-xs font-medium leading-4 text-amber-800">
-                                                            Sintomas en check-in
+                                                        <span className="mt-0.5 text-xs font-medium leading-4 text-slate-600">
+                                                            Alerta ya revisada
                                                         </span>
                                                     </div>
                                                 ) : (
