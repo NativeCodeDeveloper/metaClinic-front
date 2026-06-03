@@ -61,6 +61,21 @@ const [id_profesional, setId_profesional] = useState("");
         return new Date(`${soloFecha}T${hora}`);
     }
 
+    async function validarDisponibilidadBloqueo(id_profesional, fechaInicio, horaInicio, fechaFinalizacion, horaFinalizacion) {
+        const res = await fetch(`${API}/reservaPacientes/validar`, {
+            method: "POST",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({id_profesional, fechaInicio, horaInicio, fechaFinalizacion, horaFinalizacion}),
+            mode: "cors",
+        });
+
+        const respuestaBackend = await res.json().catch(() => null);
+        return res.ok && respuestaBackend?.message === true;
+    }
+
 
 
     async function buscarPorProfesionalBloqueo() {
@@ -102,6 +117,29 @@ const [id_profesional, setId_profesional] = useState("");
             return toast.error("Deben completarse todos los campos para ingresar el bloqueo al sistema.")
         }
 
+        if (fechaFinalizacion < fechaInicio) {
+            return toast.error("La fecha de termino siempre debe ser igual o mayor a la fecha de inicio.");
+        }
+
+        const inicio = convertirAFechaCalendario(fechaInicio, horaInicio);
+        const final = convertirAFechaCalendario(fechaFinalizacion, horaFinalizacion);
+
+        if (inicio >= final) {
+            return toast.error("Si la fecha de termino es igual a la fecha de inicio, la hora de termino debe ser mayor.");
+        }
+
+        const horarioDisponible = await validarDisponibilidadBloqueo(
+            id_profesional,
+            fechaInicio,
+            horaInicio,
+            fechaFinalizacion,
+            horaFinalizacion
+        );
+
+        if (!horarioDisponible) {
+            return toast.error("No pueden bloquearse si hay agendamientos o bloqueos previos");
+        }
+
         const res = await fetch(`${API}/bloqueoAgenda/InsertarBloqueo`,{
             method: 'POST',
             headers: {Accept: 'application/json',
@@ -125,7 +163,9 @@ const [id_profesional, setId_profesional] = useState("");
                     await verTodosLosBloqueos();
                     return toast.success('Se ha ingresado con exito el bloqueo al sistema. ')
                 }else if (respuestaBackend.message === "sindisponibilidad") {
-                    return toast.error("Ya existe un bloqueo que se cruza con ese rango horario.");
+                    return toast.error("No pueden bloquearse si hay agendamientos o bloqueos previos");
+                }else if (respuestaBackend.message === "rangoInvalido") {
+                    return toast.error("La fecha de termino siempre debe ser igual o mayor a la fecha de inicio.");
                 }else {
                     return toast.error("No se ha podido insertar bloqueo al sistema. Intente mas tarde.")
                 }
