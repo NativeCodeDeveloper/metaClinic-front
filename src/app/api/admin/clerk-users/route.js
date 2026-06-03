@@ -7,6 +7,7 @@ import {
   normalizeDashboardRole,
   RESTRICTED_PATIENTS_PATH,
 } from "@/lib/dashboard-access";
+import { isClerkTemporarilyDisabled } from "@/lib/clerk-disabled";
 
 const BACKEND_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -72,6 +73,13 @@ async function sendCredentialsEmail({
 
 export async function POST(request) {
   try {
+    if (isClerkTemporarilyDisabled()) {
+      return NextResponse.json(
+        { message: "Clerk esta desactivado temporalmente." },
+        { status: 503 }
+      );
+    }
+
     const { userId, sessionClaims } = await auth();
 
     if (!userId) {

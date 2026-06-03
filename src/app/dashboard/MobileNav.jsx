@@ -11,7 +11,6 @@ import {
 
 const links = [
   { label: "Inicio", href: "/dashboard" },
-  { label: "Calendario General", href: "/dashboard/calendarioGeneral" },
   { label: "Ingreso Agendamientos", href: "/dashboard/calendario" },
   { label: "Estado de Reservaciones", href: "/dashboard/agendaCitas" },
   { label: "Ingreso de Pacientes", href: "/dashboard/GestionPaciente" },
@@ -22,10 +21,8 @@ const links = [
   { label: "Carrusel de Portada", href: "/dashboard/portadaEdit" },
 ];
 
-export default function MobileNav() {
+function MobileNavContent({ role }) {
   const [open, setOpen] = useState(false);
-  const { user } = useUser();
-  const role = user?.publicMetadata?.role;
   const isRestrictedUser =
     role === DASHBOARD_ROLES.USUARIO_REPORTE_SEGUIMIENTO;
   const isAdmin =
@@ -33,12 +30,12 @@ export default function MobileNav() {
 
   const sections = [
     { title: "Principal", items: [links[0]] },
-    { title: "Agenda Clínica", items: [links[1], links[2], links[3]] },
+    { title: "Agenda Clínica", items: [links[1], links[2]] },
     {
       title: "Registros Clínicos",
-      items: isAdmin ? [links[4], links[5], links[6], links[7]] : [links[4], links[5]],
+      items: isAdmin ? [links[3], links[4], links[5], links[6]] : [links[3], links[4]],
     },
-    { title: "Administración Web", items: [links[8], links[9]] },
+    { title: "Administración Web", items: [links[7], links[8]] },
   ];
 
   const mobileSections = isRestrictedUser
@@ -128,4 +125,18 @@ export default function MobileNav() {
       )}
     </div>
   );
+}
+
+export default function MobileNav({ clerkDisabled = false }) {
+  if (clerkDisabled) {
+    return <MobileNavContent role={DASHBOARD_ROLES.ADMIN} />;
+  }
+
+  return <MobileNavWithClerk />;
+}
+
+function MobileNavWithClerk() {
+  const { user } = useUser();
+
+  return <MobileNavContent role={user?.publicMetadata?.role} />;
 }

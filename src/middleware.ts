@@ -11,13 +11,18 @@ import {
   getRoleFromSessionClaims,
   normalizeDashboardRole,
 } from "@/lib/dashboard-access";
+import { isClerkTemporarilyDisabled } from "@/lib/clerk-disabled";
 
 const isProtectedAppRoute = createRouteMatcher([
   "/dashboard(.*)",
   "/DashboardPacientes",
 ]);
 
-export default clerkMiddleware(async (auth, req) => {
+const dashboardMiddleware = isClerkTemporarilyDisabled()
+  ? function temporarilyDisabledClerkMiddleware() {
+      return NextResponse.next();
+    }
+  : clerkMiddleware(async (auth, req) => {
   if (!isProtectedAppRoute(req)) {
     return NextResponse.next();
   }
@@ -58,6 +63,8 @@ export default clerkMiddleware(async (auth, req) => {
 
   return NextResponse.next();
 });
+
+export default dashboardMiddleware;
 
 export const config = {
   matcher: ["/dashboard/:path*", "/DashboardPacientes", "/api/admin/clerk-users"],

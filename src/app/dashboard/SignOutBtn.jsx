@@ -2,7 +2,15 @@
 
 import { useClerk } from "@clerk/nextjs";
 
-export default function SignOutBtn({ variant = "dark" }) {
+export default function SignOutBtn({ variant = "dark", disabled = false }) {
+    if (disabled) {
+        return null;
+    }
+
+    return <SignOutControl variant={variant} />;
+}
+
+function SignOutControl({ variant = "dark" }) {
     const { signOut } = useClerk();
     const isLight = variant === "light";
 

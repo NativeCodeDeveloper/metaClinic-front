@@ -11,27 +11,34 @@ import {
     normalizeDashboardRole,
     RESTRICTED_PATIENTS_PATH,
 } from "@/lib/dashboard-access";
+import { isClerkTemporarilyDisabled } from "@/lib/clerk-disabled";
 
 export const metadata = {
     title: "Dashboard",
     description: "Panel de administración",
 };
 
-export default async function DashboardLayout({ children }) {
-    const { userId, sessionClaims } = await auth();
-    let role = getRoleFromSessionClaims(sessionClaims);
+export const dynamic = "force-dynamic";
 
-    if (!role && userId) {
-        const client = await clerkClient();
-        const currentUser = await client.users.getUser(userId);
-        role = normalizeDashboardRole(currentUser?.publicMetadata?.role);
+export default async function DashboardLayout({ children }) {
+    const clerkDisabled = isClerkTemporarilyDisabled();
+    let role = clerkDisabled ? DASHBOARD_ROLES.ADMIN : undefined;
+
+    if (!clerkDisabled) {
+        const { userId, sessionClaims } = await auth();
+        role = getRoleFromSessionClaims(sessionClaims);
+
+        if (!role && userId) {
+            const client = await clerkClient();
+            const currentUser = await client.users.getUser(userId);
+            role = normalizeDashboardRole(currentUser?.publicMetadata?.role);
+        }
     }
 
     const isRestrictedUser = role === DASHBOARD_ROLES.USUARIO_REPORTE_SEGUIMIENTO;
     const isAdmin = isAdminRole(role);
 
-    return (
-        <ClerkProvider>
+    const content = (
         <div className="h-screen w-full overflow-hidden bg-white">
             <div className="flex h-full w-full">
                 {/* Sidebar */}
@@ -127,13 +134,6 @@ export default async function DashboardLayout({ children }) {
                                     </svg>
                                 </summary>
                                 <div className="mt-1 space-y-0.5">
-                                    <Link
-                                        href="/dashboard/calendarioGeneral"
-                                        className="group/link flex items-center gap-2.5 rounded-md px-2 py-[6px] text-[12.5px] font-light text-white/50 hover:text-white/90 hover:bg-white/[0.05] transition-all duration-200"
-                                    >
-                                        <span className="h-[3px] w-[3px] rounded-full bg-white/15 group-hover/link:bg-violet-400 group-hover/link:shadow-[0_0_6px_rgba(139,92,246,0.6)] transition-all duration-200" />
-                                        Calendario General
-                                    </Link>
                                     <Link
                                         href="/dashboard/calendario"
                                         className="group/link flex items-center gap-2.5 rounded-md px-2 py-[6px] text-[12.5px] font-light text-white/50 hover:text-white/90 hover:bg-white/[0.05] transition-all duration-200"
@@ -401,7 +401,7 @@ export default async function DashboardLayout({ children }) {
                                         </Link>
                                     </>
                                 )}
-                                <SignOutBtn />
+                                <SignOutBtn disabled={clerkDisabled} />
                             </div>
                         </div>
                             </>
@@ -428,7 +428,7 @@ export default async function DashboardLayout({ children }) {
 
                 {/* Content */}
                 <div className="flex-1 min-w-0 h-full overflow-y-auto">
-                    <MobileNav />
+                    <MobileNav clerkDisabled={clerkDisabled} />
 
                     <main className="min-w-0">
                         {children}
@@ -436,6 +436,11 @@ export default async function DashboardLayout({ children }) {
                 </div>
             </div>
         </div>
-        </ClerkProvider>
     );
+
+    if (clerkDisabled) {
+        return content;
+    }
+
+    return <ClerkProvider>{content}</ClerkProvider>;
 }
