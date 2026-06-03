@@ -194,13 +194,6 @@ const [id_profesional, setId_profesional] = useState("");
         }
     }
 
-    useEffect(() => {
-        verTodosLosBloqueos()
-    },[])
-
-
-
-
     async function eliminarBloqueo(id_bloqueo) {
         try {
             if(!id_bloqueo){
@@ -250,7 +243,12 @@ const [id_profesional, setId_profesional] = useState("");
     }
 
     useEffect(() => {
-        filtrarPorProfesional(id_profesional)
+        if (id_profesional) {
+            filtrarPorProfesional(id_profesional);
+            return;
+        }
+
+        verTodosLosBloqueos();
     },[id_profesional])
 
     return (
