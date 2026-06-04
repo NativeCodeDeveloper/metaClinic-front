@@ -160,27 +160,32 @@ function CalendarioContent() {
                 height: 6px !important;
             }
             .rbc-month-view .rbc-event {
-                min-height: 0 !important; height: auto !important; padding: 2px 3px !important;
-                line-height: 1.1 !important; white-space: normal !important; overflow: visible !important; word-break: break-word !important;
-                font-size: 55% !important;
+                min-height: 0 !important; height: 20px !important; padding: 0 5px !important;
+                line-height: 20px !important; white-space: nowrap !important; overflow: hidden !important;
+                text-overflow: ellipsis !important; font-size: 0.72rem !important;
+                border-radius: 4px !important; margin-bottom: 2px !important;
             }
+            .rbc-month-view .rbc-row-content { overflow: hidden !important; }
+            .rbc-month-view .rbc-month-row { overflow: hidden !important; }
             .rbc-time-view .rbc-event {
-                min-height: 0 !important; padding: 1px 2px !important;
-                line-height: 1.1 !important; white-space: normal !important; overflow: hidden !important; word-break: break-word !important;
-                font-size: 48% !important;
+                min-height: 0 !important; padding: 4px 8px !important;
+                line-height: 1.3 !important; overflow: hidden !important;
+                font-size: 0.78rem !important; border-radius: 6px !important;
             }
-            .rbc-month-view .rbc-day-slot { min-height: 80px !important; }
+            .rbc-time-view .rbc-event-content { overflow: hidden !important; height: 100% !important; font-size: 0.78rem !important; white-space: normal !important; }
             .rbc-row-segment { z-index: 1 !important; }
-            .rbc-event-label, .rbc-event-content { white-space: normal !important; overflow: visible !important; word-break: break-word !important; font-size: 40% !important; }
-            .rbc-time-view .rbc-event-label,
-            .rbc-time-view .rbc-event-content { font-size: 48% !important; }
             .rbc-event-label { display: none !important; }
-            @media (min-width: 768px) {
-                .rbc-month-view .rbc-event-label,
-                .rbc-month-view .rbc-event-content {
-                    font-size: 55% !important;
-                }
-            }
+            .rbc-event-content { overflow: hidden !important; font-size: inherit !important; }
+            .rbc-agenda-view table.rbc-agenda-table { border-collapse: collapse !important; width: 100% !important; }
+            .rbc-agenda-view .rbc-agenda-date-cell, .rbc-agenda-view .rbc-agenda-time-cell { font-size: 0.78rem !important; color: #475569 !important; font-weight: 500 !important; padding: 8px 12px !important; vertical-align: middle !important; white-space: nowrap !important; }
+            .rbc-agenda-view .rbc-agenda-event-cell { padding: 6px 10px !important; vertical-align: middle !important; }
+            .rbc-agenda-view tbody > tr { border-top: 1px solid #f1f5f9 !important; transition: background 100ms !important; }
+            .rbc-agenda-view tbody > tr:hover { background: rgba(124, 58, 237, 0.03) !important; }
+            .rbc-agenda-view .rbc-agenda-date-cell { font-weight: 700 !important; color: #7c3aed !important; font-size: 0.8rem !important; }
+            .rbc-agenda-empty { text-align: center !important; color: #94a3b8 !important; font-size: 0.85rem !important; padding: 32px !important; }
+            .rbc-show-more { font-size: 0.7rem !important; color: #7c3aed !important; font-weight: 600 !important; padding: 0 4px !important; }
+            .rbc-month-view .rbc-date-cell { padding: 4px 6px !important; font-size: 0.8rem !important; font-weight: 600 !important; color: #475569 !important; }
+            .rbc-month-view .rbc-row-bg .rbc-day-bg { border-radius: 0 !important; }
             @media (max-width: 767px) {
                 .rbc-time-view,
                 .rbc-time-content,
@@ -1213,24 +1218,20 @@ function CalendarioContent() {
             return {
                 style: {
                     display: 'flex',
-                    alignItems: 'center',
-                    height: esVistaMes ? 'auto' : '100%',
-                    minHeight: esVistaMes ? '20px' : '0',
-                    maxHeight: 'none',
-                    whiteSpace: 'normal',
+                    flexDirection: esVistaMes ? 'row' : 'column',
+                    alignItems: esVistaMes ? 'center' : 'flex-start',
+                    justifyContent: 'flex-start',
+                    height: esVistaMes ? '20px' : '100%',
                     overflow: 'hidden',
-                    textOverflow: 'clip',
-                    lineHeight: esVistaMes ? '1' : '1.3',
-                    padding: esVistaMes ? '2px 4px' : '6px 8px',
-                    fontSize: esVistaMes ? '0.9rem' : '0.8rem',
+                    padding: esVistaMes ? '0 5px' : '4px 8px',
+                    fontSize: esVistaMes ? '0.72rem' : '0.78rem',
                     boxSizing: 'border-box',
-                    borderRadius: '0px',
-                    backgroundColor: 'rgba(107, 114, 128, 0.28)',
+                    borderRadius: esVistaMes ? '4px' : '6px',
+                    backgroundColor: 'rgba(107, 114, 128, 0.22)',
                     color: '#334155',
                     fontWeight: '600',
-                    wordBreak: 'break-word',
-                    border: '1px solid rgba(107, 114, 128, 0.38)',
-                    borderLeft: '4px solid rgba(71, 85, 105, 0.95)',
+                    border: '1px solid rgba(107, 114, 128, 0.32)',
+                    borderLeft: '3px solid rgba(71, 85, 105, 0.90)',
                     boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.18)',
                 },
             };
@@ -1239,24 +1240,21 @@ function CalendarioContent() {
         return {
             style: {
                 display: 'flex',
-                alignItems: 'stretch',
-                height: esVistaMes ? 'auto' : '100%',
-                minHeight: esVistaMes ? '20px' : '0',
-                maxHeight: 'none',
-                whiteSpace: 'normal',
+                flexDirection: esVistaMes ? 'row' : 'column',
+                alignItems: esVistaMes ? 'center' : 'flex-start',
+                justifyContent: 'flex-start',
+                height: esVistaMes ? '20px' : '100%',
                 overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                lineHeight: '1',
-                padding: esVistaMes ? '2px 4px' : '0',
-                fontSize: esVistaMes ? '0.95rem' : '0.85rem',
+                padding: esVistaMes ? '0 5px' : '4px 8px',
+                fontSize: esVistaMes ? '0.72rem' : '0.78rem',
                 boxSizing: 'border-box',
-                borderRadius: '0px',
-                backgroundColor: esSeleccion ? 'rgba(124, 58, 237, 0.24)' : paletteReserva.backgroundColor,
+                borderRadius: esVistaMes ? '4px' : '6px',
+                backgroundColor: esSeleccion ? 'rgba(124, 58, 237, 0.18)' : paletteReserva.backgroundColor,
                 color: esSeleccion ? '#5b21b6' : paletteReserva.color,
-                fontWeight: '600', wordBreak: 'break-word',
-                border: esSeleccion ? '1px solid rgba(124, 58, 237, 0.45)' : `1px solid ${paletteReserva.borderColor}`,
-                borderLeft: esSeleccion ? '4px solid rgba(91, 33, 182, 0.95)' : `4px solid ${paletteReserva.accentColor}`,
-                boxShadow: esSeleccion ? 'inset 0 0 0 1px rgba(255,255,255,0.16)' : 'inset 0 0 0 1px rgba(255,255,255,0.14)',
+                fontWeight: '600',
+                border: esSeleccion ? '1px solid rgba(124, 58, 237, 0.40)' : `1px solid ${paletteReserva.borderColor}`,
+                borderLeft: esSeleccion ? '3px solid rgba(91, 33, 182, 0.90)' : `3px solid ${paletteReserva.accentColor}`,
+                boxShadow: esSeleccion ? 'inset 0 0 0 1px rgba(255,255,255,0.16)' : 'inset 0 0 0 1px rgba(255,255,255,0.12)',
             },
         };
     };
@@ -1293,29 +1291,74 @@ function CalendarioContent() {
         return {style: {}};
     };
 
-    const EventComponent = ({event}) => (
-        <div
-            title={obtenerTooltipEvento(event)}
-            className="truncate text-sm md:text-base leading-tight font-semibold w-full h-full flex items-center gap-1 px-1"
-            style={{whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}
-        >
-            {event.tipo === "bloqueo" && (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
-            )}
-            {event.title}
-        </div>
+    const LockIcon = () => (
+        <svg xmlns="http://www.w3.org/2000/svg" style={{width: '10px', height: '10px', flexShrink: 0}} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+        </svg>
     );
 
-    const TitleOnlyEvent = ({event}) => (
-        <div title={obtenerTooltipEvento(event)} className="truncate text-sm md:text-base leading-tight font-semibold w-full flex items-center gap-1 px-1" style={{whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
+    const WeekDayEventComponent = ({event}) => {
+        const isBloqueo = event.tipo === "bloqueo";
+        const timeStr = event.start && event.end
+            ? `${formatHoraCorta(event.start)} – ${formatHoraCorta(event.end)}`
+            : "";
+        return (
+            <div title={obtenerTooltipEvento(event)} style={{height: '100%', overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: '1px'}}>
+                <div style={{display: 'flex', alignItems: 'flex-start', gap: '3px', overflow: 'hidden'}}>
+                    {isBloqueo && <span style={{marginTop: '1px', flexShrink: 0}}><LockIcon /></span>}
+                    <span style={{fontWeight: 700, fontSize: '0.78rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: '1.2'}}>
+                        {event.title}
+                    </span>
+                </div>
+                {timeStr && (
+                    <div style={{fontSize: '0.68rem', opacity: 0.75, whiteSpace: 'nowrap', overflow: 'hidden', lineHeight: '1.2'}}>
+                        {timeStr}
+                    </div>
+                )}
+            </div>
+        );
+    };
+
+    const AgendaEventComponent = ({event}) => {
+        const isBloqueo = event.tipo === "bloqueo";
+        const estado = event.resource?.estadoReserva;
+        const palette = !isBloqueo && estado ? obtenerPaletaEstadoReserva(estado) : null;
+        return (
+            <div title={obtenerTooltipEvento(event)} style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+                {isBloqueo && <LockIcon />}
+                <span style={{fontWeight: 600, fontSize: '0.82rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>
+                    {event.title}
+                </span>
+                {palette && estado && (
+                    <span style={{
+                        fontSize: '0.65rem', fontWeight: 700, padding: '2px 7px',
+                        borderRadius: '999px', whiteSpace: 'nowrap', flexShrink: 0,
+                        backgroundColor: palette.backgroundColor, color: palette.color,
+                        border: `1px solid ${palette.borderColor}`,
+                    }}>
+                        {estado.charAt(0).toUpperCase() + estado.slice(1)}
+                    </span>
+                )}
+            </div>
+        );
+    };
+
+    const MonthEventComponent = ({event}) => (
+        <div
+            title={obtenerTooltipEvento(event)}
+            style={{
+                display: 'flex', alignItems: 'center', gap: '3px',
+                overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis',
+                fontSize: '0.72rem', fontWeight: 600, lineHeight: '20px',
+                width: '100%',
+            }}
+        >
             {event.tipo === "bloqueo" && (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <svg xmlns="http://www.w3.org/2000/svg" style={{width: '9px', height: '9px', flexShrink: 0}} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
             )}
-            {event.title}
+            <span style={{overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>{event.title}</span>
         </div>
     );
 
@@ -1888,9 +1931,11 @@ function CalendarioContent() {
                             eventPropGetter={eventStyleGetter}
                             backgroundEventPropGetter={backgroundEventStyleGetter}
                             components={{
-                                event: EventComponent,
-                                day: {event: TitleOnlyEvent},
-                                agenda: {event: TitleOnlyEvent}
+                                event: WeekDayEventComponent,
+                                month: {event: MonthEventComponent},
+                                week: {event: WeekDayEventComponent},
+                                day: {event: WeekDayEventComponent},
+                                agenda: {event: AgendaEventComponent}
                             }}
                             startAccessor="start"
                             endAccessor="end"
