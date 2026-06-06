@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useSignIn } from "@clerk/nextjs";
+import { useAuth, useSignIn } from "@clerk/nextjs";
 import { Michroma } from "next/font/google";
 import { motion } from "framer-motion";
 import OrbBackground from "@/components/OrbBackground";
@@ -32,14 +32,21 @@ const trustItems = [
 
 export default function Page() {
   const router = useRouter();
-  const { isLoaded, signIn, setActive } = useSignIn();
+  const { isLoaded: isAuthLoaded, isSignedIn } = useAuth();
+  const { isLoaded: isSignInLoaded, signIn, setActive } = useSignIn();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
-  if (!isLoaded) {
+  useEffect(() => {
+    if (isAuthLoaded && isSignedIn) {
+      router.replace("/dashboard");
+    }
+  }, [isAuthLoaded, isSignedIn, router]);
+
+  if (!isAuthLoaded || !isSignInLoaded || isSignedIn) {
     return (
       <main className="grid min-h-screen place-items-center bg-white">
         <div className="text-sm text-slate-400">Cargando...</div>
@@ -49,6 +56,12 @@ export default function Page() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+
+    if (isSignedIn) {
+      router.replace("/dashboard");
+      return;
+    }
+
     setError("");
     setSubmitting(true);
     try {
@@ -64,6 +77,13 @@ export default function Page() {
         setError("Se requiere un factor adicional para completar el ingreso.");
       }
     } catch (err) {
+      const errorCode = err?.errors?.[0]?.code;
+
+      if (errorCode === "session_exists") {
+        router.replace("/dashboard");
+        return;
+      }
+
       const msg =
         err?.errors?.[0]?.message ||
         "No pudimos iniciar sesion. Revisa tus datos e intentalo nuevamente.";
