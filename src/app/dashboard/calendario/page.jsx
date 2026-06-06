@@ -808,7 +808,7 @@ function CalendarioContent() {
 
     async function insertarNuevaReserva(nombrePaciente, apellidoPaciente, rut, telefono, email, fechaInicio, horaInicio, fechaFinalizacion, horaFinalizacion,id_profesional) {
         try {
-            if (!nombrePaciente || !apellidoPaciente || !rut || !telefono || !fechaInicio || !horaInicio || !horaFinalizacion || !id_profesional) {
+            if (!nombrePaciente || !apellidoPaciente || !rut || !telefono || !fechaInicio || !horaInicio || !fechaFinalizacion || !horaFinalizacion || !id_profesional) {
                 toast.error('Debe llenar todos los campos');
                 return false;
             }
@@ -840,12 +840,19 @@ function CalendarioContent() {
                     mode: "cors",
                     body: JSON.stringify({nombrePaciente, apellidoPaciente, rut, telefono, email: correoNormalizado, fechaInicio, horaInicio, fechaFinalizacion, horaFinalizacion, estadoReserva: "reservada" ,id_profesional})
                 });
-                const respuestaBackend = await res.json();
-                if (!res.ok && respuestaBackend.message === "conflicto") {
+                const respuestaBackend = await res.json().catch(() => null);
+                if (!res.ok && respuestaBackend?.message === "conflicto") {
                     toast.error("No puede agendar una hora que ya está ocupada.");
                     return false;
                 }
-                if (respuestaBackend.message === true) {
+                if (!res.ok) {
+                    const mensaje = respuestaBackend?.message === "sindata"
+                        ? "Faltan datos obligatorios para crear el agendamiento."
+                        : respuestaBackend?.message || "No fue posible crear el agendamiento.";
+                    toast.error(mensaje);
+                    return false;
+                }
+                if (respuestaBackend?.message === true) {
                     setNombrePaciente(""); setApellidoPaciente(""); setTelefono(""); setRut(""); setEmail("");
                     await refrescarCalendario();
                     toast.success("Se ha ingresado correctamente el agendamiento");
@@ -857,6 +864,9 @@ function CalendarioContent() {
                     toast.error('Asegure que no esta ocupada la Hora');
                     return false;
                 }
+
+                toast.error("El servidor no confirmó la creación del agendamiento.");
+                return false;
             } else {
                 toast.error("Solo se permite agendar si es en el mismo dia");
                 return false;
