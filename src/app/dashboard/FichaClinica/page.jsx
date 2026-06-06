@@ -68,6 +68,9 @@ export default function FichaClinica() {
             ["Constipación", paciente.checkin_alerta_constipacion],
             ["Dolor abdominal", paciente.checkin_alerta_dolor_abdominal],
             ["Hambre nocturna", paciente.checkin_alerta_hambre_nocturna],
+            ["Antojos / Cravings", paciente.checkin_alerta_antojos],
+            ["Signos biliares", Number(paciente.checkin_alerta_signos_biliares) === 1 ? "Sí" : ""],
+            ["Deshidratación", Number(paciente.checkin_alerta_deshidratacion) === 1 ? "Sí" : ""],
         ]
             .filter(([, value]) => valorEsSintomaActivo(value))
             .map(([label, value]) => ({ label, value }));

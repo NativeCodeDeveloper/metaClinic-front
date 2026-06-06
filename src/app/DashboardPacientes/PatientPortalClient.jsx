@@ -28,11 +28,14 @@ const initialForm = {
   adherencia_tratamiento: "Buena",
   apetito_semana: "Normal",
   nauseas: "Ninguna",
-  vomitos: "Ninguna",
+  vomitos: "Ninguno",
   diarrea: "Ninguna",
   constipacion: "Ninguna",
-  dolor_abdominal: "Ninguna",
+  dolor_abdominal: "Ninguno",
   hambre_nocturna: "Ninguna",
+  antojos: "Ninguno",
+  signos_biliares: false,
+  deshidratacion: false,
   observaciones_paciente: "",
 };
 
@@ -42,9 +45,92 @@ const tabs = [
   { id: "checkin", label: "Check-in", icon: ClipboardPenLine },
 ];
 
-const adherenciaOptions = ["Excelente", "Buena", "Regular", "Mala"];
-const apetitoOptions = ["Muy reducido", "Reducido", "Normal", "Aumentado"];
-const symptomOptions = ["Ninguna", "Leve", "Moderada", "Intensa"];
+const adherenciaOptions = [
+  ["Excelente", "Me puse todas las inyecciones/pastillas sin fallar ninguna."],
+  ["Buena", "Fallé 1 vez máximo en la semana."],
+  ["Regular", "Fallé 2-3 veces o me olvidé con frecuencia."],
+  ["Mala", "Casi no seguí el tratamiento esta semana."],
+];
+
+const apetitoOptions = [
+  ["Muy reducido", "Casi no tengo hambre, me cuesta comer aunque quiera."],
+  ["Reducido", "Como menos que antes, me lleno rápido."],
+  ["Normal", "Como igual que siempre."],
+  ["Aumentado", "Tengo más hambre que de costumbre."],
+];
+
+const symptomFields = [
+  {
+    name: "nauseas",
+    label: "Náuseas",
+    options: [
+      ["Ninguna", "No siento náuseas."],
+      ["Leve", "Siento un poco de asco o incomodidad en el estómago, pero puedo comer y hacer mi vida normal."],
+      ["Moderada", "Las náuseas me molestan bastante, me cuesta comer pero logro tomar líquidos y funcionar."],
+      ["Severa", "Las náuseas son muy fuertes, no puedo comer casi nada y me afectan para hacer mis actividades."],
+    ],
+  },
+  {
+    name: "vomitos",
+    label: "Vómitos",
+    options: [
+      ["Ninguno", "No vomité."],
+      ["Leve", "Vomité 1-2 veces en la semana, me recuperé rápido."],
+      ["Moderado", "Vomité varias veces (3-5 episodios), pero pude mantenerme hidratado/a."],
+      ["Severo", "Vomito frecuentemente (más de 5 veces) o no puedo retener ni líquidos."],
+    ],
+  },
+  {
+    name: "diarrea",
+    label: "Diarrea",
+    options: [
+      ["Ninguna", "Sin diarrea."],
+      ["Leve", "Deposiciones más blandas o 1-2 episodios sueltos en la semana."],
+      ["Moderada", "3-5 episodios de diarrea en la semana, con malestar pero puedo hidratarme."],
+      ["Severa", "Más de 5 episodios, diarrea acuosa frecuente o me siento muy débil por esto."],
+    ],
+  },
+  {
+    name: "constipacion",
+    label: "Constipación (estreñimiento)",
+    options: [
+      ["Ninguna", "Voy al baño con normalidad."],
+      ["Leve", "No fui al baño 1-2 días, pero sin molestia importante."],
+      ["Moderada", "Llevo 3-4 días sin ir al baño o siento presión y esfuerzo para defecar."],
+      ["Severa", "Más de 5 días sin ir al baño o con dolor importante al intentar defecar."],
+    ],
+  },
+  {
+    name: "dolor_abdominal",
+    label: "Dolor abdominal (dolor de guata)",
+    options: [
+      ["Ninguno", "Sin dolor en el abdomen."],
+      ["Leve", "Siento molestia o retorcijones leves que no me impiden hacer mis cosas."],
+      ["Moderado", "El dolor es notorio, me hace sentir incómodo/a pero puedo tolerarlo sin medicamento."],
+      ["Severo", "El dolor es intenso, me obliga a acostarme o tomar analgésicos, o es persistente."],
+    ],
+  },
+  {
+    name: "hambre_nocturna",
+    label: "Hambre nocturna",
+    options: [
+      ["Ninguna", "No siento hambre después de cenar ni en la noche."],
+      ["Leve", "A veces pienso en comer en la noche pero lo controlo."],
+      ["Moderada", "Me levanto a buscar algo o me cuesta dormir por la sensación de hambre."],
+      ["Severa", "Como en la noche de forma frecuente o me despierto varias veces con hambre intensa."],
+    ],
+  },
+  {
+    name: "antojos",
+    label: "Antojos / Cravings",
+    options: [
+      ["Ninguno", "No siento antojos de dulces, harinas o comida específica."],
+      ["Leve", "Pienso en ciertas comidas pero puedo evitarlas fácilmente."],
+      ["Moderado", "Los antojos son frecuentes y a veces cedo, aunque me arrepiento."],
+      ["Severo", "Los antojos son muy intensos y difíciles de controlar, cedo casi siempre."],
+    ],
+  },
+];
 
 const neutralSymptomValues = [
   "",
@@ -131,6 +217,9 @@ function buildCheckinSummaryRows(checkinActual) {
     { label: "Constipación", value: checkinActual.constipacion || "--", highlight: isHighlightedValue(checkinActual.constipacion) },
     { label: "Dolor abdominal", value: checkinActual.dolor_abdominal || "--", highlight: isHighlightedValue(checkinActual.dolor_abdominal) },
     { label: "Hambre nocturna", value: checkinActual.hambre_nocturna || "--", highlight: isHighlightedValue(checkinActual.hambre_nocturna) },
+    { label: "Antojos / Cravings", value: checkinActual.antojos || "--", highlight: isHighlightedValue(checkinActual.antojos) },
+    { label: "Signos biliares", value: Number(checkinActual.signos_biliares) === 1 ? "Sí" : "No", highlight: Number(checkinActual.signos_biliares) === 1 },
+    { label: "Signos de deshidratación", value: Number(checkinActual.deshidratacion) === 1 ? "Sí" : "No", highlight: Number(checkinActual.deshidratacion) === 1 },
     {
       label: "Observaciones",
       value: checkinActual.observaciones_paciente || "--",
@@ -204,6 +293,40 @@ function Field({ label, children, helper }) {
   );
 }
 
+function ChoiceCards({ name, value, options, onChange }) {
+  return (
+    <div className="grid gap-2">
+      {options.map(([option, description]) => {
+        const selected = value === option;
+
+        return (
+          <label
+            key={option}
+            className={`flex cursor-pointer gap-3 rounded-2xl border p-3 transition-all ${
+              selected
+                ? "border-sky-400 bg-sky-50 shadow-[0_0_0_3px_rgba(56,189,248,0.1)]"
+                : "border-slate-200 bg-slate-50 hover:border-slate-300 hover:bg-white"
+            }`}
+          >
+            <input
+              type="radio"
+              name={name}
+              value={option}
+              checked={selected}
+              onChange={onChange}
+              className="mt-1 h-4 w-4 shrink-0 accent-sky-600"
+            />
+            <span>
+              <span className="block text-sm font-semibold text-slate-800">{option}</span>
+              <span className="mt-0.5 block text-xs leading-5 text-slate-500">{description}</span>
+            </span>
+          </label>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function PatientPortalClient({ patientEmail, patientName, isAdminPreview = false }) {
   const [activeTab, setActiveTab] = useState("mensajes");
   const [loading, setLoading] = useState(true);
@@ -259,11 +382,14 @@ export default function PatientPortalClient({ patientEmail, patientName, isAdmin
           adherencia_tratamiento: respuestaBackend.checkinActual.adherencia_tratamiento || "Buena",
           apetito_semana: respuestaBackend.checkinActual.apetito_semana || "Normal",
           nauseas: respuestaBackend.checkinActual.nauseas || "Ninguna",
-          vomitos: respuestaBackend.checkinActual.vomitos || "Ninguna",
+          vomitos: respuestaBackend.checkinActual.vomitos || "Ninguno",
           diarrea: respuestaBackend.checkinActual.diarrea || "Ninguna",
           constipacion: respuestaBackend.checkinActual.constipacion || "Ninguna",
-          dolor_abdominal: respuestaBackend.checkinActual.dolor_abdominal || "Ninguna",
+          dolor_abdominal: respuestaBackend.checkinActual.dolor_abdominal || "Ninguno",
           hambre_nocturna: respuestaBackend.checkinActual.hambre_nocturna || "Ninguna",
+          antojos: respuestaBackend.checkinActual.antojos || "Ninguno",
+          signos_biliares: Number(respuestaBackend.checkinActual.signos_biliares) === 1,
+          deshidratacion: Number(respuestaBackend.checkinActual.deshidratacion) === 1,
           observaciones_paciente: respuestaBackend.checkinActual.observaciones_paciente || "",
         }));
       }
@@ -280,10 +406,10 @@ export default function PatientPortalClient({ patientEmail, patientName, isAdmin
   }, [patientEmail]);
 
   function handleChange(event) {
-    const { name, value } = event.target;
+    const { name, value, type, checked } = event.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: type === "checkbox" ? checked : value,
     }));
   }
 
@@ -773,32 +899,20 @@ export default function PatientPortalClient({ patientEmail, patientName, isAdmin
                 <div className="text-[13px] font-semibold uppercase tracking-[0.18em] text-slate-400">Hábitos y adherencia</div>
                 <div className="mt-4 grid gap-4 md:grid-cols-2">
                   <Field label="Adherencia al tratamiento">
-                    <select
+                    <ChoiceCards
                       name="adherencia_tratamiento"
                       value={formData.adherencia_tratamiento}
                       onChange={handleChange}
-                      className="h-11 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition-all focus:border-sky-300 focus:bg-white"
-                    >
-                      {adherenciaOptions.map((option) => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </select>
+                      options={adherenciaOptions}
+                    />
                   </Field>
                   <Field label="Apetito esta semana">
-                    <select
+                    <ChoiceCards
                       name="apetito_semana"
                       value={formData.apetito_semana}
                       onChange={handleChange}
-                      className="h-11 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition-all focus:border-sky-300 focus:bg-white"
-                    >
-                      {apetitoOptions.map((option) => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </select>
+                      options={apetitoOptions}
+                    />
                   </Field>
                   <Field label="Horas de ejercicio semanal">
                     <input
@@ -814,31 +928,41 @@ export default function PatientPortalClient({ patientEmail, patientName, isAdmin
               </div>
 
               <div>
-                <div className="text-[13px] font-semibold uppercase tracking-[0.18em] text-slate-400">Síntomas</div>
-                <div className="mt-4 grid gap-4 md:grid-cols-2">
-                  {[
-                    ["nauseas", "Náuseas", "No tuve náuseas en ningún momento de la semana."],
-                    ["vomitos", "Vómitos", "No vomité durante la semana."],
-                    ["diarrea", "Diarrea", "Sin diarrea durante la semana."],
-                    ["constipacion", "Constipación", "Sin constipación, deposiciones normales."],
-                    ["dolor_abdominal", "Dolor abdominal", "Sin molestias abdominales relevantes."],
-                    ["hambre_nocturna", "Hambre nocturna", "Sin episodios de hambre nocturna."],
-                  ].map(([name, label, helper]) => (
-                    <Field key={name} label={label} helper={helper}>
-                      <select
+                <div className="text-[13px] font-semibold uppercase tracking-[0.18em] text-slate-400">Sección 3 — Síntomas</div>
+                <p className="mt-2 text-sm leading-6 text-slate-500">
+                  Selecciona la descripción que mejor represente cómo te sentiste durante esta semana.
+                </p>
+                <div className="mt-4 grid gap-5 xl:grid-cols-2">
+                  {symptomFields.map(({ name, label, options }) => (
+                    <Field key={name} label={label}>
+                      <ChoiceCards
                         name={name}
                         value={formData[name]}
                         onChange={handleChange}
-                        className="h-11 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition-all focus:border-sky-300 focus:bg-white"
-                      >
-                        {symptomOptions.map((option) => (
-                          <option key={option} value={option}>
-                            {option}
-                          </option>
-                        ))}
-                      </select>
+                        options={options}
+                      />
                     </Field>
                   ))}
+                </div>
+              </div>
+
+              <div>
+                <div className="text-[13px] font-semibold uppercase tracking-[0.18em] text-slate-400">Signos de alerta</div>
+                <div className="mt-4 grid gap-3">
+                  <label className={`flex cursor-pointer gap-3 rounded-2xl border p-4 ${formData.signos_biliares ? "border-rose-300 bg-rose-50" : "border-slate-200 bg-slate-50"}`}>
+                    <input type="checkbox" name="signos_biliares" checked={formData.signos_biliares} onChange={handleChange} className="mt-1 h-4 w-4 shrink-0 accent-rose-600" />
+                    <span>
+                      <span className="block text-sm font-semibold text-slate-800">Signos biliares</span>
+                      <span className="mt-1 block text-xs leading-5 text-slate-500">Marca si tienes dolor intenso en la parte derecha alta del abdomen, bajo las costillas, especialmente después de comer grasas. Puede acompañarse de náuseas o fiebre leve y podría indicar un problema en la vesícula.</span>
+                    </span>
+                  </label>
+                  <label className={`flex cursor-pointer gap-3 rounded-2xl border p-4 ${formData.deshidratacion ? "border-rose-300 bg-rose-50" : "border-slate-200 bg-slate-50"}`}>
+                    <input type="checkbox" name="deshidratacion" checked={formData.deshidratacion} onChange={handleChange} className="mt-1 h-4 w-4 shrink-0 accent-rose-600" />
+                    <span>
+                      <span className="block text-sm font-semibold text-slate-800">Deshidratación</span>
+                      <span className="mt-1 block text-xs leading-5 text-slate-500">Marca si tienes boca muy seca, orina muy oscura (color café o naranja), mareos al pararte o llevas más de 6 horas sin orinar.</span>
+                    </span>
+                  </label>
                 </div>
               </div>
 
