@@ -12,7 +12,6 @@ import {
 const links = [
   { label: "Inicio", href: "/dashboard" },
   { label: "Ingreso Agendamientos", href: "/dashboard/calendario" },
-  { label: "Estado de Reservaciones", href: "/dashboard/agendaCitas" },
   { label: "Ingreso de Pacientes", href: "/dashboard/GestionPaciente" },
   { label: "Carpeta del paciente", href: "/dashboard/FichaClinica" },
   { label: "Crear usuario de seguimiento", href: "/dashboard/crearUsuarios" },
@@ -30,12 +29,12 @@ function MobileNavContent({ role }) {
 
   const sections = [
     { title: "Principal", items: [links[0]] },
-    { title: "Agenda Clínica", items: [links[1], links[2]] },
+    { title: "Agenda Clínica", items: [links[1]] },
     {
       title: "Registros Clínicos",
-      items: isAdmin ? [links[3], links[4], links[5], links[6]] : [links[3], links[4]],
+      items: isAdmin ? [links[2], links[3], links[4], links[5]] : [links[2], links[3]],
     },
-    { title: "Administración Web", items: [links[7], links[8]] },
+    { title: "Administración Web", items: [links[6], links[7]] },
   ];
 
   const mobileSections = isRestrictedUser
