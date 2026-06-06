@@ -288,10 +288,8 @@ export default async function DashboardLayout({ children }) {
 
 
 
-                            {/* — Administración Web —
-
-
-                         <details className="group">
+                            {/* — Administración Web — */}
+                            <details className="group">
                                 <summary className="flex items-center justify-between px-2 py-1 text-[11px] font-medium text-white/30 hover:text-white/45 transition-colors duration-200 cursor-pointer list-none select-none tracking-normal">
                                     <span>Administracion web</span>
                                     <svg className="h-3 w-3 text-white/15 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor">
@@ -328,7 +326,6 @@ export default async function DashboardLayout({ children }) {
                                     </Link>
                                 </div>
                             </details>
-                            */}
 
 
                             {/* — Cobro por Consulta — */}
