@@ -15,6 +15,7 @@ const initialForm = {
 };
 
 export default function CrearUsuariosPage() {
+  const API = process.env.NEXT_PUBLIC_API_URL;
   const router = useRouter();
   const searchParams = useSearchParams();
   const [formData, setFormData] = useState(initialForm);
@@ -24,21 +25,61 @@ export default function CrearUsuariosPage() {
   const idPaciente = searchParams.get("id_paciente");
 
   useEffect(() => {
-    const firstName = searchParams.get("firstName") || "";
-    const lastName = searchParams.get("lastName") || "";
-    const email = searchParams.get("email") || "";
+    async function cargarPacienteSeleccionado() {
+      const firstNameParam = searchParams.get("firstName") || "";
+      const lastNameParam = searchParams.get("lastName") || "";
+      const emailParam = searchParams.get("email") || "";
 
-    if (!firstName && !lastName && !email) {
-      return;
+      if (!idPaciente) {
+        if (firstNameParam || lastNameParam || emailParam) {
+          setFormData((prev) => ({
+            ...prev,
+            firstName: firstNameParam,
+            lastName: lastNameParam,
+            email: emailParam,
+          }));
+        }
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API}/pacientes/pacientesEspecifico`, {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ id_paciente: idPaciente }),
+          mode: "cors",
+        });
+
+        if (!response.ok) {
+          return toast.error("No fue posible cargar los datos del paciente seleccionado.");
+        }
+
+        const respuestaBackend = await response.json();
+        const paciente = Array.isArray(respuestaBackend)
+          ? respuestaBackend[0]
+          : respuestaBackend;
+
+        if (!paciente?.id_paciente) {
+          return toast.error("No se encontraron datos para el paciente seleccionado.");
+        }
+
+        setFormData((prev) => ({
+          ...prev,
+          firstName: paciente.nombre || "",
+          lastName: paciente.apellido || "",
+          email: paciente.correo || "",
+        }));
+      } catch (error) {
+        console.log(error);
+        toast.error("Ocurrio un error al cargar los datos del paciente.");
+      }
     }
 
-    setFormData((prev) => ({
-      ...prev,
-      firstName,
-      lastName,
-      email,
-    }));
-  }, [searchParams]);
+    cargarPacienteSeleccionado();
+  }, [API, idPaciente, searchParams]);
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -124,7 +165,7 @@ export default function CrearUsuariosPage() {
             </div>
           </div>
 
-          {source === "fichaPaciente" && idPaciente ? (
+          {idPaciente ? (
             <div className="mt-5 flex flex-col gap-3 border-t border-slate-200 pt-4 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm text-slate-500">
                 Este flujo fue abierto desde la carpeta clínica del paciente.
@@ -159,7 +200,7 @@ export default function CrearUsuariosPage() {
               </div>
             </div>
 
-            {searchParams.get("source") === "fichaPaciente" ? (
+            {source === "fichaPaciente" && idPaciente ? (
               <div className="mt-6 rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
                 Se precargaron nombre y correo desde la ficha del paciente. Solo falta definir la contraseña inicial para crear su acceso de seguimiento.
               </div>
