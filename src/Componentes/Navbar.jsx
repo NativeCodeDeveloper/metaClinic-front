@@ -10,7 +10,7 @@ const navItems = [
   { label: "Cómo Funciona", href: "/como-funciona" },
   { label: "Tratamientos", href: "/servicios" },
   { label: "Programa", href: "/programa" },
-  { label: "Portal Paciente", href: "/portal" },
+  { label: "Portal Paciente", href: "https://metabocare.agendaclinicas.cl/sign-in" },
 ];
 
 export default function Navbar() {
