@@ -14,7 +14,7 @@ export default function ExamenDocumento() {
     const searchParams = useSearchParams();
     const idPacienteParam = searchParams.get("id_paciente");
     const PDF_BRAND_TITLE = "Metabocare";
-    const PDF_BRAND_SUBTITLE = "Healthcare Information System";
+    const PDF_BRAND_SUBTITLE = "Centro Clinico Metabolico";
 
     const [nombrePaciente, setNombrePaciente] = useState("");
     const [rutPaciente, setRutPaciente] = useState("");

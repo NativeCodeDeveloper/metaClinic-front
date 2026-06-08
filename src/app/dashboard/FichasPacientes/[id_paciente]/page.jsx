@@ -14,6 +14,7 @@ import {CheckboxIcon} from "@radix-ui/react-icons";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import {InfoButton} from "@/Componentes/InfoButton";
+import MensajePacienteForm from "@/Componentes/MensajePacienteForm";
 
 
 export default function Paciente() {
@@ -24,6 +25,7 @@ export default function Paciente() {
     const router = useRouter();
     const [mostrarFormulario, setMostrarFormulario] = useState(false);
     const [mostrarTelemedicina, setMostrarTelemedicina] = useState(false);
+    const [mostrarMensajePaciente, setMostrarMensajePaciente] = useState(false);
     const [linkTelemedicina, setLinkTelemedicina] = useState("");
 
     function nuevaFichaClinica() {
@@ -562,6 +564,16 @@ export default function Paciente() {
                             Ver portal paciente
                         </button>
 
+                        <button
+                            type="button"
+                            onClick={() => setMostrarMensajePaciente((estadoActual) => !estadoActual)}
+                            className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-sky-500 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_10px_30px_rgba(14,165,233,0.24)] transition-all duration-150 hover:from-blue-700 hover:to-sky-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16l-4 4v-4H4a2 2 0 01-2-2V6a2 2 0 012-2h16a2 2 0 012 2v8a2 2 0 01-2 2H9z"/>
+                            </svg>
+                            {mostrarMensajePaciente ? "Cerrar mensaje" : "Enviar mensaje"}
+                        </button>
+
 
                         <button
                             onClick={()=> irAReceta(id_paciente)}
@@ -641,6 +653,13 @@ export default function Paciente() {
                         </button>
                     </div>
                 </div>
+
+                {mostrarMensajePaciente ? (
+                    <MensajePacienteForm
+                        paciente={pacienteActual}
+                        onClose={() => setMostrarMensajePaciente(false)}
+                    />
+                ) : null}
 
                 {mostrarTelemedicina ? (
                     <div className="mb-6 overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_14px_40px_rgba(15,23,42,0.07)]">
