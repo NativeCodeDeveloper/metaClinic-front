@@ -15,9 +15,9 @@ export default function CriteriosClinicos() {
     const [descripcion, setDescripcion] = useState('');
     const [valor_tipo, setValorTipo] = useState('');
     const [excluye_glp1, setExcluyeGlp1] = useState('0');
-    const [fecha_creacion, setFechaCreacion] = useState('');
     const [id_criterio, setIdCriterio] = useState('');
     const [valor_tipo_filtro, setValorTipoFiltro] = useState('');
+    const [procesando, setProcesando] = useState(false);
     const API = process.env.NEXT_PUBLIC_API_URL;
 
     async function obtenerTodosActivos() {
@@ -81,8 +81,26 @@ export default function CriteriosClinicos() {
         setDescripcion('');
         setValorTipo('');
         setExcluyeGlp1('0');
-        setFechaCreacion('');
         setIdCriterio('');
+    }
+
+    function cargarCriterioEnFormulario(criterio) {
+        setNombre(criterio.nombre || '');
+        setDescripcion(criterio.descripcion || '');
+        setValorTipo(criterio.valor_tipo || '');
+        setExcluyeGlp1(String(criterio.excluye_glp1 ?? 0));
+        setIdCriterio(String(criterio.id_criterio));
+    }
+
+    async function refrescarListas() {
+        await Promise.all([
+            obtenerTodosActivos(),
+            obtenerExcluyentesGLP1()
+        ]);
+
+        if(valor_tipo_filtro){
+            await obtenercriterios_valor_tipo(valor_tipo_filtro, false);
+        }
     }
 
     async function obtenerPorId(id_criterio) {
@@ -107,12 +125,7 @@ export default function CriteriosClinicos() {
                 const respustaBackend = await res.json();
 
                 if(Array.isArray(respustaBackend) && respustaBackend.length > 0){
-                    setNombre(respustaBackend[0].nombre || '');
-                    setDescripcion(respustaBackend[0].descripcion || '');
-                    setValorTipo(respustaBackend[0].valor_tipo || '');
-                    setExcluyeGlp1(String(respustaBackend[0].excluye_glp1 ?? 0));
-                    setFechaCreacion(respustaBackend[0].fecha_creacion || '');
-                    setIdCriterio(String(respustaBackend[0].id_criterio));
+                    cargarCriterioEnFormulario(respustaBackend[0]);
                     return toast.success('Criterio clínico seleccionado correctamente.');
                 }else{
                     return toast.error('Error al seleccionar el criterio clínico, por favor intente nuevamente.');
@@ -129,6 +142,7 @@ export default function CriteriosClinicos() {
                 return toast.error('Por favor complete nombre, descripción y tipo de valor para crear el criterio clínico.');
             }
 
+            setProcesando(true);
             const res = await fetch(`${API}/criteriosClinicos/crear`, {
                 method: 'POST',
                 headers: {
@@ -151,8 +165,7 @@ export default function CriteriosClinicos() {
 
                 if(respustaBackend.message === true){
                     limpiarFormulario();
-                    await obtenerTodosActivos();
-                    await obtenerExcluyentesGLP1();
+                    await refrescarListas();
                     return toast.success('Criterio clínico creado correctamente.');
                 }else{
                     return toast.error('Error al crear el criterio clínico, por favor intente nuevamente.');
@@ -160,15 +173,18 @@ export default function CriteriosClinicos() {
             }
         } catch (error) {
             return toast.error('Error al crear el criterio clínico, por favor intente nuevamente.');
+        } finally {
+            setProcesando(false);
         }
     }
 
-    async function actualizarCriterio(nombre, descripcion, valor_tipo, excluye_glp1, fecha_creacion, id_criterio) {
+    async function actualizarCriterio(nombre, descripcion, valor_tipo, excluye_glp1, id_criterio) {
         try {
-            if(!nombre || !descripcion || !valor_tipo || !fecha_creacion || !id_criterio){
+            if(!nombre || !descripcion || !valor_tipo || !id_criterio){
                 return toast.error('Por favor seleccione un criterio y complete todos los campos para actualizar.');
             }
 
+            setProcesando(true);
             const res = await fetch(`${API}/criteriosClinicos/actualizarCriterio`, {
                 method: 'POST',
                 headers: {
@@ -180,7 +196,6 @@ export default function CriteriosClinicos() {
                     descripcion,
                     valor_tipo,
                     excluye_glp1: Number(excluye_glp1),
-                    fecha_creacion,
                     id_criterio: Number(id_criterio)
                 }),
                 mode: 'cors'
@@ -193,11 +208,7 @@ export default function CriteriosClinicos() {
 
                 if(respustaBackend.message === true){
                     limpiarFormulario();
-                    await obtenerTodosActivos();
-                    await obtenerExcluyentesGLP1();
-                    if(valor_tipo_filtro){
-                        await obtenercriterios_valor_tipo(valor_tipo_filtro);
-                    }
+                    await refrescarListas();
                     return toast.success('Criterio clínico actualizado correctamente.');
                 }else{
                     return toast.error('Error al actualizar el criterio clínico, por favor intente nuevamente.');
@@ -205,6 +216,8 @@ export default function CriteriosClinicos() {
             }
         } catch (error) {
             return toast.error('Error al actualizar el criterio clínico, por favor intente nuevamente.');
+        } finally {
+            setProcesando(false);
         }
     }
 
@@ -214,6 +227,18 @@ export default function CriteriosClinicos() {
                 return toast.error('Por favor seleccione un criterio clínico para continuar con la eliminación.');
             }
 
+            const criterio = listaCriteriosClinicos.find(
+                (item) => Number(item.id_criterio) === Number(id_criterio)
+            );
+            const confirmado = window.confirm(
+                `¿Desea eliminar el criterio "${criterio?.nombre || id_criterio}"?`
+            );
+
+            if(!confirmado){
+                return;
+            }
+
+            setProcesando(true);
             const res = await fetch(`${API}/criteriosClinicos/eliminarCriterio`, {
                 method: 'POST',
                 headers: {
@@ -231,11 +256,7 @@ export default function CriteriosClinicos() {
 
                 if(respustaBackend.message === true){
                     limpiarFormulario();
-                    await obtenerTodosActivos();
-                    await obtenerExcluyentesGLP1();
-                    if(valor_tipo_filtro){
-                        await obtenercriterios_valor_tipo(valor_tipo_filtro);
-                    }
+                    await refrescarListas();
                     return toast.success('Criterio clínico eliminado correctamente.');
                 }else{
                     return toast.error('Error al eliminar el criterio clínico, por favor intente nuevamente.');
@@ -243,10 +264,12 @@ export default function CriteriosClinicos() {
             }
         } catch (error) {
             return toast.error('Error al eliminar el criterio clínico, por favor intente nuevamente.');
+        } finally {
+            setProcesando(false);
         }
     }
 
-    async function obtenercriterios_valor_tipo(valor_tipo) {
+    async function obtenercriterios_valor_tipo(valor_tipo, mostrarNotificacion = true) {
         try {
             if(!valor_tipo){
                 setListaCriteriosValorTipo([]);
@@ -270,7 +293,10 @@ export default function CriteriosClinicos() {
 
                 if(Array.isArray(respustaBackend)){
                     setListaCriteriosValorTipo(respustaBackend);
-                    return toast.success('Filtro aplicado correctamente.');
+                    if(mostrarNotificacion){
+                        return toast.success('Filtro aplicado correctamente.');
+                    }
+                    return;
                 }else{
                     return toast.error('Error al filtrar los criterios clínicos, por favor intente nuevamente.');
                 }
@@ -407,13 +433,15 @@ export default function CriteriosClinicos() {
                         <div className="flex flex-col gap-3 border-t border-slate-100 pt-6 sm:flex-row sm:flex-wrap">
                             <ButtonDinamic
                                 onClick={() => crearCriterio(nombre, descripcion, valor_tipo, excluye_glp1)}
+                                disabled={procesando}
                                 className="bg-slate-900 hover:bg-slate-800"
                             >
-                                Guardar criterio
+                                {procesando ? 'Procesando...' : 'Guardar criterio'}
                             </ButtonDinamic>
 
                             <ButtonDinamic
-                                onClick={() => actualizarCriterio(nombre, descripcion, valor_tipo, excluye_glp1, fecha_creacion, id_criterio)}
+                                onClick={() => actualizarCriterio(nombre, descripcion, valor_tipo, excluye_glp1, id_criterio)}
+                                disabled={procesando || !id_criterio}
                                 className="bg-blue-700 hover:bg-blue-600"
                             >
                                 Actualizar criterio
@@ -421,6 +449,7 @@ export default function CriteriosClinicos() {
 
                             <ButtonDinamic
                                 onClick={() => eliminarCriterio(id_criterio)}
+                                disabled={procesando || !id_criterio}
                                 className="bg-red-700 hover:bg-red-600"
                             >
                                 Eliminar criterio
@@ -570,6 +599,27 @@ export default function CriteriosClinicos() {
                                                     GLP1: {Number(criterio.excluye_glp1) === 1 ? 'Sí' : 'No'}
                                                 </span>
                                             </div>
+                                        </div>
+                                        <div className="mt-4 flex flex-wrap gap-2 border-t border-slate-100 pt-4">
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    cargarCriterioEnFormulario(criterio);
+                                                    window.scrollTo({top: 0, behavior: 'smooth'});
+                                                }}
+                                                disabled={procesando}
+                                                className="rounded-xl bg-blue-700 px-3 py-2 text-xs font-semibold text-white transition hover:bg-blue-600 disabled:opacity-50"
+                                            >
+                                                Editar
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => eliminarCriterio(criterio.id_criterio)}
+                                                disabled={procesando}
+                                                className="rounded-xl bg-red-700 px-3 py-2 text-xs font-semibold text-white transition hover:bg-red-600 disabled:opacity-50"
+                                            >
+                                                Eliminar
+                                            </button>
                                         </div>
                                     </div>
                                 ))
