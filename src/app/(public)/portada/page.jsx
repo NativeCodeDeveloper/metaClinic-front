@@ -4,13 +4,17 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
-import toast from "react-hot-toast";
+
+const CLOUDFLARE_ACCOUNT_HASH = "aCBUhLfqUcxA2yhIBn1fNQ";
+const CLOUDFLARE_VARIANT = "portada";
+const TITULO_FALLBACK = "Transforma tu peso de forma clínica y segura";
+const DESCRIPCION_FALLBACK =
+  "Evaluación médica completa, terapias farmacológicas avanzadas (GLP-1) y acompañamiento continuo para un control metabólico real y duradero.";
 
 export default function Portada() {
   const [dataPortada, setDataPortada] = useState([]);
   const API = process.env.NEXT_PUBLIC_API_URL;
 
-  // Preserve backend fetch logic as per instructions
   async function cargarPortada() {
     try {
       const res = await fetch(`${API}/carruselPortada/seleccionarCarruselPortada`, {
@@ -18,20 +22,30 @@ export default function Portada() {
         headers: { Accept: "application/json" },
         mode: "cors",
       });
-      const data = await res.json();
-      if (Array.isArray(data) && data.length > 0) {
-        setDataPortada(data);
-      } else {
-        setDataPortada([]);
+
+      if (!res.ok) {
+        throw new Error(`No se pudo cargar la portada: ${res.status}`);
       }
+
+      const data = await res.json();
+      setDataPortada(Array.isArray(data) ? data : []);
     } catch (err) {
-      console.error("No se ha podido cargar datos del carrusel original", err);
+      setDataPortada([]);
+      console.error("No se han podido cargar los datos de la portada", err);
     }
   }
 
   useEffect(() => {
     cargarPortada();
   }, []);
+
+  const portadaActual = dataPortada[0];
+  const tituloPortada = portadaActual?.tituloPortadaCarrusel || TITULO_FALLBACK;
+  const descripcionPortada =
+    portadaActual?.descripcionPublicacionesPortada || DESCRIPCION_FALLBACK;
+  const imagenPortada = portadaActual?.imagenPortada
+    ? `https://imagedelivery.net/${CLOUDFLARE_ACCOUNT_HASH}/${portadaActual.imagenPortada}/${CLOUDFLARE_VARIANT}`
+    : "/corazon.webp";
 
   return (
     <section id="inicio" className="relative w-full overflow-hidden bg-slate-50 pt-20 pb-16 md:pt-32 md:pb-24 lg:pt-40 lg:pb-32">
@@ -48,11 +62,11 @@ export default function Portada() {
             </div>
 
             <h1 className="text-5xl font-extrabold tracking-tight text-slate-900 sm:text-6xl mb-6 leading-[1.1]">
-              Transforma tu peso de forma clínica y segura
+              {tituloPortada}
             </h1>
 
             <p className="text-lg text-slate-600 mb-10 leading-relaxed max-w-lg">
-              Evaluación médica completa, terapias farmacológicas avanzadas (GLP-1) y acompañamiento continuo para un control metabólico real y duradero.
+              {descripcionPortada}
             </p>
 
             <div className="flex items-center gap-3">
@@ -76,13 +90,13 @@ export default function Portada() {
             <div className="relative h-[500px] w-full sm:h-[600px] lg:h-[650px]">
               {/* Main rounded vertical image */}
               <div className="absolute right-0 top-0 h-[85%] w-[75%] overflow-hidden rounded-[2rem] bg-slate-200">
-                {/* Fallback image if design hasn't got distinct metamedical photos. Using placeholder from existing or standard */}
                 <Image
-                  src="/corazon.webp"
-                  alt="Tratamiento Médico"
-                  layout="fill"
-                  objectFit="cover"
-                  className="opacity-90"
+                  src={imagenPortada}
+                  alt={tituloPortada}
+                  fill
+                  priority
+                  sizes="(max-width: 1024px) 75vw, 38vw"
+                  className="object-cover opacity-90"
                 />
               </div>
 
@@ -123,4 +137,3 @@ export default function Portada() {
     </section>
   );
 }
-
